@@ -1,12 +1,13 @@
 import { useState } from "react";
-import "../App.css";
-import "../index.css";
-import SideBar from "../components/SideBar";
-import NavBar from "../components/NavBar";
+import "../../App.css";
+import "../../index.css";
+import SideBar from "../../components/SideBar";
+import NavBar from "../../components/NavBar";
 import { Link } from "react-router-dom";
-import Table from "../components/Table";
-import FormModal from "../components/modalForm";
-import LinkPath from "../components/LinkPath";
+import Table from "../../components/Table";
+import FormModal from "../../components/modalForm";
+import LinkPath from "../../components/LinkPath";
+import Footer from '../../components/Footer';
 
 function App() {
   const [count, setCount] = useState(0);
@@ -26,6 +27,8 @@ function App() {
     { nama: "Beng Beng", image: "image", kategori: "Makanan", harga: "3000", supplier: "supplier 1" },
     { nama: "Beng Beng", image: "image", kategori: "Makanan", harga: "3000", supplier: "supplier 1" },
     { nama: "Beng Beng", image: "image", kategori: "Makanan", harga: "3000", supplier: "supplier 1" },
+    { nama: "Beng Beng", image: "image", kategori: "Makanan", harga: "3000", supplier: "supplier 1" },
+
   ];
 
   return (
@@ -35,7 +38,7 @@ function App() {
         <NavBar />
       </div>
 
-      <div className="flex flex-row min-h-screen mt-16">
+      <div className="flex flex-row mt-16">
         {/* Sidebar */}
         <div className="w-64 bg-gray-100 mt- fixed top-0 z-30 mt-7">
           <SideBar>
@@ -52,8 +55,8 @@ function App() {
 
         {/* Konten utama */}
         <div className="ml-64 p-6 w-full">
-        <h3 className="text-start text-2xl font-semibold my-5">/Dashboard</h3>
-            Ini Dashboard
+          <LinkPath />
+            <Table tableName={tableName} columns={columns} data={data} />
         </div>
       </div>
     </>
