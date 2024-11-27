@@ -2,8 +2,11 @@ import './App.css';
 import './index.css';
 import Dashboard from './Admin/dashboard';
 import Gudang from './Admin/gudang/Gudang';
+import Laporan from './Admin/gudang/Laporan';
 import Barang from './Admin/barang/Barang';
 import BarangCreate from './Admin/barang/CreateBarang'
+import Aktifitas from './Admin/aktifitas/Aktifitas'
+import Pemindahan from './Admin/aktifitas/Pemindahan'
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 function App() {
@@ -14,8 +17,17 @@ function App() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/Gudang" element={<Gudang />} />
+          <Route path="/Gudang/Rak/Create" element={<Gudang />} />
+          <Route path="/Gudang/Kategori/Create" element={<Gudang />} />
+          <Route path="/Gudang/Supplier/Create" element={<Gudang />} />
+
           <Route path="/Barang" element={<Barang />} />
           <Route path="/Barang/Create" element={<BarangCreate />} />
+
+
+          <Route path="/AktifitasBarang" element={<Aktifitas />} />
+          <Route path="/Laporan" element={<Laporan />} />
+          <Route path="/PemindahanBarang" element={<Pemindahan />} />
           </Routes>
       </BrowserRouter>
     </div>
