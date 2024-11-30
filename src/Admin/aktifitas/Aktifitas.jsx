@@ -2,10 +2,9 @@ import { useState } from "react";
 import "../../App.css";
 import "../../index.css";
 import SideBar from "../../components/SideBar";
-import NavBar from "../../components/NavBar";
+import NavBar2 from "../../components/Navbar2";
 import { Link } from "react-router-dom";
 import Table from "../../components/Table";
-import FormModal from "../../components/modalForm";
 import LinkPath from "../../components/LinkPath";
 
 function App() {
@@ -32,7 +31,7 @@ function App() {
     <>
       {/* NavBar */}
       <div className="fixed top-0 w-full z-40">
-        <NavBar />
+        <NavBar2 />
       </div>
 
       <div className="flex flex-row mt-16">

@@ -1,18 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "../../App.css";
 import "../../index.css";
 import SideBar from "../../components/SideBar";
-import NavBar from "../../components/NavBar";
+import NavBar2 from "../../components/Navbar2";
 import { Link } from "react-router-dom";
 import Table from "../../components/Table";
-import LinkPaht from "../../components/LinkPath";
-import FormModal from "../../components/modalForm";
+import LinkPath from "../../components/LinkPath";
+import ModalForm from "../../components/ModalForm";
+import TableKategori from "./TableKategori";
+import TableRak from "./TableRak";
+import TableSupplier from "./TableSupplier";
 
 function App() {
   const [count, setCount] = useState(0);
   const Rak = "/Gudang/Rak/Create";
-  const Kategori = "/Gudang/Rak/Create";
-  const Supplier = "/Gudang/Rak/Create";
+  const Kategori = "/Gudang/Kategori/Create";
+  const Supplier = "/Gudang/Supplier/Create";
+
+  
 
   const columns = [
     { header: "Nama", field: "name" },
@@ -26,11 +31,14 @@ function App() {
     { name: "Ali", age: 22, address: "Jakarta" },
   ];
 
+  const [kategori, setKategori] = useState([]);
+  const [name, setName] = useState("");
+
   return (
     <>
       {/* NavBar */}
       <div className="fixed top-0 w-full z-40">
-        <NavBar />
+        <NavBar2 />
       </div>
 
       <div className="flex flex-row mt-16">
@@ -40,15 +48,15 @@ function App() {
         </div>
 
         {/* Konten utama */}
-        <div className="ml-64 p-6 w-full">
-            <LinkPaht />  
+        <div className="ml-64 p-6">
+          <LinkPath />
+          <ModalForm />
           <div className="flex">
-            <Table createLink={Rak} columns={columns} data={data} />
-            <Table createLink={Kategori} columns={columns} data={data} />
+            <TableRak />
+            <TableKategori />
           </div>
-
-          <div className="w-full">
-            <Table createLink={Supplier} columns={columns} data={data} />
+          <div className="flex">
+            <TableSupplier />
           </div>
         </div>
       </div>

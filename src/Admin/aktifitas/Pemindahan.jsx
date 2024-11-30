@@ -2,10 +2,9 @@ import { useState } from "react";
 import "../../App.css";
 import "../../index.css";
 import SideBar from "../../components/SideBar";
-import NavBar from "../../components/NavBar";
+import NavBar from "../../components/Navbar2";
 import { Link } from "react-router-dom";
 import Table from "../../components/Table";
-import FormModal from "../../components/modalForm";
 import LinkPath from "../../components/LinkPath";
 
 function App() {
