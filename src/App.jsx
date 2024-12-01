@@ -1,15 +1,14 @@
-import './App.css';
-import './index.css';
-import Dashboard from './Admin/dashboard';
-import Gudang from './Admin/gudang/Gudang';
-import Laporan from './Admin/gudang/Laporan';
-import Barang from './Admin/barang/Barang';
-import BarangCreate from './Admin/barang/CreateBarang'
-import Aktifitas from './Admin/aktifitas/Aktifitas'
-import Pemindahan from './Admin/aktifitas/Pemindahan'
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Login from './Auth/Login';
-import Register from './Auth/Register';
+import "./App.css";
+import "./index.css";
+import Dashboard from "./Admin/dashboard";
+import Gudang from "./Admin/gudang/Gudang";
+import Laporan from "./Admin/gudang/Laporan";
+import Barang from "./Admin/barang/Barang";
+import BarangCreate from "./Admin/barang/CreateBarang";
+import Aktifitas from "./Admin/aktifitas/Aktifitas";
+import Pemindahan from "./Admin/aktifitas/Pemindahan";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Notfound from "./components/NotFound";
 
 function App() {
   return (
@@ -17,10 +16,6 @@ function App() {
       <BrowserRouter>
         {/* Routes membungkus semua Route */}
         <Routes>
-
-
-          <Route path='/' element={<Login />} />
-          <Route path='/Register' element={<Register />} />
           <Route path="/Dashboard" element={<Dashboard />} />
           <Route path="/Gudang" element={<Gudang />} />
           <Route path="/Gudang/Rak/Create" element={<Gudang />} />
@@ -30,11 +25,13 @@ function App() {
           <Route path="/Barang" element={<Barang />} />
           <Route path="/Barang/Create" element={<BarangCreate />} />
 
-
           <Route path="/AktifitasBarang" element={<Aktifitas />} />
           <Route path="/Laporan" element={<Laporan />} />
           <Route path="/PemindahanBarang" element={<Pemindahan />} />
-          </Routes>
+
+          {/* page notfound */}
+          <Route path="*" element={<Notfound />} />
+        </Routes>
       </BrowserRouter>
     </div>
   );
