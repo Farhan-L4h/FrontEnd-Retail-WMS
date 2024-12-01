@@ -9,8 +9,8 @@ import Aktifitas from "./Admin/aktifitas/Aktifitas";
 import Pemindahan from "./Admin/aktifitas/Pemindahan";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Notfound from "./components/NotFound";
-import Login from "./Auth/Login";
-import Register from "./Auth/Register";
+import Login from "./Login/Login";
+import Register from "./Login/Register";
 
 function App() {
   return (
