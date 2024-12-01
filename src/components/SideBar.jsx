@@ -7,7 +7,7 @@ export default function SideBar() {
       <ul className="space-y-2 font-medium px-4 py-4">
         <li className="py-2">
           <Link
-            to="/"
+            to="/Dashboard"
             className="text-start items-center flex gap-2 block text-gray-600 hover:text-blue-600 rounded-lg"
           >
             <svg

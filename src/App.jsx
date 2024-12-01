@@ -8,6 +8,8 @@ import BarangCreate from './Admin/barang/CreateBarang'
 import Aktifitas from './Admin/aktifitas/Aktifitas'
 import Pemindahan from './Admin/aktifitas/Pemindahan'
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Login from './Auth/Login';
+import Register from './Auth/Register';
 
 function App() {
   return (
@@ -15,7 +17,11 @@ function App() {
       <BrowserRouter>
         {/* Routes membungkus semua Route */}
         <Routes>
-          <Route path="/" element={<Dashboard />} />
+
+
+          <Route path='/' element={<Login />} />
+          <Route path='/Register' element={<Register />} />
+          <Route path="/Dashboard" element={<Dashboard />} />
           <Route path="/Gudang" element={<Gudang />} />
           <Route path="/Gudang/Rak/Create" element={<Gudang />} />
           <Route path="/Gudang/Kategori/Create" element={<Gudang />} />
