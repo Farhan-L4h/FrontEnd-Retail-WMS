@@ -20,12 +20,14 @@ export default function TableBarang() {
     const fetchData = async () => {
       try {
         const response = await axios.get("http://127.0.0.1:8000/api/barang");
+        console.log(response.data); // Debug struktur respons
         const barang = Array.isArray(response.data)
           ? response.data
-          : response.data.data; // Akses array jika dibungkus dalam objek
+          : response.data.data;
         setBarangData(barang || []); // Default ke array kosong
         setLoading(false);
       } catch (err) {
+        console.error("API Error:", err.message);
         setError(err.message);
         setLoading(false);
       }
