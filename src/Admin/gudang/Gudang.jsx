@@ -3,8 +3,6 @@ import "../../App.css";
 import "../../index.css";
 import SideBar from "../../components/SideBar";
 import NavBar2 from "../../components/Navbar2";
-import { Link } from "react-router-dom";
-import Table from "../../components/Table";
 import LinkPath from "../../components/LinkPath";
 import ModalForm from "../../components/ModalForm";
 import TableKategori from "./TableKategori";
@@ -13,24 +11,6 @@ import TableSupplier from "./TableSupplier";
 
 function App() {
   const [count, setCount] = useState(0);
-  const Rak = "/Gudang/Rak/Create";
-  const Kategori = "/Gudang/Kategori/Create";
-  const Supplier = "/Gudang/Supplier/Create";
-
-  
-
-  const columns = [
-    { header: "Nama", field: "name" },
-    { header: "Umur", field: "age" },
-    { header: "Alamat", field: "address" },
-  ];
-
-  const data = [
-    { name: "Tora", age: 20, address: "Malang" },
-    { name: "Dio", age: 21, address: "Surabaya" },
-    { name: "Ali", age: 22, address: "Jakarta" },
-  ];
-
   const [kategori, setKategori] = useState([]);
   const [name, setName] = useState("");
 

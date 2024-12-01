@@ -21,7 +21,7 @@ export default function Table({ columns, data, tableName }) {
   );
 
   return (
-    <div className="m-2 bg-white p-4 rounded-md max-h-screen">
+    <div className="m-2 bg-white p-4 rounded-md w-full">
       <div className="flex flex-row my-2">
         <div className="text-start flex w-full">
           <h3 className="text-xl font-semibold">{tableName || "Table Data"}</h3>

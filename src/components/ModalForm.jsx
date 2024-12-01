@@ -1,11 +1,18 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 
-export default function FormModal() {
+export default function FormModal({ title, fields, onSubmit }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData);
+    onSubmit(data);
+    toggleModal(); // Tutup modal setelah submit
   };
 
   return (
@@ -13,9 +20,9 @@ export default function FormModal() {
       {/* Tombol untuk membuka modal */}
       {/* <button
         onClick={toggleModal}
-        className="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        className="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
       >
-        Toggle modal
+        Tambah {title}
       </button> */}
 
       {/* Modal content */}
@@ -26,12 +33,10 @@ export default function FormModal() {
         >
           <div
             className="relative p-4 w-full max-w-md max-h-full bg-white rounded-lg shadow"
-            onClick={(e) => e.stopPropagation()} // Menjaga modal tidak tertutup saat klik di dalam modal
+            onClick={(e) => e.stopPropagation()} // Mencegah modal tertutup saat klik di dalam modal
           >
-            <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
-              <h3 className="text-lg font-semibold text-gray-900">
-                Create New Data
-              </h3>
+            <div className="flex items-center justify-between p-4 border-b rounded-t">
+              <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
               <button
                 onClick={toggleModal}
                 className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center"
@@ -55,90 +60,61 @@ export default function FormModal() {
               </button>
             </div>
 
-            {/* Form untuk input data produk */}
-            <form className="p-4 md:p-5">
-              <div className="grid gap-4 mb-4 grid-cols-2">
-                <div className="col-span-2">
+            {/* Form untuk input data */}
+            <form className="p-4" onSubmit={handleSubmit}>
+              {fields.map((field, index) => (
+                <div key={index} className="mb-4">
                   <label
-                    htmlFor="name"
-                    className="block mb-2 text-start text-sm font-medium text-gray-900"
+                    htmlFor={field.name}
+                    className="block mb-2 text-sm font-medium text-gray-900"
                   >
-                    Name
+                    {field.label}
                   </label>
-                  <input
-                    type="text"
-                    name="name"
-                    id="name"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 focus:border-primary-500"
-                    placeholder="Type product name"
-                    required
-                  />
+                  {field.type === "textarea" ? (
+                    <textarea
+                      id={field.name}
+                      name={field.name}
+                      rows="4"
+                      className="bg-gray-50 border border-gray-300 text-sm rounded-lg block w-full p-2.5"
+                      placeholder={field.placeholder}
+                    />
+                  ) : field.type === "select" ? (
+                    <select
+                      id={field.name}
+                      name={field.name}
+                      className="bg-gray-50 border border-gray-300 text-sm rounded-lg block w-full p-2.5"
+                    >
+                      {field.options.map((option, idx) => (
+                        <option key={idx} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      type={field.type}
+                      id={field.name}
+                      name={field.name}
+                      className="bg-gray-50 border border-gray-300 text-sm rounded-lg block w-full p-2.5"
+                      placeholder={field.placeholder}
+                      required={field.required}
+                    />
+                  )}
                 </div>
-
-                <div className="col-span-2 sm:col-span-1">
-                  <label
-                    htmlFor="price"
-                    className="block mb-2 text-sm text-start font-medium text-gray-900"
-                  >
-                    Price
-                  </label>
-                  <input
-                    type="number"
-                    name="price"
-                    id="price"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 focus:border-primary-500"
-                    placeholder="$2999"
-                    required
-                  />
-                </div>
-
-                <div className="col-span-2 sm:col-span-1">
-                  <label
-                    htmlFor="category"
-                    className="block mb-2 text-sm text-start font-medium text-gray-900"
-                  >
-                    Category
-                  </label>
-                  <select
-                    id="category"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 focus:border-primary-500"
-                  >
-                    <option selected>Select category</option>
-                    <option value="TV">TV/Monitors</option>
-                    <option value="PC">PC</option>
-                    <option value="GA">Gaming/Console</option>
-                    <option value="PH">Phones</option>
-                  </select>
-                </div>
-
-                <div className="col-span-2">
-                  <label
-                    htmlFor="description"
-                    className="block mb-2 text-start text-sm font-medium text-gray-900"
-                  >
-                    Product Description
-                  </label>
-                  <textarea
-                    id="description"
-                    rows="4"
-                    className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Write product description here"
-                  ></textarea>
-                </div>
-              </div>
+              ))}
 
               {/* Tombol untuk mengirimkan form */}
               <div className="flex justify-end">
                 <button
                   type="submit"
-                  className="text-white inline-flex items-center border bg-black hover:border border-black hover:bg-white hover:text-black focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                  className="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
                 >
                   Submit
                 </button>
-
                 <button
-                  type="cancel"
-                  className="ms-2 text-white inline-flex items-center border border-black bg-white text-black hover:bg-black hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                  type="button"
+                  onClick={toggleModal}
+                  className="ml-2 text-gray-700 bg-gray-200 hover:bg-gray-300 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5"
                 >
                   Cancel
                 </button>
