@@ -2,11 +2,7 @@ import { useState } from "react";
 import "../../App.css";
 import "../../index.css";
 import SideBar from "../../components/SideBar";
-import NavBar from "../../components/NavBar";
-import { Link } from "react-router-dom";
-import Table from "../../components/Table";
 import LinkPath from "../../components/LinkPath";
-import Footer from '../../components/Footer';
 import Navbar2 from "../../components/Navbar2";
 import TableBarang from "./TableBarang";
 
