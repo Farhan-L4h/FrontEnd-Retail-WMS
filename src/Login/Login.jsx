@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import API from "../services/api";
 
 export default function Login() {
-  const [formData, setFormData] = useState({ username: "", password: "" });
+  const [formData, setFormData] = useState({ login: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -17,21 +17,24 @@ export default function Login() {
     setError(null);
 
     try {
-      const response = await API.post("/user", formData);
+      const response = await API.post("/login", formData); // Gunakan endpoint yang benar
       const { token } = response.data;
 
       if (token) {
         localStorage.setItem("authToken", token);
         alert("Login berhasil!");
-        window.location.href = "/dashboard"; // Redirect to the dashboard or another page
+        window.location.href = "/dashboard";
       } else {
         throw new Error("Token tidak ditemukan dalam respons.");
       }
     } catch (err) {
-      setError(
-        err.response?.data?.message ||
-          "Login gagal. Periksa kembali kredensial Anda."
-      );
+      if (err.response?.status === 401) {
+        setError("Username atau password salah.");
+      } else if (err.response?.status === 400) {
+        setError("Permintaan tidak valid.");
+      } else {
+        setError(err.response?.data?.message || "Login gagal. Coba lagi.");
+      }
     } finally {
       setLoading(false);
     }
@@ -45,16 +48,16 @@ export default function Login() {
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label
-              className="block text-sm text-start font-medium mb-2"
-              htmlFor="username"
+              className="block text-sm font-medium mb-2"
+              htmlFor="login"
             >
-              Username
+              Username | Email
             </label>
             <input
               type="text"
-              id="username"
-              name="username"
-              value={formData.username}
+              id="login"
+              name="login"
+              value={formData.login}
               onChange={handleInputChange}
               className="w-full p-2 border rounded"
               required
@@ -62,7 +65,7 @@ export default function Login() {
           </div>
           <div className="mb-4">
             <label
-              className="block text-sm text-start font-medium mb-2"
+              className="block text-sm font-medium mb-2"
               htmlFor="password"
             >
               Password
@@ -77,18 +80,17 @@ export default function Login() {
               required
             />
           </div>
-          <div className="flex justify-end content-center gap-2 items-center pt-4">
-            <p className="text-xs"> 
+          <div className="flex justify-between items-center pt-4">
+            <p className="text-xs">
               Belum punya akun?{" "}
               <a href="/register" className="text-blue-600 hover:underline">
-                Register sekarang
+                Daftar sekarang
               </a>
             </p>
-
             <button
               type="submit"
               disabled={loading}
-              className={`px-3 py-1 border bg-black text-white rounded hover:bg-white hover:text-black hover:border border-black ${
+              className={`px-3 py-1 bg-black text-white rounded hover:bg-gray-800 ${
                 loading ? "opacity-50 cursor-not-allowed" : ""
               }`}
             >
