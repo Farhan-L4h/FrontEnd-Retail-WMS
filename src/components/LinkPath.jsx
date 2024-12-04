@@ -4,5 +4,5 @@ export default function LinkPath() {
   const location = useLocation();
   const linkPath = `${location.pathname}>`;
 
-  return <h3 className="text-start text-2xl font-semibold my-5">{linkPath}</h3>;
+  return <h3 className="text-start text-2xl font-medium text-gray-600 my-5">{linkPath}</h3>;
 }
