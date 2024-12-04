@@ -248,7 +248,7 @@ export default function TableRak() {
             <h3 className="text-lg font-semibold mb-4">Edit Rak</h3>
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
-                <label htmlFor="kode_rak" className="block mb-2 text-sm font-medium">Kode Rak</label>
+                <label htmlFor="kode_rak" className="block mb-2 text-sm font-medium text-start">Kode Rak</label>
                 <input
                   type="text"
                   id="kode_rak"
@@ -260,7 +260,7 @@ export default function TableRak() {
                 />
               </div>
               <div className="mb-4">
-                <label htmlFor="nama_rak" className="block mb-2 text-sm font-medium">Nama Rak</label>
+                <label htmlFor="nama_rak" className="block mb-2 text-sm font-medium text-start">Nama Rak</label>
                 <input
                   type="text"
                   id="nama_rak"
@@ -272,7 +272,7 @@ export default function TableRak() {
                 />
               </div>
               <div className="mb-4">
-                <label htmlFor="lokasi_rak" className="block mb-2 text-sm font-medium">Lokasi Rak</label>
+                <label htmlFor="lokasi_rak" className="block mb-2 text-sm font-medium text-start">Lokasi Rak</label>
                 <input
                   type="text"
                   id="lokasi_rak"
@@ -287,11 +287,11 @@ export default function TableRak() {
                 <button
                   type="button"
                   onClick={toggleEditModal}
-                  className="px-4 py-2 text-sm text-gray-500 border rounded-md mr-2"
+                  className="px-4 py-2 rounded-md mr-2 bg-white border border-black hover:bg-black hover:text-white"
                 >
                   Cancel
                 </button>
-                <button type="submit" className="px-4 py-2 text-sm text-white bg-blue-500 rounded-md">Save</button>
+                <button type="submit" className="text-white border bg-black hover:bg-white hover:text-black hover:border border-black focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1">Save</button>
               </div>
             </form>
           </div>

@@ -268,13 +268,13 @@ export default function TableSupplier() {
                 <button
                   type="button"
                   onClick={toggleAddModal}
-                  className="mr-2 bg-gray-200 px-4 py-2 rounded-md"
+                  className="px-4 py-2 rounded-md mr-2 bg-white border border-black hover:bg-black hover:text-white"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="text-white bg-blue-600 px-4 py-2 rounded-md"
+                  className="text-white border bg-black hover:bg-white hover:text-black hover:border border-black focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1"
                 >
                   Submit
                 </button>
@@ -293,7 +293,7 @@ export default function TableSupplier() {
               <div className="mb-4">
                 <label
                   htmlFor="nama_supplier"
-                  className="block mb-2 text-sm font-medium"
+                  className="block mb-2 text-sm font-medium text-start"
                 >
                   Nama Supplier
                 </label>
@@ -310,7 +310,7 @@ export default function TableSupplier() {
               <div className="mb-4">
                 <label
                   htmlFor="kontak"
-                  className="block mb-2 text-sm font-medium"
+                  className="block mb-2 text-sm font-medium text-start"
                 >
                   Kontak
                 </label>
@@ -327,7 +327,7 @@ export default function TableSupplier() {
               <div className="mb-4">
                 <label
                   htmlFor="alamat"
-                  className="block mb-2 text-sm font-medium"
+                  className="block mb-2 text-sm font-medium text-start"
                 >
                   Alamat
                 </label>
@@ -345,13 +345,13 @@ export default function TableSupplier() {
                 <button
                   type="button"
                   onClick={toggleEditModal}
-                  className="mr-2 bg-gray-200 px-4 py-2 rounded-md"
+                  className="px-4 py-2 rounded-md mr-2 bg-white border border-black hover:bg-black hover:text-white"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="text-white bg-blue-600 px-4 py-2 rounded-md"
+                  className="text-white border bg-black hover:bg-white hover:text-black hover:border border-black focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1"
                 >
                   Update
                 </button>
