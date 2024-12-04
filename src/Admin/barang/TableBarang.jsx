@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom"; // Pastikan Link diimpor
+import { Link } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function TableBarang() {
   const [barangData, setBarangData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 7;
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // Added to manage delete modal state
-  const [deleteData, setDeleteData] = useState({ id: "", nama_barang: "" }); // Added to store delete data
+  const itemsPerPage = 15;
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleteData, setDeleteData] = useState({ id: "", nama_barang: "" });
 
   const totalPages = Math.ceil(barangData.length / itemsPerPage);
   const currentData = barangData.slice(
@@ -27,6 +29,7 @@ export default function TableBarang() {
         setBarangData(barang || []);
       } catch (err) {
         setError(err.message);
+        toast.error("Gagal memuat data barang!");
       } finally {
         setLoading(false);
       }
@@ -34,29 +37,26 @@ export default function TableBarang() {
     fetchData();
   }, []);
 
-  const handleEdit = (barang) => {
-    setFormData(barang);
-    setIsEdit(true);
-    toggleEditModal();
-  };
-
   const handleDelete = async () => {
     try {
-      console.log("Deleting ID:", deleteData.id); // Debugging
       if (!deleteData.id) {
-        alert("ID barang tidak ditemukan!");
+        toast.warning("ID barang tidak ditemukan!");
         return;
       }
-  
-      await axios.delete(`http://127.0.0.1:8000/api/barang/${deleteData.id}/destroy`);
+
+      await axios.delete(
+        `http://127.0.0.1:8000/api/barang/${deleteData.id}/destroy`
+      );
       const response = await axios.get("http://127.0.0.1:8000/api/barang");
-      setBarangData(Array.isArray(response.data) ? response.data : response.data.data);
+      setBarangData(
+        Array.isArray(response.data) ? response.data : response.data.data
+      );
       toggleDeleteModal();
+      toast.success(`Barang ${deleteData.nama_barang} berhasil dihapus.`);
     } catch (err) {
-      alert("Terjadi kesalahan: " + err.message);
+      toast.error("Terjadi kesalahan: " + err.message);
     }
   };
-  
 
   const confirmDelete = (barang) => {
     setDeleteData({ id: barang.id, nama_barang: barang.nama_barang });
@@ -65,33 +65,33 @@ export default function TableBarang() {
 
   const toggleDeleteModal = () => {
     setIsDeleteModalOpen(!isDeleteModalOpen);
-  }; // Added to manage delete modal state
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
   return (
+    <div className="m-2 bg-white p-4 rounded-md w-full">
+      <ToastContainer position="top-right" autoClose={3000} />
 
-    
-    <div className="m-2 bg-white p-4 rounded-md">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-xl font-semibold">Table Barang</h3>
         <Link to="/Barang/create">
-          <button className="text-white bg-blue-700 hover:bg-blue-800 rounded-lg px-5 py-2.5">
+          <button className="text-green-800 bg-green-200 hover:bg-green-500 hover:text-green-200 text-sm rounded-lg px-3 py-2">
             Tambah Barang
           </button>
         </Link>
       </div>
 
-      <div className="relative overflow-x-auto sm:rounded-lg">
+      <div className="relative overflow-x-auto sm:rounded-lg w-max">
         <table className="w-full text-sm text-left text-gray-500">
           <thead className="text-xs text-gray-700 uppercase bg-gray-200">
-            <tr className="text-wrap">
+            <tr>
               <th className="px-6 py-3">ID</th>
               <th className="px-6 py-3">Nama Barang</th>
               <th className="px-6 py-3">Image</th>
-              <th className="px-6 py-3">ID Kategori</th>
-              <th className="px-6 py-3">ID Supplier</th>
+              <th className="px-3 py-3">Kategori</th>
+              <th className="px-4 py-3">Supplier</th>
               <th className="px-6 py-3">Harga</th>
               <th className="px-6 py-3">Action</th>
             </tr>
@@ -110,30 +110,26 @@ export default function TableBarang() {
                     />
                   )}
                 </td>
-                <td className="px-6 py-4">{barang.id_kategori}</td>
-                <td className="px-6 py-4">{barang.id_supplier}</td>
+                <td className="px-3 py-4">{barang.kategori.nama_kategori}</td>
+                <td className="px-6 py-4">{barang.supplier.nama_supplier}</td>
                 <td className="px-6 py-4">{barang.harga}</td>
                 <td className="px-6 py-4">
                   <Link to={`/Barang/${barang.id}/edit`}>
-                    <button
-                      className="font-medium text-xs bg-blue-300 rounded-md px-3 py-1 m-2 text-blue-800 hover:underline"
-                    >
+                    <button className="font-medium text-xs bg-blue-200 rounded-xl px-3 py-1 m-2 text-blue-800 hover:underline">
                       Edit
                     </button>
                   </Link>
                   <button
-                    className="font-medium p-2 m-1 text-xs rounded-md bg-red-300 text-red-800 px-2 py-1 hover:underline"
-                    onClick={() => confirmDelete(barang)} // Tombol Delete
+                    className="font-medium p-2 m-1 text-xs rounded-xl bg-red-200 text-red-800 px-2 py-1 hover:underline"
+                    onClick={() => confirmDelete(barang)}
                   >
                     Delete
                   </button>
                   <Link to={`/barang/${barang.id}/show`}>
-                  <button
-                    className="font-medium p-2 m-1 text-xs rounded-md bg-green-300 text-green-800 px-2 py-1 hover:underline"
-                    >
-                    Show
-                  </button>
-                    </Link>
+                    <button className="font-medium p-2 m-1 text-xs rounded-xl bg-green-200 text-green-800 px-2 py-1 hover:underline">
+                      Show
+                    </button>
+                  </Link>
                 </td>
               </tr>
             ))}
@@ -141,31 +137,14 @@ export default function TableBarang() {
         </table>
       </div>
 
-      {/* Pagination */}
-      {barangData.length > itemsPerPage && (
-        <div className="flex justify-center mt-4">
-          {Array.from({ length: totalPages }, (_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentPage(index + 1)}
-              className={`mx-1 px-3 py-1 rounded-md ${
-                currentPage === index + 1
-                  ? "bg-blue-500 text-white"
-                  : "bg-gray-100 text-gray-500"
-              }`}
-            >
-              {index + 1}
-            </button>
-          ))}
-        </div>
-      )}
-
       {/* Delete Modal */}
       {isDeleteModalOpen && (
         <div className="fixed top-0 z-40 left-0 w-full h-full flex justify-center items-center bg-gray-800 bg-opacity-50">
           <div className="relative p-4 w-full max-w-md bg-white rounded-lg shadow">
             <h3 className="text-lg font-semibold mb-4">Are you sure?</h3>
-            <p>Apakah Anda yakin ingin menghapus barang {deleteData.nama_barang}?</p>
+            <p>
+              Apakah Anda yakin ingin menghapus barang {deleteData.nama_barang}?
+            </p>
             <div className="flex justify-end mt-4">
               <button
                 onClick={toggleDeleteModal}
@@ -183,9 +162,6 @@ export default function TableBarang() {
           </div>
         </div>
       )}
-      
     </div>
-
-
   );
 }
