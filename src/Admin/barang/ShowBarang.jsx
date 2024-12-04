@@ -84,7 +84,7 @@ export default function TableBarang() {
                     <td className="px-6 py-4">Image</td>
                     <td className="px-6 py-4">
                       {barangData?.image ? (
-                        <img src={barangData?.image} alt="Barang" className="w-16 h-10 object-contain" />
+                        <img src={barangData?.image} alt="Barang" className="w-10 h-10 object-contain" />
                       ) : (
                         <p>No Image Available</p>
                       )}
@@ -101,6 +101,10 @@ export default function TableBarang() {
                   <tr className="border-b">
                     <td className="px-6 py-4 w-max">Supplier</td>
                     <td className="px-6 py-4">{barangData?.supplier?.nama_supplier}</td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="px-6 py-4 w-max">Deskripsi</td>
+                    <td className="px-6 py-4">{barangData?.deskripsi}</td>
                   </tr>
                 </tbody>
               </table>
