@@ -45,7 +45,7 @@ export default function Login() {
       <div className="p-6 bg-white rounded shadow-md w-full max-w-sm">
         <h2 className="text-2xl font-semibold mb-4">Login</h2>
         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="text-start">
           <div className="mb-4">
             <label
               className="block text-sm font-medium mb-2"
