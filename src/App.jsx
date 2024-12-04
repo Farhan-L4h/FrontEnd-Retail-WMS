@@ -5,6 +5,8 @@ import Gudang from "./Admin/gudang/Gudang";
 import Laporan from "./Admin/gudang/Laporan";
 import Barang from "./Admin/barang/Barang";
 import BarangCreate from "./Admin/barang/CreateBarang";
+import BarangEdit from "./Admin/barang/EditBarang";
+import BarangShow from "./Admin/barang/ShowBarang";
 import Aktifitas from "./Admin/aktifitas/Aktifitas";
 import Pemindahan from "./Admin/aktifitas/Pemindahan";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -29,6 +31,8 @@ function App() {
 
           <Route path="/Barang" element={<Barang />} />
           <Route path="/Barang/Create" element={<BarangCreate />} />
+          <Route path="/Barang/:id/Edit" element={<BarangEdit />} />
+          <Route path="/Barang/:id/Show" element={<BarangShow />} />
 
           <Route path="/AktifitasBarang" element={<Aktifitas />} />
           <Route path="/Laporan" element={<Laporan />} />
