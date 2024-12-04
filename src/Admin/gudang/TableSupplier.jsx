@@ -137,9 +137,9 @@ export default function TableSupplier() {
       </div>
 
 {/* Table Supplier */}
-      <div className="relative overflow-x-auto sm:rounded-lg">
+      <div className="relative overflow-x-auto sm:rounded-lg w-full">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500">
-          <thead className="text-xs font-medium text-gray-700 uppercase bg-gray-200 bg-gray-100">
+          <thead className="text-xs font-medium text-gray-700 uppercase bg-gray-200">
             <tr>
               <th scope="col" className="px-6 py-3">
                 ID

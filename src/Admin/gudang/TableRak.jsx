@@ -116,7 +116,7 @@ export default function TableRak() {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="m-2 bg-white p-4 rounded-md">
+    <div className="m-2 bg-white p-4 rounded-md w-max">
       <div className="flex flex-row my-2">
         <div className="text-start flex w-full">
           <h3 className="text-xl font-semibold">Table Rak</h3>
@@ -130,9 +130,9 @@ export default function TableRak() {
       </div>
 
       {/* Table */}
-      <div className="relative overflow-x-auto sm:rounded-lg">
+      <div className="relative overflow-x-auto sm:rounded-lg w-full">
         <table className="w-full text-xs text-left rtl:text-right text-gray-500">
-          <thead className="font-normal text-gray-700 uppercase bg-gray-200 bg-gray-100">
+          <thead className="font-normal text-gray-700 uppercase bg-gray-200">
             <tr>
               <th scope="col" className="px-6 py-3">ID</th>
               <th scope="col" className="px-6 py-3">Kode Rak</th>
@@ -157,7 +157,7 @@ export default function TableRak() {
                   </button>
                   <button
                     onClick={() => confirmDelete(rak)}
-                    className="font-medium text-xs p-2 text-xs rounded-md bg-red-400 text-red-800 px-3 py-1  hover:underline"
+                    className="font-medium p-2 text-xs rounded-md bg-red-400 text-red-800 px-3 py-1  hover:underline"
                   >
                     Delete
                   </button>
@@ -230,11 +230,11 @@ export default function TableRak() {
                 <button
                   type="button"
                   onClick={toggleAddModal}
-                  className="px-4 py-2 border rounded-md mr-2 bg-white border border-black hover:bg-black hover:text-white border"
+                  className="px-4 py-2 rounded-md mr-2 bg-white border border-black hover:bg-black hover:text-white"
                 >
                   Cancel
                 </button>
-                <button type="submit" className="text-white border bg-black hover:bg-white hover:text-black hover:border border-black focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1 rounded-md">Submit</button>
+                <button type="submit" className="text-white border bg-black hover:bg-white hover:text-black hover:border border-black focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1">Submit</button>
               </div>
             </form>
           </div>

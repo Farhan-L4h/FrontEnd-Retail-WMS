@@ -30,7 +30,6 @@ function App() {
         {/* Konten utama */}
         <div className="ml-64 p-6">
           <LinkPath />
-          <ModalForm />
           <div className="flex">
             <TableRak />
             <TableKategori />

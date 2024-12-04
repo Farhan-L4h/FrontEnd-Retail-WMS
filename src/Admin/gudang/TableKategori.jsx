@@ -129,7 +129,7 @@ export default function TableKategori() {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="m-2 bg-white p-4 rounded-md">
+    <div className="m-2 bg-white p-4 rounded-md w-max">
       <div className="flex flex-row my-2">
         <div className="text-start flex w-full">
           <h3 className="text-xl font-semibold">Table Kategori</h3>
@@ -143,7 +143,7 @@ export default function TableKategori() {
       </div>
 
       {/* Tabel */}
-      <div className="relative overflow-x-auto sm:rounded-lg">
+      <div className="relative overflow-x-auto sm:rounded-lg w-max">
         <table className="w-full text-xs text-left text-gray-500">
           <thead className="text-xs font-medium text-gray-700 uppercase bg-gray-200">
             <tr>
