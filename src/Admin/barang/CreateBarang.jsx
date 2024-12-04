@@ -1,20 +1,23 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../../App.css";
 import "../../index.css";
 import SideBar from "../../components/SideBar";
 import NavBar from "../../components/NavBar";
 import LinkPath from "../../components/LinkPath";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 function FormBarang() {
   const [formData, setFormData] = useState({
-    image: '', // Gambar sebagai string Base64
-    id_kategori: '',
-    id_supplier: '',
-    nama_barang: '',
-    deskripsi: '',
-    harga: '',
+    image: "", // Gambar sebagai string Base64
+    id_kategori: "",
+    id_supplier: "",
+    nama_barang: "",
+    deskripsi: "",
+    harga: "",
   });
 
   const [kategoriOptions, setKategoriOptions] = useState([]);
@@ -22,7 +25,7 @@ function FormBarang() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   // Memuat data kategori dan supplier
   useEffect(() => {
@@ -42,7 +45,7 @@ function FormBarang() {
         setLoading(false);
       }
     };
-  
+
     fetchData();
   }, []);
 
@@ -61,23 +64,21 @@ function FormBarang() {
       }));
     }
   };
-  
+
   // Submit form
   const handleSubmit = (e) => {
     e.preventDefault();
   
-    // Validasi data sebelum dikirim
+    // Validasi
     if (!formData.nama_barang || !formData.harga || !formData.id_supplier) {
-      alert("Nama barang, harga, dan supplier wajib diisi!");
+      toast.error("Nama barang, harga, dan supplier wajib diisi!");
       return;
     }
   
-    // Kirim data ke API
     const formPayload = new FormData();
     Object.keys(formData).forEach((key) => {
-      // Untuk file gambar, gunakan file yang ada di formData
-      if (key === 'image' && formData[key]) {
-        formPayload.append(key, formData[key], formData[key].name); // Kirim gambar sebagai file
+      if (key === "image" && formData[key]) {
+        formPayload.append(key, formData[key], formData[key].name);
       } else {
         formPayload.append(key, formData[key]);
       }
@@ -88,7 +89,7 @@ function FormBarang() {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((response) => {
-        console.log("Data berhasil disimpan:", response.data);
+        toast.success("Barang berhasil disimpan!");
         setFormData({
           nama_barang: "",
           id_kategori: "",
@@ -98,14 +99,15 @@ function FormBarang() {
           id_supplier: "",
           image: null,
         });
-        navigate('/barang');
+        navigate("/barang");
       })
       .catch((err) => {
+        toast.error("Gagal menyimpan barang. Silakan coba lagi.");
         console.error("Gagal menyimpan data:", err);
-        alert("Gagal menyimpan data");
       });
-  
   };
+  
+  
 
   return (
     <>
@@ -124,7 +126,10 @@ function FormBarang() {
             ) : error ? (
               <p className="text-red-500">{error}</p>
             ) : (
-              <form onSubmit={handleSubmit} className="bg-white p-5 rounded-md">
+              <form
+                onSubmit={handleSubmit}
+                className="bg-white p-5 rounded-md text-start"
+              >
                 <div className="flex gap-4">
                   <div className="w-1/2">
                     {/* Input Nama Barang */}
@@ -177,31 +182,6 @@ function FormBarang() {
                         )}
                       </select>
                     </div>
-                  </div>
-
-                  <div className="w-1/2">
-
-                    {/* Upload Gambar */}
-                    <div className="mb-5">
-                      <label
-                        htmlFor="image"
-                        className="block text-sm font-medium"
-                      >
-                        Upload Gambar
-                      </label>
-                      <input
-                        type="file"
-                        id="image"
-                        name="image"
-                        onChange={handleChange}
-                        className="border rounded-lg w-full p-2.5"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex gap-4">
-                  <div className="w-1/2">
                     {/* Input Harga */}
                     <div className="mb-5">
                       <label
@@ -221,34 +201,52 @@ function FormBarang() {
                         required
                       />
                     </div>
-
-                    {/* Select Supplier */}
-                    <select
-                      id="id_supplier"
-                      name="id_supplier"
-                      value={formData.id_supplier}
-                      onChange={handleChange}
-                      className="border rounded-lg w-full p-2.5"
-                      required
-                    >
-                      <option value="" disabled>
-                        Pilih Supplier
-                      </option>
-                      {supplierOptions.length > 0 ? (
-                        supplierOptions.map((supplier) => (
-                          <option key={supplier.id} value={supplier.id}>
-                            {supplier.nama_supplier}
-                          </option>
-                        ))
-                      ) : (
-                        <option disabled>Tidak ada supplier tersedia</option>
-                      )}
-                    </select>
                   </div>
 
                   <div className="w-1/2">
-                    {/* Input Deskripsi */}
+                    {/* Upload Gambar */}
                     <div className="mb-5">
+                      <label
+                        htmlFor="image"
+                        className="block text-sm font-medium"
+                      >
+                        Upload Gambar
+                      </label>
+                      <input
+                        type="file"
+                        id="image"
+                        name="image"
+                        onChange={handleChange}
+                        className="border rounded-lg w-full"
+                      />
+                    </div>
+                    {/* Select Supplier */}
+                    <div className="mt-5">
+                      <label htmlFor="id_supplier">Pilih Supplier</label>
+                      <select
+                        id="id_supplier"
+                        name="id_supplier"
+                        value={formData.id_supplier}
+                        onChange={handleChange}
+                        className="border rounded-lg w-full p-2.5"
+                        required
+                      >
+                        <option value="" disabled>
+                          Pilih Supplier
+                        </option>
+                        {supplierOptions.length > 0 ? (
+                          supplierOptions.map((supplier) => (
+                            <option key={supplier.id} value={supplier.id}>
+                              {supplier.nama_supplier}
+                            </option>
+                          ))
+                        ) : (
+                          <option disabled>Tidak ada supplier tersedia</option>
+                        )}
+                      </select>
+                    </div>
+
+                    <div className="mt-5 mb-5">
                       <label
                         htmlFor="deskripsi"
                         className="block text-sm font-medium"
@@ -294,6 +292,10 @@ function FormBarang() {
                 </div>
               </form>
             )}
+
+            {/* toast */}
+            <ToastContainer position="top-right" autoClose={3000} />
+
           </div>
         </div>
       </div>
