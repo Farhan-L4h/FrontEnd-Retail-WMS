@@ -106,7 +106,7 @@ export default function TableBarang() {
                     <img
                       src={barang.image}
                       alt={barang.nama_barang}
-                      className="w-16 h-16 object-cover"
+                      className="w-10 h-10 object-cover"
                     />
                   )}
                 </td>
