@@ -11,7 +11,7 @@ export default function Navbar2() {
       <div class="flex flex-wrap items-center justify-between mx-auto p-4">
         <div className="flex">
           <a
-            href="https://flowbite.com/"
+            href="/dashboard"
             class="flex items-center space-x-3 rtl:space-x-reverse"
           >
             <img src={Logo} class="h-8" alt="Flowbite Logo" />

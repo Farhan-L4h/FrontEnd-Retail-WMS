@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import API from "../services/api";
+import Logo from "../assets/image/LogoHitam.png"
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -47,9 +48,13 @@ export default function Register() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen w-screen bg-gray-200">
+    <div className="flex justify-center items-center min-h-screen w-screen bg-gray-300">
       <div className="p-6 bg-white rounded shadow-md w-full max-w-sm">
-        <h2 className="text-2xl font-semibold mb-4">Register</h2>
+
+      <div className="flex justify-center items-center mb-2">
+      <img src={Logo} className="h-10 " alt="Flowbite Logo" />
+        <h2 className="text-2xl font-semibold">Register</h2>
+        </div>
         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
         {successMessage && <p className="text-green-500 text-sm mb-4">{successMessage}</p>}
         <form onSubmit={handleSubmit}>

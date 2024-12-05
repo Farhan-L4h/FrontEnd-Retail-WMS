@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import API from "../services/api";
+import Logo from "../assets/image/LogoHitam.png";
 
 export default function Login() {
   const [formData, setFormData] = useState({ login: "", password: "" });
@@ -43,7 +44,11 @@ export default function Login() {
   return (
     <div className="flex justify-center items-center min-h-screen w-screen bg-gray-300">
       <div className="p-6 bg-white rounded shadow-md w-full max-w-sm">
-        <h2 className="text-2xl font-semibold mb-4">Login</h2>
+
+      <div className="flex justify-center items-center mb-6">
+      <img src={Logo} className="h-10" alt="Flowbite Logo" />
+        <h2 className="text-2xl font-semibold">Login</h2>
+        </div>
         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
         <form onSubmit={handleSubmit} className="text-start">
           <div className="mb-4">
