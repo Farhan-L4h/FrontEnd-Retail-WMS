@@ -4,7 +4,7 @@ import axios from "axios";
 import "../../App.css";
 import "../../index.css";
 import SideBar from "../../components/SideBar";
-import NavBar from "../../components/NavBar";
+import NavBar from "../../components/Navbar2";
 import LinkPath from "../../components/LinkPath";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -83,11 +83,16 @@ function EditBarang() {
     if (formData.image) formPayload.append("image", formData.image);
 
     try {
-      await axios.put(`http://127.0.0.1:8000/api/barang/${id}/update`, formPayload, {
-        headers: { "Content-Type": "multipart/form-data" },
+      const formDataJson = JSON.stringify(Object.fromEntries(formPayload.entries()));
+      await axios.put(`http://127.0.0.1:8000/api/barang/${id}/update`, formDataJson, {
+        headers: { "Content-Type": "application/json" },
       });
-      toast.success("Barang berhasil diperbarui!");
+      alert('Barang berhasil diperbarui!')
       navigate("/barang");
+      // setTimeout(() => {
+        //   toast.success("Barang berhasil diperbarui!");
+        //   navigate("/barang");
+      // }, 1000); // Add a 3-second delay before showing toast and navigating
     } catch (err) {
       if (err.response && err.response.status === 422) {
         const errors = err.response.data.errors;
@@ -114,6 +119,7 @@ function EditBarang() {
         </div>
         <div className="ml-64 p-6 w-full">
           <LinkPath />
+          <ToastContainer position="top-right" autoClose={3000} />
           <div className="w-full">
             {loading ? (
               <p>Loading data...</p>
@@ -278,7 +284,6 @@ function EditBarang() {
           </div>
         </div>
       </div>
-      <ToastContainer />
     </>
   );
 }
