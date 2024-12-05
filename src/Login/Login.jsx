@@ -1,86 +1,109 @@
 import React, { useState } from "react";
-import API from "../services/api";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from '../context/AuthContex';
 import Logo from "../assets/image/LogoHitam.png";
+import Modal from 'react-modal'; // Import Modal
+import 'react-toastify/dist/ReactToastify.css'; // Import CSS Toastify
+
+// Pastikan untuk mengatur elemen modal
+Modal.setAppElement('#root');
 
 export default function Login() {
-  const [formData, setFormData] = useState({ login: "", password: "" });
+  const [loginInput, setLoginInput] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState('');
+  const [modalOpen, setModalOpen] = useState(false); // State untuk membuka/menutup modal
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
+
+    if (!loginInput || !password) {
+      setError("Username/Email dan password wajib diisi");
+      return;
+    }
 
     try {
-      const response = await API.post("/login", formData); // Gunakan endpoint yang benar
-      const { token } = response.data;
+      setLoading(true);
+      setError('');
 
-      if (token) {
-        localStorage.setItem("authToken", token);
-        alert("Login berhasil!");
-        window.location.href = "/dashboard";
+      const response = await fetch('http://127.0.0.1:8000/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ login: loginInput, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        const { user, token } = data;
+
+        localStorage.setItem('token', token); // Simpan token
+        login({ username: user.username, role: user.role, token });
+
+        // Setelah login berhasil, buka modal
+        // setModalOpen(true); 
+        alert('Login Berhasil');
+
+        // Simpan role dan arahkan setelah modal ditutup
+        setTimeout(() => {
+          if (user.role === 'admin') {
+            navigate('/dashboard');
+          } else if (user.role === 'staff') {
+            navigate('/staff/dashboard');
+          }
+        }, 1500); // Delay agar modal bisa tampil sebelum navigasi
       } else {
-        throw new Error("Token tidak ditemukan dalam respons.");
+        setError(data.message || "Login gagal");
       }
-    } catch (err) {
-      if (err.response?.status === 401) {
-        setError("Username atau password salah.");
-      } else if (err.response?.status === 400) {
-        setError("Permintaan tidak valid.");
-      } else {
-        setError(err.response?.data?.message || "Login gagal. Coba lagi.");
-      }
+    } catch (error) {
+      console.error('Error:', error);
+      setError('Terjadi kesalahan jaringan');
     } finally {
       setLoading(false);
     }
   };
 
+  // Fungsi untuk menutup modal
+  const closeModal = () => {
+    setModalOpen(false);
+  };
+
   return (
     <div className="flex justify-center items-center min-h-screen w-screen bg-gray-300">
       <div className="p-6 bg-white rounded shadow-md w-full max-w-sm">
-
-      <div className="flex justify-center items-center mb-6">
-      <img src={Logo} className="h-10" alt="Flowbite Logo" />
-        <h2 className="text-2xl font-semibold">Login</h2>
+        <div className="flex justify-center items-center mb-6">
+          <img src={Logo} className="h-10" alt="Logo" />
+          <h2 className="text-2xl font-semibold ml-2">Login</h2>
         </div>
-        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-        <form onSubmit={handleSubmit} className="text-start">
+
+        {error && <p className="text-red-500 text-sm mb-4">{error}</p>} {/* Pesan error di form */}
+
+        <form onSubmit={handleLogin} className="text-start">
           <div className="mb-4">
-            <label
-              className="block text-sm font-medium mb-2"
-              htmlFor="login"
-            >
+            <label className="block text-sm font-medium mb-2" htmlFor="login">
               Username | Email
             </label>
             <input
               type="text"
               id="login"
-              name="login"
-              value={formData.login}
-              onChange={handleInputChange}
+              value={loginInput}
+              onChange={(e) => setLoginInput(e.target.value)}
               className="w-full p-2 border rounded"
               required
             />
           </div>
           <div className="mb-4">
-            <label
-              className="block text-sm font-medium mb-2"
-              htmlFor="password"
-            >
+            <label className="block text-sm font-medium mb-2" htmlFor="password">
               Password
             </label>
             <input
               type="password"
               id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleInputChange}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="w-full p-2 border rounded"
               required
             />
@@ -88,22 +111,38 @@ export default function Login() {
           <div className="flex justify-between items-center pt-4">
             <p className="text-xs">
               Belum punya akun?{" "}
-              <a href="/register" className="text-blue-600 hover:underline">
+              <Link to="/register" className="text-blue-600 hover:underline">
                 Daftar sekarang
-              </a>
+              </Link>
             </p>
             <button
               type="submit"
               disabled={loading}
-              className={`px-3 py-1 bg-black text-white rounded hover:bg-gray-800 ${
-                loading ? "opacity-50 cursor-not-allowed" : ""
-              }`}
+              className={`px-3 py-1 bg-black text-white rounded hover:bg-gray-800 ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
             >
               {loading ? "Loading..." : "Login"}
             </button>
           </div>
         </form>
       </div>
+
+      {/* Modal untuk Login berhasil */}
+      <Modal
+        isOpen={modalOpen}
+        onRequestClose={closeModal}
+        contentLabel="Login Successful"
+        className="Modal"
+        overlayClassName="Overlay"
+      >
+        <h2>Login Berhasil!</h2>
+        <p>Selamat datang kembali, Anda berhasil login.</p>
+        <button
+          onClick={closeModal}
+          className="px-4 py-2 bg-green-500 text-white rounded"
+        >
+          Oke
+        </button>
+      </Modal>
     </div>
   );
 }

@@ -1,48 +1,60 @@
-import "./App.css";
-import "./index.css";
-import Dashboard from "./Admin/dashboard";
-import Gudang from "./Admin/gudang/Gudang";
-import Laporan from "./Admin/gudang/Laporan";
-import Barang from "./Admin/barang/Barang";
-import BarangCreate from "./Admin/barang/CreateBarang";
-import BarangEdit from "./Admin/barang/EditBarang";
-import BarangShow from "./Admin/barang/ShowBarang";
-import Aktifitas from "./Admin/aktifitas/Aktifitas";
-import Pemindahan from "./Admin/aktifitas/Pemindahan";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Notfound from "./components/NotFound";
-import Login from "./Login/Login";
-import Register from "./Login/Register";
+import React from 'react';
+import './App.css';
+import './index.css';
+import Dashboard from './Admin/dashboard';
+import Gudang from './Admin/gudang/Gudang';
+import Laporan from './Admin/gudang/Laporan';
+import Barang from './Admin/barang/Barang';
+import BarangCreate from './Admin/barang/CreateBarang';
+import BarangEdit from './Admin/barang/EditBarang';
+import BarangShow from './Admin/barang/ShowBarang';
+import Aktifitas from './Admin/aktifitas/Aktifitas';
+import Pemindahan from './Admin/aktifitas/Pemindahan';
+import Notfound from './components/NotFound';
+import Login from './Login/Login';
+import Register from './Login/Register';
+import Unauthorized from './components/Unauthorized';
+// Impor lainnya...
+import { BrowserRouter, Routes, Route } from 'react-router-dom'; // Import Navigate for useNavigate
+import { AuthProvider } from './context/AuthContex'; // Import AuthProvider
+import ProtectedRoute from './ProtectedRoute'; // Import ProtectedRoute
 
 function App() {
   return (
-    <div className="app w-full">
-      <BrowserRouter>
-        {/* Routes membungkus semua Route */}
-        <Routes>
-          
-          <Route path="/" element={<Login />} />
-          <Route path="/Register" element={<Register />} />
-          <Route path="/Dashboard" element={<Dashboard />} />
-          <Route path="/Gudang" element={<Gudang />} />
-          <Route path="/Gudang/Rak/Create" element={<Gudang />} />
-          <Route path="/Gudang/Kategori/Create" element={<Gudang />} />
-          <Route path="/Gudang/Supplier/Create" element={<Gudang />} />
+    <BrowserRouter>
+      <AuthProvider>
+        <div className="app w-full">
+          <Routes>
+            {/* Rute Public */}
+            <Route path="/" element={<Login />} />
+            <Route path="/register" element={<Register />} />
 
-          <Route path="/Barang" element={<Barang />} />
-          <Route path="/Barang/Create" element={<BarangCreate />} />
-          <Route path="/Barang/:id/Edit" element={<BarangEdit />} />
-          <Route path="/Barang/:id/Show" element={<BarangShow />} />
+            {/* Rute Admin yang dilindungi */}
+            <Route path="/dashboard" element={<ProtectedRoute role="admin" element={<Dashboard />} />} />
+            <Route path="/gudang" element={<ProtectedRoute role="admin" element={<Gudang />} />} />
+            <Route path="/barang" element={<ProtectedRoute role="admin" element={<Barang />} />} />
+            <Route path="/barang/create" element={<ProtectedRoute role="admin" element={<BarangCreate />} />} />
+            <Route path="/barang/:id/edit" element={<ProtectedRoute role="admin" element={<BarangEdit />} />} />
+            <Route path="/barang/:id/show" element={<ProtectedRoute role="admin" element={<BarangShow />} />} />
+            <Route path="/aktifitasBarang" element={<ProtectedRoute role="admin" element={<Aktifitas />} />} />
+            <Route path="/laporan" element={<ProtectedRoute role="admin" element={<Laporan />} />} />
+            <Route path="/pemindahanBarang" element={<ProtectedRoute role="admin" element={<Pemindahan />} />} />
 
-          <Route path="/AktifitasBarang" element={<Aktifitas />} />
-          <Route path="/Laporan" element={<Laporan />} />
-          <Route path="/PemindahanBarang" element={<Pemindahan />} />
+            {/* Rute Staff yang dilindungi */}
+            <Route path="/staff/dashboard" element={<ProtectedRoute role="staff" element={<Dashboard />} />} />
+            <Route path="/staff/gudang" element={<ProtectedRoute role="staff" element={<Gudang />} />} />
+            <Route path="/staff/pemindahan" element={<ProtectedRoute role="staff" element={<Pemindahan />} />} />
+            <Route path="/staff/aktifitas" element={<ProtectedRoute role="staff" element={<Aktifitas />} />} />
 
-          {/* page notfound */}
-          <Route path="*" element={<Notfound />} />
-        </Routes>
-      </BrowserRouter>
-    </div>
+            {/* Rute Unauthorized */}
+            <Route path="/unauthorized" element={<Unauthorized />} />
+
+            {/* Halaman NotFound */}
+            <Route path="*" element={<Notfound />} />
+          </Routes>
+        </div>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 
