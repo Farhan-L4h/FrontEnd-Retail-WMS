@@ -7,6 +7,7 @@ import Navbar2 from "../../components/Navbar2";
 import TableBarang from "./TableBarang";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Footer from "../../components/Footer";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -31,6 +32,7 @@ function App() {
         <div className="ml-64 p-6 w-full">
           <LinkPath />
           <TableBarang />
+          <Footer />
         </div>
       </div>
     </>

@@ -4,7 +4,7 @@ import axios from "axios";
 import "../../App.css";
 import "../../index.css";
 import SideBar from "../../components/SideBar";
-import NavBar from "../../components/NavBar";
+import NavBar from "../../components/Navbar2";
 import LinkPath from "../../components/LinkPath";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -89,7 +89,6 @@ function FormBarang() {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((response) => {
-        toast.success("Barang berhasil disimpan!");
         setFormData({
           nama_barang: "",
           id_kategori: "",
@@ -99,7 +98,8 @@ function FormBarang() {
           id_supplier: "",
           image: null,
         });
-        navigate("/barang");
+        toast.success("Barang berhasil disimpan!");
+        setTimeout(() => navigate("/barang"), 1000);
       })
       .catch((err) => {
         toast.error("Gagal menyimpan barang. Silakan coba lagi.");
