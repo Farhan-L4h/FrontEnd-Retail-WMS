@@ -23,10 +23,35 @@ export default function TableBarang() {
     const fetchData = async () => {
       try {
         const response = await axios.get("http://127.0.0.1:8000/api/barang");
-        const barang = Array.isArray(response.data)
-          ? response.data
-          : response.data.data;
-        setBarangData(barang || []);
+        const barang = Array.isArray(response.data) ? response.data : response.data.data;
+        
+        // Menilai kelengkapan data
+        const sortedBarang = barang.map(item => {
+          let kelengkapanScore = 0;
+
+          // Skor stok, jika stok > 0, tambah skor
+          if (item.stok > 0) {
+            kelengkapanScore += 1;
+          }
+
+          // Skor expired, jika ada expired date, tambah skor
+          if (item.exp_barang) {
+            kelengkapanScore += 1;
+          }
+
+          // Skor lokasi rak, jika ada lokasi rak, tambah skor
+          if (item.id_rak) {
+            kelengkapanScore += 1;
+          }
+
+          item.kelengkapanScore = kelengkapanScore;
+          return item;
+        });
+
+        // Urutkan berdasarkan skor kelengkapan (semakin tinggi skor, semakin atas)
+        const sortedBarangData = sortedBarang.sort((a, b) => b.kelengkapanScore - a.kelengkapanScore);
+
+        setBarangData(sortedBarangData || []);
       } catch (err) {
         setError(err.message);
         toast.error("Gagal memuat data barang!");
@@ -34,6 +59,7 @@ export default function TableBarang() {
         setLoading(false);
       }
     };
+    
     fetchData();
   }, []);
 
@@ -87,11 +113,12 @@ export default function TableBarang() {
         <table className="w-full text-sm text-left text-gray-500">
           <thead className="text-xs text-gray-700 uppercase bg-gray-200">
             <tr>
-              <th className="px-6 py-3">ID</th>
+              <th className="px-6 py-3">Stok</th>
               <th className="px-6 py-3">Nama Barang</th>
               <th className="px-6 py-3">Image</th>
               <th className="px-3 py-3">Kategori</th>
-              <th className="px-4 py-3">Supplier</th>
+              <th className="px-4 py-3">Lokasi</th>
+              <th className="px-4 py-3">Exp</th>
               <th className="px-6 py-3">Harga</th>
               <th className="px-6 py-3">Action</th>
             </tr>
@@ -99,7 +126,7 @@ export default function TableBarang() {
           <tbody>
             {currentData.map((barang) => (
               <tr key={barang.id} className="border-b">
-                <td className="px-6 py-4">{barang.id}</td>
+                <td className="px-6 py-4">{barang.stok}</td>
                 <td className="px-6 py-4">{barang.nama_barang}</td>
                 <td className="px-6 py-4">
                   {barang.image && (
@@ -111,7 +138,8 @@ export default function TableBarang() {
                   )}
                 </td>
                 <td className="px-3 py-4">{barang.kategori.nama_kategori}</td>
-                <td className="px-6 py-4">{barang.supplier.nama_supplier}</td>
+                <td className="px-6 py-4">{barang.rak || '-'}</td>
+                <td className="px-6 py-4">{barang.exp_barang || '-'}</td>
                 <td className="px-6 py-4">{barang.harga}</td>
                 <td className="px-6 py-4">
                   <Link to={`/Barang/${barang.id}/edit`}>
