@@ -4,22 +4,26 @@ import { useNavigate } from 'react-router-dom';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(() => localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null);
-  const navigate = useNavigate(); // Dapatkan instance useNavigate
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem('user');
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (user) {
-      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('user', JSON.stringify(user)); // Simpan seluruh objek user
     } else {
-      localStorage.removeItem('user');
+      localStorage.removeItem('user'); // Hapus data user dari localStorage jika tidak ada
     }
   }, [user]);
 
   const login = (userData) => {
-    setUser(userData);
-    navigate('/dashboard'); // Navigasi setelah login berhasil
+    setUser(userData);  // Simpan objek user
+    localStorage.setItem("user", JSON.stringify(userData)); // Simpan objek user ke localStorage
+    navigate('/dashboard');  // Navigasi setelah login berhasil
   };
-
+  
   const logout = () => {
     setUser(null);
     navigate('/'); // Navigasi ke halaman login setelah logout
