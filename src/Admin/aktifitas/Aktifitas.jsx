@@ -6,26 +6,10 @@ import NavBar2 from "../../components/Navbar2";
 import { Link } from "react-router-dom";
 import Table from "../../components/Table";
 import LinkPath from "../../components/LinkPath";
+import TableAktifitas from "./TableAktiftas";
 
 function App() {
   const [count, setCount] = useState(0);
-
-  const tableName = 'Tabel Aktifitas Barang';
-
-  const columns = [
-    { header: "Nama Barang", field: "nama" },
-    { header: "Image", field: "image" },
-    { header: "Kategori", field: "kategori" },
-    { header: "Harga", field: "harga" },
-    { header: "Supplier", field: "supplier" },
-  ];
-
-  const data = [
-    { nama: "Beng Beng", image: "image", kategori: "Makanan", harga: "3000", supplier: "supplier 1" },
-    { nama: "Beng Beng", image: "image", kategori: "Makanan", harga: "3000", supplier: "supplier 1" },
-    { nama: "Beng Beng", image: "image", kategori: "Makanan", harga: "3000", supplier: "supplier 1" },
-    { nama: "Beng Beng", image: "image", kategori: "Makanan", harga: "3000", supplier: "supplier 1" },
-  ];
 
   return (
     <>
@@ -50,9 +34,9 @@ function App() {
         </div>
 
         {/* Konten utama */}
-        <div className="ml-64 p-6 w-full">
+        <div className="ml-64 p-6 w-max">
           <LinkPath />
-            <Table tableName={tableName} columns={columns} data={data} />
+          <TableAktifitas />
         </div>
       </div>
     </>
