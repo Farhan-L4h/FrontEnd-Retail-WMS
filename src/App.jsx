@@ -18,6 +18,8 @@ import Unauthorized from './components/Unauthorized';
 import { BrowserRouter, Routes, Route } from 'react-router-dom'; // Import Navigate for useNavigate
 import { AuthProvider } from './context/AuthContex'; // Import AuthProvider
 import ProtectedRoute from './ProtectedRoute'; // Import ProtectedRoute
+import TambahAktif from './Admin/aktifitas/tambah';
+import KeluarAktif from './Admin/aktifitas/Keluar';
 
 function App() {
   return (
@@ -37,6 +39,8 @@ function App() {
             <Route path="/barang/:id/edit" element={<ProtectedRoute role="admin" element={<BarangEdit />} />} />
             <Route path="/barang/:id/show" element={<ProtectedRoute role="admin" element={<BarangShow />} />} />
             <Route path="/aktifitasBarang" element={<ProtectedRoute role="admin" element={<Aktifitas />} />} />
+            <Route path="/aktifitasBarang/tambah" element={<ProtectedRoute role="admin" element={<TambahAktif />} />} />
+            <Route path="/aktifitasBarang/keluar" element={<ProtectedRoute role="admin" element={<KeluarAktif />} />} />
             <Route path="/laporan" element={<ProtectedRoute role="admin" element={<Laporan />} />} />
             <Route path="/pemindahanBarang" element={<ProtectedRoute role="admin" element={<Pemindahan />} />} />
 
