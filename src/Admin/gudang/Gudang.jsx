@@ -8,6 +8,7 @@ import ModalForm from "../../components/ModalForm";
 import TableKategori from "./TableKategori";
 import TableRak from "./TableRak";
 import TableSupplier from "./TableSupplier";
+import Footer from "../../components/Footer";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -37,6 +38,7 @@ function App() {
           <div className="flex">
             <TableSupplier />
           </div>
+          <Footer />
         </div>
       </div>
     </>

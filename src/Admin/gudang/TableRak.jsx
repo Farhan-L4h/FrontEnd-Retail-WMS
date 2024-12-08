@@ -1,21 +1,26 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useLocation } from "react-router-dom"; // Import useLocation hook
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function TableRak() {
   const [rakData, setRakData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false); // State for edit modal
   const [formData, setFormData] = useState({ id: "", kode_rak: "", nama_rak: "", lokasi_rak: "" });
   const [deleteData, setDeleteData] = useState({ id: "", kode_rak: "", nama_rak: "", lokasi_rak: "" });
   const [isEdit, setIsEdit] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // Added to manage delete modal state
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
   const totalPages = Math.ceil(rakData.length / itemsPerPage);
   const currentData = rakData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  const location = useLocation(); // Get the current location/path
 
   const toggleAddModal = () => {
     setIsAddModalOpen(!isAddModalOpen);
@@ -53,12 +58,14 @@ export default function TableRak() {
           nama_rak: formData.nama_rak,
           lokasi_rak: formData.lokasi_rak,
         });
+        toast.success('Data Berhasil Diupdate')
       } else {
         await axios.post("http://127.0.0.1:8000/api/rak", {
           kode_rak: formData.kode_rak,
           nama_rak: formData.nama_rak,
           lokasi_rak: formData.lokasi_rak,
         });
+        toast.success('Data Berhasil Ditambah')
       }
 
       // Refresh data rak setelah berhasil submit
@@ -66,7 +73,7 @@ export default function TableRak() {
       setRakData(response.data.data || []);
 
       // Tutup modal setelah berhasil
-      if (isEdit) toggleEditModal();
+      if (isEdit) toggleEditModal(); // Close edit modal after success
       else toggleAddModal();
 
       resetForm(); // Reset form
@@ -75,11 +82,10 @@ export default function TableRak() {
     }
   };
 
-
   const handleEdit = (rak) => {
     setFormData(rak);
     setIsEdit(true);
-    toggleEditModal();
+    toggleEditModal(); // Open edit modal
   };
 
   const handleDelete = async () => {
@@ -96,6 +102,7 @@ export default function TableRak() {
   const confirmDelete = (rak) => {
     setDeleteData(rak);
     toggleDeleteModal();
+    toast.success('Data Berhasil Dihapus')
   };
 
   useEffect(() => {
@@ -115,17 +122,22 @@ export default function TableRak() {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
+  // Determine if we are on the '/dashboard' path
+  const isDashboard = location.pathname === "/Dashboard" || location.pathname === "/Staff/dashboard";
+
   return (
     <div className="m-2 bg-white p-4 rounded-md w-max">
       <div className="flex flex-row my-2">
         <div className="text-start flex w-full">
           <h3 className="text-xl font-semibold">Table Rak</h3>
-          <button
-            onClick={toggleAddModal}
-            className="ml-auto text-green-800 bg-green-300 hover:bg-green-600 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-xs px-3 py-1"
-          >
-            Tambah Rak
-          </button>
+          {!isDashboard && (
+            <button
+              onClick={toggleAddModal}
+              className="ml-auto text-green-800 bg-green-300 hover:bg-green-600 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-xs px-3 py-1"
+            >
+              Tambah Rak
+            </button>
+          )}
         </div>
       </div>
 
@@ -138,7 +150,9 @@ export default function TableRak() {
               <th scope="col" className="px-6 py-3">Kode Rak</th>
               <th scope="col" className="px-6 py-3">Nama Rak</th>
               <th scope="col" className="px-6 py-3">Lokasi Rak</th>
-              <th scope="col" className="px-6 py-3">Action</th>
+              {!isDashboard && (
+                <th scope="col" className="px-6 py-3">Action</th>
+              )}
             </tr>
           </thead>
           <tbody>
@@ -148,20 +162,22 @@ export default function TableRak() {
                 <td className="px-6 py-4">{rak.kode_rak}</td>
                 <td className="px-6 py-4">{rak.nama_rak}</td>
                 <td className="px-6 py-4">{rak.lokasi_rak}</td>
-                <td className="px-6 py-4 flex gap-2">
-                  <button
-                    onClick={() => handleEdit(rak)}
-                    className="font-medium text-xs bg-blue-400 rounded-md px-3 py-1  text-blue-800 hover:underline"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => confirmDelete(rak)}
-                    className="font-medium p-2 text-xs rounded-md bg-red-400 text-red-800 px-3 py-1  hover:underline"
-                  >
-                    Delete
-                  </button>
-                </td>
+                {!isDashboard && (
+                  <td className="px-6 py-4 flex gap-2">
+                    <button
+                      onClick={() => handleEdit(rak)}
+                      className="font-medium text-xs bg-blue-400 rounded-md px-3 py-1  text-blue-800 hover:underline"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => confirmDelete(rak)}
+                      className="font-medium p-2 text-xs rounded-md bg-red-400 text-red-800 px-3 py-1  hover:underline"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>
@@ -198,8 +214,8 @@ export default function TableRak() {
                   name="kode_rak"
                   value={formData.kode_rak}
                   onChange={handleInputChange}
-                  className="w-full border border-gray-300 p-2 rounded-md"
                   required
+                  className="w-full p-2 border border-gray-300 rounded-md"
                 />
               </div>
               <div className="mb-4">
@@ -210,8 +226,8 @@ export default function TableRak() {
                   name="nama_rak"
                   value={formData.nama_rak}
                   onChange={handleInputChange}
-                  className="w-full border border-gray-300 p-2 rounded-md"
                   required
+                  className="w-full p-2 border border-gray-300 rounded-md"
                 />
               </div>
               <div className="mb-4">
@@ -222,19 +238,24 @@ export default function TableRak() {
                   name="lokasi_rak"
                   value={formData.lokasi_rak}
                   onChange={handleInputChange}
-                  className="w-full border border-gray-300 p-2 rounded-md"
                   required
+                  className="w-full p-2 border border-gray-300 rounded-md"
                 />
               </div>
-              <div className="flex justify-end">
+              <div className="flex justify-end gap-2">
                 <button
                   type="button"
                   onClick={toggleAddModal}
-                  className="px-4 py-2 rounded-md mr-2 bg-white border border-black hover:bg-black hover:text-white"
+                  className="px-4 py-2 text-white bg-red-600 rounded-md"
                 >
                   Cancel
                 </button>
-                <button type="submit" className="text-white border bg-black hover:bg-white hover:text-black hover:border border-black focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1">Submit</button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 text-white bg-blue-600 rounded-md"
+                >
+                  {isEdit ? "Edit Rak" : "Tambah Rak"}
+                </button>
               </div>
             </form>
           </div>
@@ -248,50 +269,55 @@ export default function TableRak() {
             <h3 className="text-lg font-semibold mb-4">Edit Rak</h3>
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
-                <label htmlFor="kode_rak" className="block mb-2 text-sm font-medium text-start">Kode Rak</label>
+                <label htmlFor="kode_rak" className="block mb-2 text-sm text-start font-medium">Kode Rak</label>
                 <input
                   type="text"
                   id="kode_rak"
                   name="kode_rak"
                   value={formData.kode_rak}
                   onChange={handleInputChange}
-                  className="w-full border border-gray-300 p-2 rounded-md"
                   required
+                  className="w-full p-2 border border-gray-300 rounded-md"
                 />
               </div>
               <div className="mb-4">
-                <label htmlFor="nama_rak" className="block mb-2 text-sm font-medium text-start">Nama Rak</label>
+                <label htmlFor="nama_rak" className="block mb-2 text-sm text-start font-medium">Nama Rak</label>
                 <input
                   type="text"
                   id="nama_rak"
                   name="nama_rak"
                   value={formData.nama_rak}
                   onChange={handleInputChange}
-                  className="w-full border border-gray-300 p-2 rounded-md"
                   required
+                  className="w-full p-2 border border-gray-300 rounded-md"
                 />
               </div>
               <div className="mb-4">
-                <label htmlFor="lokasi_rak" className="block mb-2 text-sm font-medium text-start">Lokasi Rak</label>
+                <label htmlFor="lokasi_rak" className="block mb-2 text-sm text-start font-medium">Lokasi Rak</label>
                 <input
                   type="text"
                   id="lokasi_rak"
                   name="lokasi_rak"
                   value={formData.lokasi_rak}
                   onChange={handleInputChange}
-                  className="w-full border border-gray-300 p-2 rounded-md"
                   required
+                  className="w-full p-2 border border-gray-300 rounded-md"
                 />
               </div>
-              <div className="flex justify-end">
+              <div className="flex justify-end gap-2">
                 <button
                   type="button"
                   onClick={toggleEditModal}
-                  className="px-4 py-2 rounded-md mr-2 bg-white border border-black hover:bg-black hover:text-white"
+                  className="px-4 py-2 text-white bg-red-600 rounded-md"
                 >
                   Cancel
                 </button>
-                <button type="submit" className="text-white border bg-black hover:bg-white hover:text-black hover:border border-black focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1">Save</button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 text-white bg-blue-600 rounded-md"
+                >
+                  {isEdit ? "Edit Rak" : "Tambah Rak"}
+                </button>
               </div>
             </form>
           </div>
@@ -303,19 +329,18 @@ export default function TableRak() {
         <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center z-40 bg-gray-800 bg-opacity-50">
           <div className="relative p-4 w-full max-w-md bg-white rounded-lg shadow">
             <h3 className="text-lg font-semibold mb-4">Hapus Rak</h3>
-            <p>Apakah Anda yakin ingin menghapus rak dengan kode {deleteData.kode_rak}?</p>
-            <div className="flex justify-end mt-4">
+            <p className="mb-4">Apakah Anda yakin ingin menghapus rak {deleteData.nama_rak}?</p>
+            <div className="flex justify-end gap-2">
               <button
                 type="button"
                 onClick={toggleDeleteModal}
-                className="px-4 py-2 text-sm text-gray-500 border rounded-md mr-2"
+                className="px-4 py-2 text-white bg-red-600 rounded-md"
               >
                 Cancel
               </button>
               <button
-                type="button"
                 onClick={handleDelete}
-                className="px-4 py-2 text-sm text-white bg-red-500 rounded-md"
+                className="px-4 py-2 text-white bg-blue-600 rounded-md"
               >
                 Hapus
               </button>
@@ -323,6 +348,7 @@ export default function TableRak() {
           </div>
         </div>
       )}
+      <ToastContainer />
     </div>
   );
 }

@@ -8,6 +8,7 @@ import Table from "../components/Table";
 import LinkPath from "../components/LinkPath";
 import Chart from "../components/chart1";
 import Footer from "../components/Footer";
+import TableRak from "./gudang/TableRak";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -74,8 +75,8 @@ function App() {
             <Chart />
             <Table tableName={tableName} columns={columns} data={data} />
           </div>
-          <div className="flex">
-            <Table tableName={tableName} columns={columns} data={data} />
+          <div className="flex w-max">
+            <TableRak />
             <Table tableName={tableName} columns={columns} data={data} />
           </div>
           <Footer />

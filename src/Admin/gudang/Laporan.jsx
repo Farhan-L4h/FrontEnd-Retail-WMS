@@ -6,6 +6,7 @@ import NavBar from "../../components/Navbar2";
 import { Link } from "react-router-dom";
 import Table from "../../components/Table";
 import LinkPath from "../../components/LinkPath";
+import TableLaporan from "./TableLaporan";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -37,22 +38,13 @@ function App() {
       <div className="flex flex-row mt-16">
         {/* Sidebar */}
         <div className="w-64 bg-gray-100 mt- fixed top-0 z-30 mt-7">
-          <SideBar>
-            <ul>
-              <li className="py-2 px-4 hover:bg-gray-200 rounded">
-                <Link to="/">Dashboard</Link>
-              </li>
-              <li className="py-2 px-4 hover:bg-gray-200 rounded">
-                <Link to="/Gudang">Gudang</Link>
-              </li>
-            </ul>
-          </SideBar>
+          <SideBar />
         </div>
 
         {/* Konten utama */}
         <div className="ml-64 p-6 w-full">
           <LinkPath />
-            <Table tableName={tableName} columns={columns} data={data} />
+            <TableLaporan />
         </div>
       </div>
     </>
