@@ -3,7 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from '../context/AuthContex';
 import Logo from "../assets/image/LogoHitam.png";
 import Modal from 'react-modal'; // Import Modal
-import 'react-toastify/dist/ReactToastify.css'; // Import CSS Toastify
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // Pastikan untuk mengatur elemen modal
 Modal.setAppElement('#root');
@@ -42,11 +43,13 @@ export default function Login() {
 
         localStorage.setItem('token', token); // Simpan token
         login({ username: user.username, role: user.role, token });
-
+        
         // Setelah login berhasil, buka modal
-        // setModalOpen(true); 
-        alert('Login Berhasil');
+        // alert('Login Berhasil');
 
+        setModalOpen(true); 
+        
+        
         // Simpan role dan arahkan setelah modal ditutup
         setTimeout(() => {
           if (user.role === 'admin') {
@@ -54,7 +57,8 @@ export default function Login() {
           } else if (user.role === 'staff') {
             navigate('/staff/dashboard');
           }
-        }, 1500); // Delay agar modal bisa tampil sebelum navigasi
+          toast.success(`Login dengan ${user.username} Berhasil`);
+        }, 1000); // Delay agar modal bisa tampil sebelum navigasi
       } else {
         setError(data.message || "Login gagal");
       }
@@ -143,6 +147,8 @@ export default function Login() {
           Oke
         </button>
       </Modal>
+
+      <ToastContainer />
     </div>
   );
 }
