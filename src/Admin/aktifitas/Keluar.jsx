@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useAuth } from "../../context/AuthContex"; // Import useAuth
+import { useAuth } from "../../context/AuthContex";
 
 import "../../App.css";
 import "../../index.css";
@@ -11,29 +11,26 @@ import LinkPath from "../../components/LinkPath";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-function KeluarAktif() {
+function MasukAktif() {
   const [formData, setFormData] = useState({
     id_barang: "",
     jumlah_barang: "",
     id_rak: "",
     alasan: "",
-    tanggal: "",
-    harga_barang: "",
-    total: 0,
-    status: "keluar", // Automatically set to "Keluar"
-    username: "", // Changed from user_id to username
-    exp_barang: null, // Added exp_barang and set to null
+    tanggal: new Date().toISOString().split("T")[0],
+    status: "keluar",
+    username: "",
+    exp_barang: null,
   });
 
   const [barangOptions, setBarangOptions] = useState([]);
   const [rakOptions, setRakOptions] = useState([]);
+  const [stokBarang, setStokBarang] = useState(null); // State untuk menyimpan stok barang
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const { user } = useAuth(); // Destructuring user and userId from AuthContext
-
+  const { user } = useAuth();
   const navigate = useNavigate();
-  console.log(user); // Periksa apakah user sudah ada
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,16 +42,12 @@ function KeluarAktif() {
         ]);
         setBarangOptions(barangResponse.data.data);
         setRakOptions(rakResponse.data.data);
-  
-        // Set username dari user
+
         if (user && user.username) {
           setFormData((prevData) => ({
             ...prevData,
-            username: user.username, // Ambil username dari useAuth
+            username: user.username,
           }));
-          console.log("Username pengguna:", user.username); // Debugging
-        } else {
-          console.warn("Pengguna tidak memiliki username.");
         }
       } catch (err) {
         setError("Gagal memuat data");
@@ -63,91 +56,71 @@ function KeluarAktif() {
         setLoading(false);
       }
     };
-  
+
     fetchData();
-  }, [user]); // Dependensi hanya user
-  
+  }, [user]);
+
+  // Ambil stok barang berdasarkan ID barang yang dipilih
+  useEffect(() => {
+    const fetchStokBarang = async () => {
+      if (formData.id_barang) {
+        try {
+          // Ambil stok dan informasi lainnya dari endpoint show untuk barang tertentu
+          const response = await axios.get(
+            `http://127.0.0.1:8000/api/barang/${formData.id_barang}/show`
+          );
+          // Pastikan data yang diterima dari API berisi stok
+          setStokBarang(response.data.data.stok || 0); // Simpan stok barang
+        } catch (err) {
+          toast.error("Gagal mendapatkan stok barang.");
+          setStokBarang(null);
+        }
+      }
+    };
+
+    fetchStokBarang();
+  }, [formData.id_barang]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => {
-      const updatedFormData = {
-        ...prev,
-        [name]: value,
-      };
-
-      // Calculate the total whenever jumlah_barang or harga_barang changes
-      if (name === "jumlah_barang" || name === "harga_barang") {
-        const jumlah = parseFloat(updatedFormData.jumlah_barang) || 0;
-        const harga = parseFloat(updatedFormData.harga_barang) || 0;
-        updatedFormData.total = jumlah * harga;
-      }
-
-      return updatedFormData;
-    });
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    const {
-      id_barang,
-      jumlah_barang,
-      id_rak,
-      alasan,
-      tanggal,
-      harga_barang,
-      total,
-      status,
-      username,
-    } = formData;
-  
+
     if (
-      !id_barang ||
-      !jumlah_barang ||
-      !id_rak ||
-      !alasan ||
-      !tanggal ||
-      !harga_barang
+      !formData.id_barang ||
+      !formData.jumlah_barang ||
+      !formData.id_rak ||
+      !formData.exp_barang
     ) {
       toast.error("Semua field wajib diisi!");
       return;
     }
-  
-    const formPayload = new FormData();
-    Object.keys(formData).forEach((key) =>
-      formPayload.append(key, formData[key])
-    );
-  
+
     try {
-      await axios.post("http://127.0.0.1:8000/api/aktivitas", formPayload);
+      await axios.post("http://127.0.0.1:8000/api/aktivitas", formData);
       setFormData({
         id_barang: "",
         jumlah_barang: "",
         id_rak: "",
         alasan: "",
-        tanggal: "",
-        harga_barang: "",
-        total: 0,
-        status: "Keluar", // Keep the default status "Keluar"
-        username: "", // Reset the username after submission
-        exp_barang: null, // Reset exp_barang to null after submission
+        tanggal: new Date().toISOString().split("T")[0],
+        status: "keluar",
+        username: "",
+        exp_barang: null,
       });
-      toast.success("Barang berhasil keluar!");
-      setTimeout(() => navigate("/AktivitasBarang"), 1000);
+      toast.success("Barang berhasil Disimpan!");
+      setTimeout(() => navigate("/AktifitasBarang"), 1000);
     } catch (err) {
-      // Ambil pesan error dari response API
-      const errorMessage =
-        err.response?.data?.message || "Gagal menyimpan barang. Silakan coba lagi.";
-  
-      // Tampilkan pesan error dengan react-toastify
-      toast.error(errorMessage);
-  
-      // Debugging
-      console.error("Gagal menyimpan data:", err);
+      toast.error("Gagal menyimpan barang. Silakan coba lagi.");
+      console.error("Error submitting data:", err);
     }
   };
-  
 
   return (
     <>
@@ -180,6 +153,11 @@ function KeluarAktif() {
                     onChange={handleChange}
                     required
                   />
+                  {formData.id_barang && stokBarang !== null && (
+                    <p className="text-sm text-gray-600">
+                      Stok saat ini: {stokBarang}
+                    </p>
+                  )}
 
                   <InputField
                     label="Jumlah Barang"
@@ -188,16 +166,6 @@ function KeluarAktif() {
                     value={formData.jumlah_barang}
                     onChange={handleChange}
                     placeholder="Masukkan Jumlah"
-                    required
-                  />
-
-                  <InputField
-                    label="Harga Barang"
-                    type="number"
-                    name="harga_barang"
-                    value={formData.harga_barang}
-                    onChange={handleChange}
-                    placeholder="Masukkan Harga"
                     required
                   />
 
@@ -224,24 +192,6 @@ function KeluarAktif() {
                     ]}
                     required
                   />
-
-                  <InputField
-                    label="Tanggal"
-                    type="date"
-                    name="tanggal"
-                    value={formData.tanggal}
-                    onChange={handleChange}
-                    required
-                  />
-
-                  <InputField
-                    label="Total"
-                    type="text"
-                    name="total"
-                    value={formData.total}
-                    disabled
-                    required
-                  />
                 </div>
 
                 <div className="flex justify-end gap-2 mt-4">
@@ -253,12 +203,10 @@ function KeluarAktif() {
                         jumlah_barang: "",
                         id_rak: "",
                         alasan: "",
-                        tanggal: "",
-                        harga_barang: "",
-                        total: 0,
-                        status: "Keluar",
-                        username: "", // Reset username on cancel
-                        exp_barang: null, // Reset exp_barang to null on cancel
+                        tanggal: new Date().toISOString().split("T")[0],
+                        status: "keluar",
+                        username: "",
+                        exp_barang: null,
                       })
                     }
                     className="font-xs border border-black bg-white text-black hover:bg-black hover:text-white px-3 py-1 rounded"
@@ -327,4 +275,4 @@ const InputField = ({
   </div>
 );
 
-export default KeluarAktif;
+export default MasukAktif;
