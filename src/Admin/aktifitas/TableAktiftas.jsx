@@ -144,7 +144,7 @@ export default function TableAktifitas() {
                 </td>
                 <td className="px-6 py-4">{aktivitas.exp_barang || "-"}</td>
                 <td className="px-6 py-4">{aktivitas.total_harga || "-"}</td>
-                <td className="px-6 py-4">{aktivitas.user?.username || 0}</td>
+                <td className="px-6 py-4">{aktivitas.username || 0}</td>
                 <td className="px-6 py-4">
                   {new Date(aktivitas.tanggal_update).toLocaleDateString(
                     "id-ID",
