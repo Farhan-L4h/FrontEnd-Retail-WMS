@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useAuth } from "../../context/AuthContex"; // Import useAuth
-
+import { useAuth } from "../../context/AuthContex";
 import "../../App.css";
 import "../../index.css";
 import SideBar from "../../components/SideBar";
@@ -17,23 +16,19 @@ function MasukAktif() {
     jumlah_barang: "",
     id_rak: "",
     alasan: "diterima",
-    tanggal: "",
-    harga_barang: "",
-    total: 0,
-    status: "masuk", // Automatically set to "Keluar"
-    username: "", // Changed from user_id to username
-    exp_barang: "", // Added exp_barang
+    status: "masuk",
+    username: "",
+    exp_barang: "",
   });
 
   const [barangOptions, setBarangOptions] = useState([]);
   const [rakOptions, setRakOptions] = useState([]);
+  const [stokBarang, setStokBarang] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const { user } = useAuth(); // Destructuring user and userId from AuthContext
-
+  const { user } = useAuth();
   const navigate = useNavigate();
-  console.log(user); // Periksa apakah user sudah ada
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,110 +40,98 @@ function MasukAktif() {
         ]);
         setBarangOptions(barangResponse.data.data);
         setRakOptions(rakResponse.data.data);
-  
-        // Set username dari user
+
         if (user && user.username) {
           setFormData((prevData) => ({
             ...prevData,
-            username: user.username, // Ambil username dari useAuth
+            username: user.username,
           }));
-          console.log("Username pengguna:", user.username); // Debugging
-        } else {
-          console.warn("Pengguna tidak memiliki username.");
         }
-      } catch (err) {
+      } catch {
         setError("Gagal memuat data");
-        console.error("Error fetching data:", err);
       } finally {
         setLoading(false);
       }
     };
-  
+
     fetchData();
-  }, [user]); // Dependensi hanya user
-  
+  }, [user]);
+
+  useEffect(() => {
+    const fetchBarangDetails = async () => {
+      if (formData.id_barang) {
+        try {
+          const response = await axios.get(
+            `http://127.0.0.1:8000/api/barang/${formData.id_barang}/show`
+          );
+
+          const barang = response.data;
+          if (!barang) throw new Error("Barang tidak ditemukan");
+
+          setStokBarang(barang.stok);
+          setFormData((prev) => ({
+            ...prev,
+            harga_barang: barang.harga || 0,
+          }));
+        } catch (error) {
+          toast.error("Gagal mengambil detail barang");
+          setFormData((prev) => ({
+            ...prev,
+            harga_barang: 0,
+          }));
+        }
+      }
+    };
+
+    fetchBarangDetails();
+  }, [formData.id_barang]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => {
-      const updatedFormData = {
-        ...prev,
-        [name]: value,
-      };
-
-      // Calculate the total whenever jumlah_barang or harga_barang changes
-      if (name === "jumlah_barang" || name === "harga_barang") {
-        const jumlah = parseFloat(updatedFormData.jumlah_barang) || 0;
-        const harga = parseFloat(updatedFormData.harga_barang) || 0;
-        updatedFormData.total = jumlah * harga;
-      }
-
-      return updatedFormData;
-    });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    const {
-      id_barang,
-      jumlah_barang,
-      id_rak,
-      alasan,
-      tanggal,
-      harga_barang,
-      total,
-      status,
-      username,
-      exp_barang, // Added exp_barang
-    } = formData;
-  
+
     if (
-      !id_barang ||
-      !jumlah_barang ||
-      !id_rak ||
-      !alasan ||
-      !tanggal ||
-      !harga_barang
+      !formData.id_barang ||
+      !formData.jumlah_barang ||
+      !formData.id_rak ||
+      !formData.exp_barang
     ) {
       toast.error("Semua field wajib diisi!");
       return;
     }
-  
-    const formPayload = new FormData();
-    Object.keys(formData).forEach((key) =>
-      formPayload.append(key, formData[key])
-    );
-  
+
     try {
-      await axios.post("http://127.0.0.1:8000/api/aktivitas", formPayload);
+      const response = await axios.post(
+        "http://127.0.0.1:8000/api/aktivitas",
+        formData
+      );
+
+      // Menangani stok rendah
+      if (response.data.low_stok_warning) {
+        toast.warn(`Stok barang rendah: ${response.data.low_stok_warning}`);
+      }
+
+      // Reset form data setelah berhasil
       setFormData({
         id_barang: "",
         jumlah_barang: "",
         id_rak: "",
-        alasan: "diambil",
-        tanggal: "",
-        harga_barang: "",
-        total: 0,
-        status: "Keluar", // Keep the default status "Keluar"
-        username: "", // Reset the username after submission
-        exp_barang: "", // Reset exp_barang after submission
+        alasan: "diterima",
+        status: "masuk",
+        username: user?.username || "",
+        exp_barang: "",
       });
+
       toast.success("Barang berhasil Disimpan!");
       setTimeout(() => navigate("/AktifitasBarang"), 1000);
-    } catch (err) {
-      // Ambil pesan error dari response API
-      const errorMessage =
-        err.response?.data?.message || "Gagal menyimpan barang. Silakan coba lagi.";
-  
-      // Tampilkan pesan error dengan react-toastify
-      toast.error(errorMessage);
-  
-      // Debugging
-      console.error("Gagal menyimpan data:", err);
+    } catch (error) {
+      toast.error("Gagal menyimpan barang. Silakan coba lagi.");
     }
   };
-  
 
   return (
     <>
@@ -181,7 +164,6 @@ function MasukAktif() {
                     onChange={handleChange}
                     required
                   />
-
                   <InputField
                     label="Jumlah Barang"
                     type="number"
@@ -191,17 +173,6 @@ function MasukAktif() {
                     placeholder="Masukkan Jumlah"
                     required
                   />
-
-                  <InputField
-                    label="Harga Barang"
-                    type="number"
-                    name="harga_barang"
-                    value={formData.harga_barang}
-                    onChange={handleChange}
-                    placeholder="Masukkan Harga"
-                    required
-                  />
-
                   <InputField
                     label="Lokasi Rak"
                     type="select"
@@ -211,25 +182,6 @@ function MasukAktif() {
                     onChange={handleChange}
                     required
                   />
-
-                  <InputField
-                    label="Tanggal"
-                    type="date"
-                    name="tanggal"
-                    value={formData.tanggal}
-                    onChange={handleChange}
-                    required
-                  />
-
-                  <InputField
-                    label="Total"
-                    type="text"
-                    name="total"
-                    value={formData.total}
-                    disabled
-                    required
-                  />
-
                   <InputField
                     label="Exp Barang"
                     type="date"
@@ -248,13 +200,10 @@ function MasukAktif() {
                         id_barang: "",
                         jumlah_barang: "",
                         id_rak: "",
-                        alasan: "",
-                        tanggal: "",
-                        harga_barang: "",
-                        total: 0,
-                        status: "Keluar",
-                        username: "", // Reset username on cancel
-                        exp_barang: "", // Reset exp_barang on cancel
+                        alasan: "diterima",
+                        status: "masuk",
+                        username: user?.username || "",
+                        exp_barang: "",
                       })
                     }
                     className="font-xs border border-black bg-white text-black hover:bg-black hover:text-white px-3 py-1 rounded"
@@ -287,7 +236,7 @@ const InputField = ({
   onChange,
   ...rest
 }) => (
-  <div className="mb-5">
+  <div className="mb-2">
     <label htmlFor={name} className="block text-sm font-medium">
       {label}
     </label>
