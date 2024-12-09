@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContex";
+
 import "../../App.css";
 import "../../index.css";
 import SideBar from "../../components/SideBar";
@@ -16,6 +17,7 @@ function MasukAktif() {
     jumlah_barang: "",
     id_rak: "",
     alasan: "diterima",
+    tanggal: new Date().toISOString().split("T")[0],
     status: "masuk",
     username: "",
     exp_barang: "",
@@ -23,7 +25,7 @@ function MasukAktif() {
 
   const [barangOptions, setBarangOptions] = useState([]);
   const [rakOptions, setRakOptions] = useState([]);
-  const [stokBarang, setStokBarang] = useState(null);
+  const [stokBarang, setStokBarang] = useState(null); // State untuk menyimpan stok barang
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -47,8 +49,9 @@ function MasukAktif() {
             username: user.username,
           }));
         }
-      } catch {
+      } catch (err) {
         setError("Gagal memuat data");
+        console.error("Error fetching data:", err);
       } finally {
         setLoading(false);
       }
@@ -57,38 +60,33 @@ function MasukAktif() {
     fetchData();
   }, [user]);
 
+  // Ambil stok barang berdasarkan ID barang yang dipilih
   useEffect(() => {
-    const fetchBarangDetails = async () => {
+    const fetchStokBarang = async () => {
       if (formData.id_barang) {
         try {
+          // Ambil stok dan informasi lainnya dari endpoint show untuk barang tertentu
           const response = await axios.get(
             `http://127.0.0.1:8000/api/barang/${formData.id_barang}/show`
           );
-
-          const barang = response.data;
-          if (!barang) throw new Error("Barang tidak ditemukan");
-
-          setStokBarang(barang.stok);
-          setFormData((prev) => ({
-            ...prev,
-            harga_barang: barang.harga || 0,
-          }));
-        } catch (error) {
-          toast.error("Gagal mengambil detail barang");
-          setFormData((prev) => ({
-            ...prev,
-            harga_barang: 0,
-          }));
+          // Pastikan data yang diterima dari API berisi stok
+          setStokBarang(response.data.data.stok || 0); // Simpan stok barang
+        } catch (err) {
+          toast.error("Gagal mendapatkan stok barang.");
+          setStokBarang(null);
         }
       }
     };
 
-    fetchBarangDetails();
+    fetchStokBarang();
   }, [formData.id_barang]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -105,31 +103,22 @@ function MasukAktif() {
     }
 
     try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api/aktivitas",
-        formData
-      );
-
-      // Menangani stok rendah
-      if (response.data.low_stok_warning) {
-        toast.warn(`Stok barang rendah: ${response.data.low_stok_warning}`);
-      }
-
-      // Reset form data setelah berhasil
+      await axios.post("http://127.0.0.1:8000/api/aktivitas", formData);
       setFormData({
         id_barang: "",
         jumlah_barang: "",
         id_rak: "",
         alasan: "diterima",
+        tanggal: new Date().toISOString().split("T")[0],
         status: "masuk",
-        username: user?.username || "",
+        username: "",
         exp_barang: "",
       });
-
       toast.success("Barang berhasil Disimpan!");
       setTimeout(() => navigate("/AktifitasBarang"), 1000);
-    } catch (error) {
+    } catch (err) {
       toast.error("Gagal menyimpan barang. Silakan coba lagi.");
+      console.error("Error submitting data:", err);
     }
   };
 
@@ -164,6 +153,12 @@ function MasukAktif() {
                     onChange={handleChange}
                     required
                   />
+                  {formData.id_barang && stokBarang !== null && (
+                    <p className="text-sm text-gray-600">
+                      Stok saat ini: {stokBarang}
+                    </p>
+                  )}
+
                   <InputField
                     label="Jumlah Barang"
                     type="number"
@@ -173,6 +168,7 @@ function MasukAktif() {
                     placeholder="Masukkan Jumlah"
                     required
                   />
+
                   <InputField
                     label="Lokasi Rak"
                     type="select"
@@ -182,6 +178,7 @@ function MasukAktif() {
                     onChange={handleChange}
                     required
                   />
+
                   <InputField
                     label="Exp Barang"
                     type="date"
@@ -201,8 +198,9 @@ function MasukAktif() {
                         jumlah_barang: "",
                         id_rak: "",
                         alasan: "diterima",
+                        tanggal: new Date().toISOString().split("T")[0],
                         status: "masuk",
-                        username: user?.username || "",
+                        username: "",
                         exp_barang: "",
                       })
                     }
@@ -236,7 +234,7 @@ const InputField = ({
   onChange,
   ...rest
 }) => (
-  <div className="mb-2">
+  <div className="mb-5">
     <label htmlFor={name} className="block text-sm font-medium">
       {label}
     </label>
