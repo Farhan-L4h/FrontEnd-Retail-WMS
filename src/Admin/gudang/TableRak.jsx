@@ -94,6 +94,7 @@ export default function TableRak() {
       const response = await axios.get("http://127.0.0.1:8000/api/rak");
       setRakData(response.data.data);
       toggleDeleteModal();
+      toast.success('Data Berhasil Dihapus')
     } catch (err) {
       alert("Terjadi kesalahan: " + err.message);
     }
@@ -102,7 +103,6 @@ export default function TableRak() {
   const confirmDelete = (rak) => {
     setDeleteData(rak);
     toggleDeleteModal();
-    toast.success('Data Berhasil Dihapus')
   };
 
   useEffect(() => {
@@ -133,7 +133,7 @@ export default function TableRak() {
           {!isDashboard && (
             <button
               onClick={toggleAddModal}
-              className="ml-auto text-green-800 bg-green-300 hover:bg-green-600 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-xs px-3 py-1"
+              className="ml-auto text-green-800 bg-green-200 hover:bg-green-500 hover:text-green-200 text-sm rounded-lg px-3 py-2"
             >
               Tambah Rak
             </button>
@@ -166,13 +166,13 @@ export default function TableRak() {
                   <td className="px-6 py-4 flex gap-2">
                     <button
                       onClick={() => handleEdit(rak)}
-                      className="font-medium text-xs bg-blue-400 rounded-md px-3 py-1  text-blue-800 hover:underline"
+                      className="font-medium text-xs bg-blue-200 rounded-xl px-3 py-1 m-2 text-blue-800 hover:underline"
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => confirmDelete(rak)}
-                      className="font-medium p-2 text-xs rounded-md bg-red-400 text-red-800 px-3 py-1  hover:underline"
+                      className="font-medium text-xs bg-red-200 rounded-xl px-3 py-1 m-2 text-red-800 hover:underline"
                     >
                       Delete
                     </button>
@@ -198,6 +198,8 @@ export default function TableRak() {
           ))}
         </div>
       )}
+      {rakData.length <= itemsPerPage && currentPage !== 1 && setCurrentPage(1)}
+
 
       {/* Modals */}
       {/* Add Modal */}
@@ -246,13 +248,13 @@ export default function TableRak() {
                 <button
                   type="button"
                   onClick={toggleAddModal}
-                  className="px-4 py-2 text-white bg-red-600 rounded-md"
+                  className="px-4 py-2 rounded-md mr-2 bg-white border border-black hover:bg-black hover:text-white"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-white bg-blue-600 rounded-md"
+                  className="text-white border bg-black hover:bg-white hover:text-black hover:border border-black focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1"
                 >
                   {isEdit ? "Edit Rak" : "Tambah Rak"}
                 </button>
@@ -316,7 +318,7 @@ export default function TableRak() {
                   type="submit"
                   className="px-4 py-2 text-white bg-blue-600 rounded-md"
                 >
-                  {isEdit ? "Edit Rak" : "Tambah Rak"}
+                  {isEdit ? "save" : "Tambah Rak"}
                 </button>
               </div>
             </form>
@@ -334,15 +336,15 @@ export default function TableRak() {
               <button
                 type="button"
                 onClick={toggleDeleteModal}
-                className="px-4 py-2 text-white bg-red-600 rounded-md"
+                className="mr-2 bg-gray-200 px-4 py-2 rounded-md"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDelete}
-                className="px-4 py-2 text-white bg-blue-600 rounded-md"
+                className="text-white bg-red-600 px-4 py-2 rounded-md"
               >
-                Hapus
+                Delete
               </button>
             </div>
           </div>

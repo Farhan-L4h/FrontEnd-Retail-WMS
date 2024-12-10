@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useLocation } from "react-router-dom"; // Import useLocation hook
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function TableSupplier() {
   const [supplierData, setSupplierData] = useState([]);
@@ -11,9 +14,10 @@ export default function TableSupplier() {
   const [deleteData, setDeleteData] = useState({ id: "", nama_supplier: "", kontak: "", alamat: "" });
   const [isEdit, setIsEdit] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10  ;
+  const itemsPerPage = 5  ;
 
   const totalPages = Math.ceil(supplierData.length / itemsPerPage);
   const currentData = supplierData.slice(
@@ -74,12 +78,14 @@ export default function TableSupplier() {
           kontak: formData.kontak,
           alamat: formData.alamat,
         });
+        toast.success('Data Berhasil Diupdate')
       } else {
         await axios.post("http://127.0.0.1:8000/api/supplier", {
           nama_supplier: formData.nama_supplier,
           kontak: formData.kontak,
           alamat: formData.alamat,
         });
+        toast.success('Data Berhasil Ditambah')
       }
   
       // Refresh data supplier setelah berhasil submit
@@ -109,6 +115,7 @@ export default function TableSupplier() {
       const response = await axios.get("http://127.0.0.1:8000/api/supplier");
       setSupplierData(Array.isArray(response.data) ? response.data : response.data.data);
       toggleDeleteModal();
+      toast.success('Data Berhasil Dihapus')
     } catch (err) {
       alert("Terjadi kesalahan: " + err.message);
     }
@@ -129,7 +136,7 @@ export default function TableSupplier() {
           <h3 className="text-xl font-semibold">Table Supplier</h3>
           <button
             onClick={toggleAddModal}
-            className="ml-auto text-green-800 bg-green-300 hover:bg-green-600 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-xs px-3 py-1"
+            className="ml-auto text-green-800 bg-green-200 hover:bg-green-500 hover:text-green-200 text-sm rounded-lg px-3 py-2"
           >
             Tambah Supplier
           </button>
@@ -171,13 +178,13 @@ export default function TableSupplier() {
                 <td className="px-6 py-4">
                   <a
                     onClick={() => handleEdit(supplier)}
-                    className="font-medium text-xs bg-blue-400 rounded-md px-3 py-1 m-2 text-blue-800 hover:underline"
+                    className="font-medium text-xs bg-blue-200 rounded-xl px-3 py-1 m-2 text-blue-800 hover:underline"
                   >
                     Edit
                   </a>
                   <a
                     onClick={() => confirmDelete(supplier)}
-                    className="font-medium p-2 m-1 text-xs rounded-md bg-red-400 text-red-800 px-2 py-1  hover:underline"
+                    className="font-medium text-xs bg-red-200 rounded-xl px-3 py-1 m-2 text-red-800 hover:underline"
                   >
                     Delete
                   </a>
@@ -189,23 +196,24 @@ export default function TableSupplier() {
       </div>
 
 {/* Pagination */}
-      {supplierData.length > itemsPerPage && (
-        <div className="flex justify-center mt-4">
-          {Array.from({ length: totalPages }, (_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentPage(index + 1)}
-              className={`mx-1 px-3 py-1 rounded-md ${
-                currentPage === index + 1
-                  ? "border border-blue-500 bg-white text-black hover:bg-blue-500 hover:text-white"
-                  : "bg-gray-100 text-gray-500"
-              }`}
-            >
-              {index + 1}
-            </button>
-          ))}
-        </div>
-      )}
+{supplierData.length > itemsPerPage && (
+  <div className="flex justify-center mt-4">
+    {Array.from({ length: totalPages }, (_, index) => (
+      <button
+        key={index}
+        onClick={() => setCurrentPage(index + 1)}
+        className={`mx-1 px-3 py-1 rounded-md ${
+          currentPage === index + 1 
+            ? "border border-blue-500 bg-white text-black hover:bg-blue-500 hover:text-white" 
+            : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+        }`}
+      >
+        {index + 1}
+      </button>
+    ))}
+  </div>
+)}
+{supplierData.length <= itemsPerPage && currentPage !== 1 && setCurrentPage(1)}
 
 {/* ModalCreate */}
       {isAddModalOpen && (
@@ -286,7 +294,7 @@ export default function TableSupplier() {
 
 {/* ModalEdit */}
       {isEditModalOpen && (
-        <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center z-40 bg-gray-800 bg-opacity-50">
+        <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center z-50 bg-gray-800 bg-opacity-50">
           <div className="relative p-4 w-full max-w-md bg-white rounded-lg shadow">
             <h3 className="text-lg font-semibold mb-4">Edit Supplier</h3>
             <form onSubmit={handleSubmit}>
@@ -362,7 +370,7 @@ export default function TableSupplier() {
       )}
 
       {isDeleteModalOpen && (
-        <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-gray-800 bg-opacity-50">
+        <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center z-40 bg-gray-800 bg-opacity-50">
           <div className="relative p-4 w-full max-w-md bg-white rounded-lg shadow">
             <h3 className="text-lg font-semibold mb-4">Are you sure?</h3>
             <p>Apakah Anda yakin ingin menghapus supplier {deleteData.nama_supplier}?</p>
