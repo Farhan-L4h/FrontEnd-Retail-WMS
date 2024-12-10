@@ -95,8 +95,7 @@ function MasukAktif() {
     if (
       !formData.id_barang ||
       !formData.jumlah_barang ||
-      !formData.id_rak ||
-      !formData.exp_barang
+      !formData.id_rak
     ) {
       toast.error("Semua field wajib diisi!");
       return;
