@@ -78,13 +78,13 @@ export default function TableBarang() {
                 <tbody>
                   <tr className="border-b">
                     <td className="px-6 py-4">Nama Barang</td>
-                    <td className="px-6 py-4">{barangData?.nama_barang}</td>
+                    <td className="px-6 py-4">{barangData?.nama_barang || "Tidak tersedia" }</td>
                   </tr>
                   <tr className="border-b">
                     <td className="px-6 py-4">Image</td>
                     <td className="px-6 py-4">
                       {barangData?.image ? (
-                        <img src={barangData?.image} alt="Barang" className="w-10 h-10 object-contain" />
+                        <img src={barangData?.image || "Tidak tersedia" } alt="Barang" className="w-10 h-10 object-contain" />
                       ) : (
                         <p>No Image Available</p>
                       )}
@@ -92,19 +92,31 @@ export default function TableBarang() {
                   </tr>
                   <tr className="border-b">
                     <td className="px-6 py-4 w-max">Kategori</td>
-                    <td className="px-6 py-4">{barangData?.kategori?.nama_kategori}</td>
+                    <td className="px-6 py-4">{barangData?.kategori?.nama_kategori || "Tidak tersedia"}</td>
                   </tr>
                   <tr className="border-b">
                     <td className="px-6 py-4 w-max">Harga Barang</td>
-                    <td className="px-6 py-4">{barangData?.harga}</td>
+                    <td className="px-6 py-4">{barangData?.harga || "Tidak tersedia"}</td>
                   </tr>
                   <tr className="border-b">
+                    <td className="px-6 py-4 w-max">Stok</td>
+                    <td className="px-6 py-4">{barangData.stok || "Tidak tersedia"}</td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="px-6 py-4 w-max">Lokasi</td>
+                    <td className="px-6 py-4">{barangData?.rak || "Tidak tersedia"}</td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="px-6 py-4 w-max">EXP Date</td>
+                    <td className="px-6 py-4">{barangData?.exp_barang || "Tidak tersedia"}</td>
+                    </tr>
+                  <tr className="border-b">
                     <td className="px-6 py-4 w-max">Supplier</td>
-                    <td className="px-6 py-4">{barangData?.supplier?.nama_supplier}</td>
+                    <td className="px-6 py-4">{barangData?.supplier?.nama_supplier || "Tidak tersedia"}</td>
                   </tr>
                   <tr className="border-b">
                     <td className="px-6 py-4 w-max">Deskripsi</td>
-                    <td className="px-6 py-4">{barangData?.deskripsi}</td>
+                    <td className="px-6 py-4">{barangData?.deskripsi || "Tidak tersedia"}</td>
                   </tr>
                 </tbody>
               </table>
