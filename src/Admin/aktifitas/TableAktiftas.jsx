@@ -15,8 +15,9 @@ export default function TableAktifitas() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [deleteData, setDeleteData] = useState({});
   const [formData, setFormData] = useState({
-    id_barang: "",
-    id_rak: "",
+    id_aktivitas: "",
+    id_rak_asal: "",
+    id_rak_tujuan: "",
     jumlah_pindah: "",
   });
   const [barangOptions, setBarangOptions] = useState([]);
@@ -67,33 +68,51 @@ export default function TableAktifitas() {
   // delete handle
   const handleDelete = async () => {
     if (!deleteData.id) {
-      toast.warning("ID aktivitas tidak ditemukan!");
+      toast.warning("ID aktivitas tidak valid atau tidak ditemukan.");
       return;
     }
 
     try {
+      // Tampilkan notifikasi loading
+      const loadingToast = toast.loading("Menghapus aktivitas...");
+
+      // Kirim request ke API
       await axios.delete(
         `http://127.0.0.1:8000/api/aktivitas/${deleteData.id}/destroy`
       );
+
+      // Hapus data dari state lokal
       setAktivitasData((prev) =>
         prev.filter((item) => item.id !== deleteData.id)
       );
+
+      // Tutup modal delete
       setIsDeleteModalOpen(false);
-      toast.success(
-        `Aktivitas "${deleteData.nama_aktivitas}" berhasil dihapus.`
-      );
+
+      // Tampilkan notifikasi sukses
+      toast.update(loadingToast, {
+        render: `Aktivitas "${deleteData.nama_barang}" berhasil dihapus.`,
+        type: "success",
+        isLoading: false,
+        autoClose: 3000,
+      });
     } catch (err) {
-      toast.error(`Terjadi kesalahan: ${err.message}`);
+      // Tangani error
+      toast.dismiss(); // Hapus loading toast
+      const errorMessage =
+        err.response?.data?.message || "Gagal menghapus aktivitas.";
+      toast.error(errorMessage);
     }
   };
 
   const confirmDelete = (aktivitas) => {
     setDeleteData({
       id: aktivitas.id,
-      nama_aktivitas: aktivitas.nama_aktivitas,
+      nama_barang: aktivitas.barang?.nama_barang || "Tidak diketahui", // Ambil nama barang dari aktivitas
     });
     setIsDeleteModalOpen(true);
   };
+  
 
   const handleCreate = async () => {
     try {
@@ -109,8 +128,9 @@ export default function TableAktifitas() {
   const handleMove = (aktivitas) => {
     // Set form data based on the selected activity
     setFormData({
-      id_barang: aktivitas.barang.id,
-      id_rak: aktivitas.rak.id,
+      id_aktivitas: aktivitas.barang.id,
+      id_rak_asal: aktivitas.rak.id,
+      id_rak_tujuan: aktivitas.rak.id,
       jumlah_pindah: "",
     });
     setIsCreateModalOpen(true); // Open the modal for data movement
@@ -132,7 +152,7 @@ export default function TableAktifitas() {
             </button>
           </Link>
           <Link to="/Aktifitasbarang/keluar">
-            <button className="text-blue-800 bg-blue-200 hover:bg-blue-500 hover:text-white text-sm rounded-lg px-3 py-2">
+            <button className="text-red-800 bg-red-200 hover:bg-red-500 hover:text-white text-sm rounded-lg px-3 py-2">
               + Barang Keluar
             </button>
           </Link>
@@ -199,7 +219,7 @@ export default function TableAktifitas() {
                 </td>
                 <td className="px-6 py-4 text-xs">
                   <div className="flex gap-2">
-                    <Link to={`/Aktifitas/${aktivitas.id}/edit`}>
+                    <Link to={`/AktifitasBarang/${aktivitas.id}/edit`}>
                       <button className="bg-blue-200 text-blue-800 px-3 py-1 rounded-lg">
                         Edit
                       </button>
@@ -239,9 +259,10 @@ export default function TableAktifitas() {
               {isCreateModalOpen ? "Pindahkan Data" : "Edit Data Pindah"}
             </h2>
             <div className="flex flex-col gap-4">
-              <select disabled
+              <select
+                disabled
                 name="id_barang"
-                value={formData.id_barang}
+                value={formData.id_aktivitas}
                 onChange={handleInputChange}
                 className="border rounded p-2"
               >
@@ -254,11 +275,13 @@ export default function TableAktifitas() {
               </select>
               <select
                 name="id_rak"
-                value={formData.id_rak}
+                value={formData.id_rak_tujuan}
                 onChange={handleInputChange}
                 className="border rounded p-2"
               >
-                <option disabled value="">Pilih Lokasi Awal</option>
+                <option disabled value="">
+                  Pilih Lokasi Awal
+                </option>
                 {rakOptions.map((rak) => (
                   <option key={rak.id} value={rak.id}>
                     {rak.nama_rak}
@@ -296,6 +319,35 @@ export default function TableAktifitas() {
           </div>
         </div>
       )}
+
+     {isDeleteModalOpen && (
+  <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-50 z-40">
+    <div className="bg-white p-6 rounded-md shadow-md w-96">
+      <h2 className="text-lg font-semibold mb-4">
+        Konfirmasi Penghapusan
+      </h2>
+      <p>
+        Apakah Anda yakin ingin menghapus aktivitas barang{" "}
+        <strong>{deleteData.nama_barang}</strong>?
+      </p>
+      <div className="flex justify-end gap-2 mt-4">
+        <button
+          onClick={() => setIsDeleteModalOpen(false)}
+          className="bg-gray-200 px-4 py-2 rounded"
+        >
+          Batal
+        </button>
+        <button
+          onClick={handleDelete}
+          className="bg-red-600 text-white px-4 py-2 rounded"
+        >
+          Hapus
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 }
