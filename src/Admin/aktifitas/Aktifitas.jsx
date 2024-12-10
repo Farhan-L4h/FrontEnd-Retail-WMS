@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import Table from "../../components/Table";
 import LinkPath from "../../components/LinkPath";
 import TableAktifitas from "./TableAktiftas";
+import Footer from "../../components/Footer";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -37,6 +38,7 @@ function App() {
         <div className="ml-64 p-6 w-max">
           <LinkPath />
           <TableAktifitas />
+          <Footer />
         </div>
       </div>
     </>
