@@ -11,7 +11,7 @@ import LinkPath from "../../components/LinkPath";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-function MasukAktif() {
+function KeluarAktif() {
   const [formData, setFormData] = useState({
     id_barang: "",
     jumlah_barang: "",
@@ -92,11 +92,7 @@ function MasukAktif() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (
-      !formData.id_barang ||
-      !formData.jumlah_barang ||
-      !formData.id_rak
-    ) {
+    if (!formData.id_barang || !formData.jumlah_barang || !formData.id_rak) {
       toast.error("Semua field wajib diisi!");
       return;
     }
@@ -116,7 +112,11 @@ function MasukAktif() {
       toast.success("Barang berhasil Disimpan!");
       setTimeout(() => navigate("/AktifitasBarang"), 1000);
     } catch (err) {
-      toast.error("Gagal menyimpan barang. Silakan coba lagi.");
+      // Tangkap pesan dari API jika tersedia
+      const errorMessage =
+        err.response?.data?.message ||
+        "Gagal menyimpan barang. Silakan coba lagi.";
+      toast.error(errorMessage);
       console.error("Error submitting data:", err);
     }
   };
@@ -274,4 +274,4 @@ const InputField = ({
   </div>
 );
 
-export default MasukAktif;
+export default KeluarAktif;
