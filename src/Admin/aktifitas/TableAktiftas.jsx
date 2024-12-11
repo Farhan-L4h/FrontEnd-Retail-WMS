@@ -18,7 +18,6 @@ export default function TableAktifitas() {
     id_aktivitas: "",
     id_rak_asal: "",
     id_rak_tujuan: "",
-    jumlah_pindah: "",
   });
   const [barangOptions, setBarangOptions] = useState([]);
   const [rakOptions, setRakOptions] = useState([]);
@@ -112,28 +111,50 @@ export default function TableAktifitas() {
     });
     setIsDeleteModalOpen(true);
   };
-  
 
   const handleCreate = async () => {
+    console.log("Data yang dikirim:", formData); // Debugging
+    if (!formData.id_aktivitas || !formData.id_rak_tujuan) {
+      toast.error("Semua field harus diisi!");
+      return;
+    }
+  
     try {
       await axios.post("http://127.0.0.1:8000/api/pemindahan", formData);
       toast.success("Data berhasil ditambahkan!");
       setIsCreateModalOpen(false);
-      // fetchData(); // Uncomment this if you want to refresh the list after creating
+      // fetchData(); // Uncomment jika ingin memperbarui tabel setelah create
     } catch (err) {
-      toast.error("Gagal memindahkan data!");
+      const errorMessage = err.response?.data?.message || "Gagal memindahkan data!";
+      toast.error(errorMessage);
     }
   };
 
-  const handleMove = (aktivitas) => {
-    // Set form data based on the selected activity
+  // console.log("Aktivitas yang dipilih:", aktivitas);
+console.log("FormData setelah diatur:", formData);
+  
+
+  const handleMove = (id) => {
+    const aktivitas = currentData.find((item) => item.id === id);
+    if (!aktivitas || !aktivitas.barang || !aktivitas.rak) {
+      toast.error("Data aktivitas tidak valid!");
+      return;
+    }
+
     setFormData({
+      id_aktivitas: aktivitas.id || "",
+      id_rak_asal: aktivitas.rak.id || "",
+      id_rak_tujuan: aktivitas.rak.id, // Awalnya kosong, nanti bisa dipilih
+    });
+
+    setIsCreateModalOpen(true);
+
+    // Cetak data yang dimasukkan ke formData (tidak langsung dari state karena asynchrony)
+    console.log({
       id_aktivitas: aktivitas.barang.id,
       id_rak_asal: aktivitas.rak.id,
-      id_rak_tujuan: aktivitas.rak.id,
-      jumlah_pindah: "",
+      id_rak_tujuan: aktivitas.rak.id, // Tetap kosong
     });
-    setIsCreateModalOpen(true); // Open the modal for data movement
   };
 
   if (loading) return <p>Loading...</p>;
@@ -208,7 +229,10 @@ export default function TableAktifitas() {
                   <br />
                   {aktivitas.rak?.nama_rak || "Tidak ada data"}
                 </td>
-                <td className="px-6 py-4">{aktivitas.exp_barang || "-"}</td>
+                <td className="px-6 py-4">{new Date(aktivitas.exp_barang).toLocaleDateString(
+                    "id-ID",
+                    { year: "numeric", month: "short", day: "numeric" }
+                  ) || '-'}</td>
                 <td className="px-6 py-4">{aktivitas.total_harga || "-"}</td>
                 <td className="px-6 py-4">{aktivitas.username || 0}</td>
                 <td className="px-6 py-4">
@@ -238,7 +262,7 @@ export default function TableAktifitas() {
                       </button>
                     </Link>
                     <button
-                      onClick={() => handleMove(aktivitas)}
+                      onClick={() => handleMove(aktivitas.id)}
                       className="bg-yellow-200 text-yellow-800 py-1 px-3 rounded-lg "
                     >
                       Move
@@ -261,7 +285,7 @@ export default function TableAktifitas() {
             <div className="flex flex-col gap-4">
               <select
                 disabled
-                name="id_barang"
+                name="id_aktivitas"
                 value={formData.id_aktivitas}
                 onChange={handleInputChange}
                 className="border rounded p-2"
@@ -273,14 +297,15 @@ export default function TableAktifitas() {
                   </option>
                 ))}
               </select>
+
               <select
-                name="id_rak"
+                name="id_rak_tujuan"
                 value={formData.id_rak_tujuan}
                 onChange={handleInputChange}
                 className="border rounded p-2"
               >
                 <option disabled value="">
-                  Pilih Lokasi Awal
+                  Pilih Lokasi Tujuan
                 </option>
                 {rakOptions.map((rak) => (
                   <option key={rak.id} value={rak.id}>
@@ -288,15 +313,6 @@ export default function TableAktifitas() {
                   </option>
                 ))}
               </select>
-
-              <input
-                type="number"
-                name="jumlah_pindah"
-                value={formData.jumlah_pindah}
-                onChange={handleInputChange}
-                placeholder="Jumlah Barang"
-                className="border rounded p-2"
-              />
             </div>
 
             <div className="flex justify-end gap-2 mt-4">
@@ -320,34 +336,33 @@ export default function TableAktifitas() {
         </div>
       )}
 
-     {isDeleteModalOpen && (
-  <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-50 z-40">
-    <div className="bg-white p-6 rounded-md shadow-md w-96">
-      <h2 className="text-lg font-semibold mb-4">
-        Konfirmasi Penghapusan
-      </h2>
-      <p>
-        Apakah Anda yakin ingin menghapus aktivitas barang{" "}
-        <strong>{deleteData.nama_barang}</strong>?
-      </p>
-      <div className="flex justify-end gap-2 mt-4">
-        <button
-          onClick={() => setIsDeleteModalOpen(false)}
-          className="bg-gray-200 px-4 py-2 rounded"
-        >
-          Batal
-        </button>
-        <button
-          onClick={handleDelete}
-          className="bg-red-600 text-white px-4 py-2 rounded"
-        >
-          Hapus
-        </button>
-      </div>
-    </div>
-  </div>
-)}
-
+      {isDeleteModalOpen && (
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-50 z-40">
+          <div className="bg-white p-6 rounded-md shadow-md w-96">
+            <h2 className="text-lg font-semibold mb-4">
+              Konfirmasi Penghapusan
+            </h2>
+            <p>
+              Apakah Anda yakin ingin menghapus aktivitas barang{" "}
+              <strong>{deleteData.nama_barang}</strong>?
+            </p>
+            <div className="flex justify-end gap-2 mt-4">
+              <button
+                onClick={() => setIsDeleteModalOpen(false)}
+                className="bg-gray-200 px-4 py-2 rounded"
+              >
+                Batal
+              </button>
+              <button
+                onClick={handleDelete}
+                className="bg-red-600 text-white px-4 py-2 rounded"
+              >
+                Hapus
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
