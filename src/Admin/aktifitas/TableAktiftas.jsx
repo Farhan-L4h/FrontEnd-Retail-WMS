@@ -190,7 +190,7 @@ console.log("FormData setelah diatur:", formData);
               <th className="px-6 py-3">Exp Barang</th>
               <th className="px-6 py-3">Total</th>
               <th className="px-6 py-3">User</th>
-              <th className="px-6 py-3">Tanggal</th>
+              <th className="px-6 py-3">Tgl Update</th>
               <th className="px-6 py-3">Action</th>
             </tr>
           </thead>
