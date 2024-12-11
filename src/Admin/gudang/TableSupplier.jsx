@@ -178,13 +178,13 @@ export default function TableSupplier() {
                 <td className="px-6 py-4">
                   <a
                     onClick={() => handleEdit(supplier)}
-                    className="font-medium text-xs bg-blue-200 rounded-xl px-3 py-1 m-2 text-blue-800 hover:underline"
+                    className="font-medium text-xs bg-blue-200 rounded-xl px-3 py-1 m-1 text-blue-800 hover:underline"
                   >
                     Edit
                   </a>
                   <a
                     onClick={() => confirmDelete(supplier)}
-                    className="font-medium text-xs bg-red-200 rounded-xl px-3 py-1 m-2 text-red-800 hover:underline"
+                    className="font-medium text-xs bg-red-200 rounded-xl px-3 py-1 m-1 text-red-800 hover:underline"
                   >
                     Delete
                   </a>

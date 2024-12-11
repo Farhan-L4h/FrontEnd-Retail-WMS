@@ -133,7 +133,7 @@ export default function TableRak() {
           {!isDashboard && (
             <button
               onClick={toggleAddModal}
-              className="ml-auto text-green-800 bg-green-200 hover:bg-green-500 hover:text-green-200 text-sm rounded-lg px-3 py-2"
+              className="ml-auto text-green-800 bg-green-200 hover:bg-green-500 hover:text-white text-sm rounded-lg px-3 py-2"
             >
               Tambah Rak
             </button>
@@ -158,21 +158,21 @@ export default function TableRak() {
           <tbody>
             {currentData.map((rak) => (
               <tr key={rak.id} className="odd:bg-white even:bg-gray-100 border-gray-600 ">
-                <td className="px-6 py-4">{rak.id}</td>
-                <td className="px-6 py-4">{rak.kode_rak}</td>
-                <td className="px-6 py-4">{rak.nama_rak}</td>
-                <td className="px-6 py-4">{rak.lokasi_rak}</td>
+                <td className="px-6 py-2">{rak.id}</td>
+                <td className="px-6 py-2">{rak.kode_rak}</td>
+                <td className="px-6 py-2">{rak.nama_rak}</td>
+                <td className="px-6 py-2">{rak.lokasi_rak}</td>
                 {!isDashboard && (
-                  <td className="px-6 py-4 flex gap-2">
+                  <td className="px-6 py-2 flex gap-2">
                     <button
                       onClick={() => handleEdit(rak)}
-                      className="font-medium text-xs bg-blue-200 rounded-xl px-3 py-1 m-2 text-blue-800 hover:underline"
+                      className="font-medium text-xs bg-blue-200 rounded-xl px-3 py-1 my-1 text-blue-800 hover:underline"
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => confirmDelete(rak)}
-                      className="font-medium text-xs bg-red-200 rounded-xl px-3 py-1 m-2 text-red-800 hover:underline"
+                      className="font-medium text-xs bg-red-200 rounded-xl px-3 py-1 my-1 text-red-800 hover:underline"
                     >
                       Delete
                     </button>
