@@ -67,13 +67,15 @@ function App() {
         </div>
 
         {/* Konten utama */}
-        <div className="ml-64 p-6 w-full">
+        <div className="ml-64 p-6 w-max">
             <LinkPath />
             <div className="flex w-full ">
-              <div className="bg-white w-full px-6 py-6 rounded-md m-2 flex gap-6 items-center">
-                <div className="flex gap-2">
+
+              {/* Barang Masuk */}
+              <div className="bg-green-400 w-full px-6 py-6 rounded-md m-2 flex gap-6 items-center">
+                <div className="flex gap-2 items-center">
                   <svg
-                    class="w-6 h-6 text-gray-400 dark:text-white"
+                    class="w-6 h-6 text-white"
                     aria-hidden="true"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -87,7 +89,7 @@ function App() {
                       clip-rule="evenodd"
                     />
                   </svg>
-                  <p className="text-gray-600 text-xl">Barang Masuk</p>
+                  <p className="text-white text-xl">Barang Masuk</p>
                 </div>
                 <input
                   type="text"
@@ -97,10 +99,10 @@ function App() {
                 />
               </div>
 
-              <div className="bg-white w-full px-6 py-6 rounded-md m-2 flex gap-6 items-center">
-                <div className="flex gap-2">
+              <div className="bg-blue-400 w-full px-6 py-6 rounded-md m-2 flex gap-6 items-center">
+                <div className="flex gap-2 items-center">
                   <svg
-                    class="w-6 h-6 text-gray-400 dark:text-white"
+                    class="w-6 h-6 text-white dark:text-white"
                     aria-hidden="true"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -114,7 +116,7 @@ function App() {
                       clip-rule="evenodd"
                     />
                   </svg>
-                  <p className="text-gray-600 text-xl">Barang Keluar</p>
+                  <p className="text-white text-xl">Barang Keluar</p>
                 </div>
                 <input
                   type="text"
@@ -124,10 +126,10 @@ function App() {
                 />
               </div>
 
-              <div className="bg-white w-full px-6 py-6 rounded-md m-2 flex gap-6 items-center">
-                <div className="flex gap-2">
+              <div className="bg-orange-300 w-full px-6 py-6 rounded-md m-2 flex gap-6 items-center">
+                <div className="flex gap-2 items-center">
                   <svg
-                    class="w-6 h-6 text-gray-400 dark:text-white"
+                    class="w-6 h-6 text-white dark:text-white"
                     aria-hidden="true"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -141,7 +143,7 @@ function App() {
                       clip-rule="evenodd"
                     />
                   </svg>
-                  <p className="text-gray-600 text-xl">Barang Pindah</p>
+                  <p className="text-white text-xl">Barang Pindah</p>
                 </div>
                 <input
                   type="text"
@@ -152,16 +154,13 @@ function App() {
               </div>
             </div>
 
-            <div className="flex w-full">
+            <div className="flex w-full max-w-full">
+              <Chart />
               <Chart2 />
             </div>
 
             <div className="flex">
-              <Chart />
               <Table tableName={tableName} columns={columns} data={data} />
-            </div>
-            <div className="flex w-max">
-              <TableRak />
               <Table tableName={tableName} columns={columns} data={data} />
             </div>
             <Footer />

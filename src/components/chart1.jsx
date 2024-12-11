@@ -179,11 +179,11 @@ const Chart = () => {
 
   return (
     <>
-      <div className="bg-white rounded-lg shadow p-6 m-2">
+      <div className="bg-white rounded-lg shadow p-6 m-2 w-full h-full">
         <div className="flex justify-between mb-3">
           <div className="flex justify-center items-center">
             <h5 className="text-xl font-bold leading-none text-gray-900 pe-1">
-              Ativitas traffic Barang
+              Aktivitas traffic Barang
             </h5>
             <svg
               data-popover-target="chart-info"
