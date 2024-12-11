@@ -113,12 +113,12 @@ export default function Login() {
             />
           </div>
           <div className="flex justify-between items-center pt-4">
-            <p className="text-xs">
+            {/* <p className="text-xs">
               Belum punya akun?{" "}
               <Link to="/register" className="text-blue-600 hover:underline">
                 Daftar sekarang
               </Link>
-            </p>
+            </p> */}
             <button
               type="submit"
               disabled={loading}
