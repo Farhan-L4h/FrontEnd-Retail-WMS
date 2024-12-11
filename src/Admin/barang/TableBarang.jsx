@@ -140,7 +140,7 @@ export default function TableBarang() {
                 <td className="px-3 py-4">{barang.kategori.nama_kategori}</td>
                 <td className="px-6 py-4">{barang.rak || '-'}</td>
                 <td className="px-6 py-4">{barang.exp_barang || '-'}</td>
-                <td className="px-6 py-4">{barang.harga}</td>
+                <td className="px-6 py-4">{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(barang.harga)}</td>
                 <td className="px-6 py-4">
                   <Link to={`/Barang/${barang.id}/edit`}>
                     <button className="font-medium text-xs bg-blue-200 rounded-xl px-3 py-1 m-2 text-blue-800 hover:underline">
