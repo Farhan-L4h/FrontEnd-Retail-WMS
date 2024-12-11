@@ -58,7 +58,7 @@ export default function TablePindah() {
       await axios.delete(
         `http://127.0.0.1:8000/api/pemindahan/${deleteData.id}/destroy`
       );
-      toast.success(`Data Pemindahan ${deleteData.nama_barang} berhasil dihapus!`);
+      toast.success(`Data Pemindahan ${deleteData.nama_barang} berhasil dihapus!  `);
       setIsDeleteModalOpen(false);
       setDeleteData(null);
       fetchData();
@@ -109,7 +109,7 @@ export default function TablePindah() {
                       setDeleteData(pindah);
                       setIsDeleteModalOpen(true);
                     }}
-                    className="font-medium bg-red-400 rounded-lg px-2 py-1 text-xs text-red-800 hover:underline"
+                    className="font-medium bg-red-200 rounded-lg px-2 py-1 text-xs text-red-800 hover:underline"
                   >
                     Delete
                   </button>
@@ -126,16 +126,16 @@ export default function TablePindah() {
           <div className="bg-white p-6 rounded-md shadow-md w-96">
             <h2 className="text-lg font-semibold mb-4">Konfirmasi Hapus</h2>
             <p>Apakah Anda yakin ingin menghapus data Pemindahan {deleteData?.nama_barang}?</p>
-            <div className="flex justify-end gap-2 mt-4">
+            <div className="flex justify-center gap-2 mt-4">
               <button
                 onClick={() => setIsDeleteModalOpen(false)}
-                className="bg-gray-500 text-white px-4 py-2 rounded"
+                className="bg-gray-500 text-white px-3 py-1 rounded"
               >
                 Batal
               </button>
               <button
                 onClick={handleDelete}
-                className="bg-red-600 text-white px-4 py-2 rounded"
+                className="bg-red-600 text-white px-3 py-1 rounded"
               >
                 Hapus
               </button>
