@@ -32,11 +32,11 @@ function App() {
         <div className="ml-64 p-6">
           <LinkPath />
           <div className="flex">
-            <TableRak />
-            <TableKategori />
+            <TableSupplier />
           </div>
           <div className="flex">
-            <TableSupplier />
+            <TableRak />
+            <TableKategori />
           </div>
           <Footer />
         </div>
