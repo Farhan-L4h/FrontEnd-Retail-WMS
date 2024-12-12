@@ -199,23 +199,23 @@ console.log("FormData setelah diatur:", formData);
               <tr key={aktivitas.id} className="border-b">
                 <td className="px-6 py-4">
                   {aktivitas.alasan === "diterima" ? (
-                    <span className="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
+                    <span className="bg-green-100 text-green-800 text-sm font-bold me-2 px-2.5 py-1.5 rounded dark:bg-green-900 dark:text-green-300">
                       Diterima
                     </span>
                   ) : aktivitas.alasan === "diambil" ? (
-                    <span className="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">
+                    <span className="bg-blue-100 text-blue-800 text-sm font-bold me-2 px-2.5 py-1.5 rounded dark:bg-blue-900 dark:text-blue-300">
                       Diambil
                     </span>
                   ) : aktivitas.alasan === "dibuang" ? (
-                    <span className="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">
+                    <span className="bg-gray-100 text-gray-800 text-sm font-bold me-2 px-2.5 py-1.5 rounded dark:bg-gray-700 dark:text-gray-300">
                       Expired
                     </span>
                   ) : aktivitas.alasan === "return" ? (
-                    <span className="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">
+                    <span className="bg-yellow-100 text-yellow-800 text-sm font-bold me-2 px-2.5 py-1.5 rounded dark:bg-yellow-900 dark:text-yellow-300">
                       return
                     </span>
                   ) : (
-                    <span className="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">
+                    <span className="bg-red-100 text-red-800 text-sm font-bold me-2 px-2.5 py-1.5 rounded dark:bg-red-900 dark:text-red-300">
                       -
                     </span>
                   )}
