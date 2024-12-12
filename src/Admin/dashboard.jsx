@@ -8,6 +8,8 @@ import Table from "../components/Table";
 import LinkPath from "../components/LinkPath";
 import Chart from "../components/chart1";
 import Footer from "../components/Footer";
+import LowStockTable from "./gudang/TbStokRendah";
+import ExpiringSoonTable from "./gudang/TbExpired";
 import TableRak from "./gudang/TableRak";
 import Chart2 from "../components/chart2";
 
@@ -160,8 +162,10 @@ function App() {
             </div>
 
             <div className="flex">
-              <Table tableName={tableName} columns={columns} data={data} />
-              <Table tableName={tableName} columns={columns} data={data} />
+              {/* <Table tableName={tableName} columns={columns} data={data} />
+              <Table tableName={tableName} columns={columns} data={data} /> */}
+              <LowStockTable />
+              <ExpiringSoonTable />
             </div>
             <Footer />
           </div>
