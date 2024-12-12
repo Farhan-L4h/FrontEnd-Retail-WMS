@@ -185,8 +185,8 @@ function KeluarAktif() {
                     value={formData.alasan}
                     onChange={handleChange}
                     options={[
-                      { id: "return", nama: "Expired" },
-                      { id: "dibuang", nama: "Dibuang" },
+                      { id: "return", nama: "Return" },
+                      { id: "dibuang", nama: "Expired" },
                       { id: "diambil", nama: "Diambil" },
                     ]}
                     required
