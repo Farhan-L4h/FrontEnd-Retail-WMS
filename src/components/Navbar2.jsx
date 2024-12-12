@@ -22,7 +22,7 @@ export default function Navbar2() {
               Retail
             </span>
           </a>
-          <div className="relative hidden md:block">
+          {/* <div className="relative hidden md:block">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
               <svg
                 className="w-4 h-4 text-gray-500 dark:text-gray-400"
@@ -47,7 +47,7 @@ export default function Navbar2() {
               className="ms-2 block w-full p-2 pl-10 text-sm text-gray-600 border border-gray-300 rounded-lg bg-white focus:ring-blue-500 focus:border-blue-50"
               placeholder="Search..."
             />
-          </div>
+          </div> */}
         </div>
         <button
           id="dropdownUserAvatarButton"
