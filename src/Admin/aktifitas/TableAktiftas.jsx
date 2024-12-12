@@ -256,7 +256,7 @@ console.log("FormData setelah diatur:", formData);
                     </button>
                   </div>
                   <div className="flex gap-2 mt-2">
-                    <Link to={`/Aktifitas/${aktivitas.id}/show`}>
+                    <Link to={`/AktifitasBarang/${aktivitas.id}/show`}>
                       <button className="bg-green-200 text-green-800 px-3 py-1 rounded-lg ">
                         Show
                       </button>

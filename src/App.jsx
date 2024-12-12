@@ -22,6 +22,7 @@ import TambahAktif from './Admin/aktifitas/Tambah';
 import TableUser from './Admin/User/user';
 import KeluarAktif from './Admin/aktifitas/Keluar';
 import EditAktif from './Admin/aktifitas/Edit';
+import ShowAktiv from './Admin/aktifitas/Show';
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
             <Route path="/aktifitasBarang/:id/edit" element={<ProtectedRoute role="admin" element={<EditAktif />} />} />
             <Route path="/aktifitasBarang/tambah" element={<ProtectedRoute role="admin" element={<TambahAktif />} />} />
             <Route path="/aktifitasBarang/keluar" element={<ProtectedRoute role="admin" element={<KeluarAktif />} />} />
+            <Route path="/aktifitasBarang/:id/show" element={<ProtectedRoute role="admin" element={<ShowAktiv />} />} />
             <Route path="/laporan" element={<ProtectedRoute role="admin" element={<Laporan />} />} />
             <Route path="/pemindahanBarang" element={<ProtectedRoute role="admin" element={<Pemindahan />} />} />
             <Route path="/User" element={<ProtectedRoute role="admin" element={<TableUser />} />} />
