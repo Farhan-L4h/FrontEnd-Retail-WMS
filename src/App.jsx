@@ -3,7 +3,7 @@ import './App.css';
 import './index.css';
 import Dashboard from './Admin/dashboard';
 import Gudang from './Admin/gudang/Gudang';
-import Laporan from './Admin/gudang/Laporan';
+import Laporan from './Admin/Laporan/Laporan';
 import Barang from './Admin/barang/Barang';
 import BarangCreate from './Admin/barang/CreateBarang';
 import BarangEdit from './Admin/barang/EditBarang';
