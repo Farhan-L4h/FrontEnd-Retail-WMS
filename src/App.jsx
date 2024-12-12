@@ -53,7 +53,7 @@ function App() {
 
             {/* Rute Staff yang dilindungi */}
             <Route path="/staff/dashboard" element={<ProtectedRoute role="staff" element={<Dashboard />} />} />
-            <Route path="/staff/gudang" element={<ProtectedRoute role="staff" element={<Gudang />} />} />
+            <Route path="/staff/barang" element={<ProtectedRoute role="staff" element={<Barang />} />} />
             <Route path="/staff/pemindahan" element={<ProtectedRoute role="staff" element={<Pemindahan />} />} />
             <Route path="/staff/aktifitas" element={<ProtectedRoute role="staff" element={<Aktifitas />} />} />
 
