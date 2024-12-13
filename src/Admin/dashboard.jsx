@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import "../App.css";
 import "../index.css";
 import SideBar from "../components/SideBar";
 import NavBar from "../components/Navbar2";
-import { Link } from "react-router-dom";
-import Table from "../components/Table";
 import LinkPath from "../components/LinkPath";
 import Chart from "../components/chart1";
 import Footer from "../components/Footer";
@@ -12,22 +10,19 @@ import LowStockTable from "./gudang/TbStokRendah";
 import ExpiringSoonTable from "./gudang/TbExpired";
 import Chart2 from "../components/chart2";
 
-function App() {
-  const [count, setCount] = useState(0);
+const Dashboard = () => {
+  const [data, setData] = useState({});
 
-  const Dashboard = () => {
-    const [data, setData] = useState({});
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch("/api/barang"); // Ganti dengan endpoint yang sesuai
+      const result = await response.json();
+      setData(result.data);
+    };
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const response = await fetch('/api/barang'); // Ganti dengan endpoint yang sesuai
-            const result = await response.json();
-            setData(result.data);
-        };
+    fetchData();
+  }, []);
 
-        fetchData();
-    }, []);
-    
   return (
     <>
       {/* NavBar */}
@@ -46,10 +41,12 @@ function App() {
           <LinkPath />
           <div className="flex w-full ">
             {/* Barang Masuk */}
+            {/* Barang Masuk */}
             <div className="bg-green-400 w-full px-6 py-6 rounded-md m-2 flex gap-6 items-center">
               <div className="flex gap-2 items-center">
                 <svg
                   class="w-6 h-6 text-white"
+                  className="w-6 h-6 text-white"
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   width="20"
@@ -59,8 +56,10 @@ function App() {
                 >
                   <path
                     fill-rule="evenodd"
+                    fillRule="evenodd"
                     d="M5.024 3.783A1 1 0 0 1 6 3h12a1 1 0 0 1 .976.783L20.802 12h-4.244a1.99 1.99 0 0 0-1.824 1.205 2.978 2.978 0 0 1-5.468 0A1.991 1.991 0 0 0 7.442 12H3.198l1.826-8.217ZM3 14v5a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5h-4.43a4.978 4.978 0 0 1-9.14 0H3Z"
                     clip-rule="evenodd"
+                    clipRule="evenodd"
                   />
                 </svg>
                 <p className="text-white text-xl">Barang Masuk</p>
@@ -145,6 +144,5 @@ function App() {
     </>
   );
 };
-}
 
 export default Dashboard;
