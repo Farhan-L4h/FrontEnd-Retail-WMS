@@ -1,52 +1,50 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import "../App.css";
 import "../index.css";
 import SideBar from "../components/SideBar";
 import NavBar from "../components/Navbar2";
-import { Link } from "react-router-dom";
-import Table from "../components/Table";
 import LinkPath from "../components/LinkPath";
 import Chart from "../components/chart1";
-import Footer from "../components/Footer";
+import Chart2 from "../components/chart2";
 import LowStockTable from "./gudang/TbStokRendah";
 import ExpiringSoonTable from "./gudang/TbExpired";
-import Chart2 from "../components/chart2";
+import Footer from "../components/Footer";
 
-function App() {
-  const [count, setCount] = useState(0);
+const Dashboard = () => {
+  const [data, setData] = useState({
+    total_masuk: 0,
+    total_keluar: 0,
+    stok: 0,
+  });
 
-  const Dashboard = () => {
-    const [data, setData] = useState({});
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:8000/api/barang");
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        const result = await response.json();
+        console.log("API Response:", result);
+        setData({
+          total_masuk: result.total_masuk || 0,
+          total_keluar: result.total_keluar || 0,
+          stok: result.stok || 0
+        });
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };    
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const response = await fetch('/api/barang'); // Ganti dengan endpoint yang sesuai
-            const result = await response.json();
-            setData(result.data);
-        };
+    fetchData();
+  }, []);
 
-        fetchData();
-    }, []);
-    
   return (
     <>
-      {/* NavBar */}
-      <div className="fixed top-0 w-full z-40">
-        <NavBar />
-      </div>
-
-      <div className="flex flex-row mt-16">
-        {/* Sidebar */}
-        <div className="w-64 bg-gray-100 fixed top-0 z-30 mt-7">
-          <SideBar />
-        </div>
-
-        {/* Konten utama */}
-        <div className="ml-64 p-6 w-max">
-          <LinkPath />
-          <div className="flex w-full ">
+      {/* Informasi Barang */}
+      <div className="flex w-full ">
             {/* Barang Masuk */}
-            <div className="bg-green-400 w-full px-6 py-6 rounded-md m-2 flex gap-6 items-center">
+            <div className="bg-green-400 w-max px-6 py-6 rounded-md m-2 flex gap-6 items-center">
               <div className="flex gap-2 items-center">
                 <svg
                   class="w-6 h-6 text-white"
@@ -73,7 +71,7 @@ function App() {
               />
             </div>
 
-            <div className="bg-blue-400 w-full px-6 py-6 rounded-md m-2 flex gap-6 items-center">
+            <div className="bg-blue-400 w-max px-6 py-6 rounded-md m-2 flex gap-6 items-center">
               <div className="flex gap-2 items-center">
                 <svg
                   class="w-6 h-6 text-white dark:text-white"
@@ -101,7 +99,7 @@ function App() {
               />
             </div>
 
-            <div className="bg-orange-300 w-full px-6 py-6 rounded-md m-2 flex gap-6 items-center">
+            <div className="bg-orange-300 w-max px-6 py-6 rounded-md m-2 flex gap-6 items-center">
               <div className="flex gap-2 items-center">
                 <svg
                   class="w-6 h-6 text-white dark:text-white"
@@ -130,21 +128,45 @@ function App() {
             </div>
           </div>
 
-          <div className="flex w-full max-w-full">
-            <Chart />
-            <Chart2 />
-          </div>
+      {/* Grafik */}
+      <div className="flex w-full max-w-full">
+        <Chart />
+        <Chart2 />
+      </div>
 
-          <div className="flex">
-            <LowStockTable />
-            <ExpiringSoonTable />
-          </div>
+      {/* Tabel */}
+      <div className="flex">
+        <LowStockTable />
+        <ExpiringSoonTable />
+      </div>
+    </>
+  );
+};
+
+
+const App = () => {
+  return (
+    <>
+      {/* Navbar */}
+      <div className="fixed top-0 w-full z-40">
+        <NavBar />
+      </div>
+
+      <div className="flex flex-row mt-16">
+        {/* Sidebar */}
+        <div className="w-64 bg-gray-100 fixed top-0 z-30 mt-7">
+          <SideBar />
+        </div>
+
+        {/* Konten Utama */}
+        <div className="ml-64 p-6 w-max">
+          <LinkPath />
+          <Dashboard />
           <Footer />
         </div>
       </div>
     </>
   );
 };
-}
 
-export default Dashboard;
+export default App;
