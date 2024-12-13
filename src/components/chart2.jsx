@@ -1,5 +1,77 @@
 import React, { useEffect } from "react";
 import ApexCharts from "apexcharts";
+import React, { useEffect, useRef } from 'react';
+import Chart from 'chart.js/auto'; // Pastikan Anda menginstal chart.js
+
+const ChartBreakdown = () => {
+    const chartRef = useRef(null);
+    const myChartRef = useRef(null);
+
+    useEffect(() => {
+        // Ambil data dari API
+        const fetchData = async () => {
+            try {
+                const response = await fetch('/api//chart-supplier');
+                const data = await response.json();
+
+                const labels = data.map(item => item.status);
+                const totals = data.map(item => item.total);
+
+                // Jika chart sudah ada, hancurkan sebelum membuat yang baru
+                if (myChartRef.current) {
+                    myChartRef.current.destroy();
+                }
+
+                // Buat chart baru
+                myChartRef.current = new Chart(chartRef.current, {
+                    type: 'bar', // atau 'pie', 'line', dll.
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Total Barang',
+                            data: totals,
+                            backgroundColor: [
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(255, 99, 132, 0.2)',
+                            ],
+                            borderColor: [
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(255, 99, 132, 1)',
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error fetching chart data:', error);
+            }
+        };
+
+        fetchData();
+
+        // Cleanup function to destroy the chart on component unmount
+        return () => {
+            if (myChartRef.current) {
+                myChartRef.current.destroy();
+            }
+        };
+    }, []);
+
+    return (
+        <div className="container mx-auto mt-10">
+            <canvas ref={chartRef}></canvas>
+        </div>
+    );
+};
+
+
 
 export default function Chart2() {
   useEffect(() => {

@@ -23,6 +23,23 @@ function TbStokRendah() {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
+  const getStatus = (stok) => {
+    if (stok > 0 && stok <= 10) {
+      return "Menipis";
+    } else {
+      return "Habis";
+    }
+  };
+
+  const getStatusBadge = (status) => {
+    if (status === "Menipis") {
+      return <span className="px-2 py-1 text-sm font-medium text-yellow-800 bg-yellow-200 rounded">{status}</span>;
+    } else {
+      return <span className="px-2 py-1 text-sm font-medium text-red-800 bg-red-200 rounded">{status}</span>;
+    } 
+  };
+  
+
   return (
     <div className="m-2 bg-white p-4 rounded-md w-full">
       <h3 className="text-lg font-semibold mb-4">Tabel Stok Rendah</h3>
@@ -39,6 +56,9 @@ function TbStokRendah() {
               <th scope="col" className="px-6 py-3">
                 Stok
               </th>
+              <th scope="col" className="px-6 py-3">
+                Status
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -47,6 +67,7 @@ function TbStokRendah() {
                 <td className="px-6 py-4">{item.id}</td>
                 <td className="px-6 py-4">{item.nama_barang}</td>
                 <td className="px-6 py-4">{item.stok}</td>
+                <td className="px-6 py-4">{getStatusBadge(getStatus(item.stok))}</td>
               </tr>
             ))}
           </tbody>
