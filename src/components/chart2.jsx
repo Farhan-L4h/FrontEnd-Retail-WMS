@@ -1,302 +1,124 @@
-import ApexCharts from "apexcharts";
-import React, { useEffect, useRef } from 'react';
-import Chart from 'chart.js/auto'; // Pastikan Anda menginstal chart.js
+import React, { useEffect, useState } from "react"; // Tambahkan useState
+import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from "chart.js";
+import { Bar } from "react-chartjs-2";
 
-const ChartBreakdown = () => {
-    const chartRef = useRef(null);
-    const myChartRef = useRef(null);
+ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend); // Daftarkan elemen ChartJS
 
-    useEffect(() => {
-        // Ambil data dari API
-        const fetchData = async () => {
-            try {
-                const response = await fetch('/api//chart-supplier');
-                const data = await response.json();
+const SupplierChart = () => {
+  const [chartData, setChartData] = useState(null); // State untuk menyimpan data chart
+  const [loading, setLoading] = useState(true); // State untuk loading
+  const [error, setError] = useState(null); // State untuk menyimpan error
 
-                const labels = data.map(item => item.status);
-                const totals = data.map(item => item.total);
-
-                // Jika chart sudah ada, hancurkan sebelum membuat yang baru
-                if (myChartRef.current) {
-                    myChartRef.current.destroy();
-                }
-
-                // Buat chart baru
-                myChartRef.current = new Chart(chartRef.current, {
-                    type: 'bar', // atau 'pie', 'line', dll.
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Total Barang',
-                            data: totals,
-                            backgroundColor: [
-                                'rgba(75, 192, 192, 0.2)',
-                                'rgba(255, 99, 132, 0.2)',
-                            ],
-                            borderColor: [
-                                'rgba(75, 192, 192, 1)',
-                                'rgba(255, 99, 132, 1)',
-                            ],
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            }
-                        }
-                    }
-                });
-            } catch (error) {
-                console.error('Error fetching chart data:', error);
-            }
-        };
-
-        fetchData();
-
-        // Cleanup function to destroy the chart on component unmount
-        return () => {
-            if (myChartRef.current) {
-                myChartRef.current.destroy();
-            }
-        };
-    }, []);
-
-    return (
-        <div className="container mx-auto mt-10">
-            <canvas ref={chartRef}></canvas>
-        </div>
-    );
-};
-
-
-
-export default function Chart2() {
   useEffect(() => {
-    const options = {
-      chart: {
-        height: "100%",
-        maxWidth: "100%",
-        type: "area",
-        fontFamily: "Inter, sans-serif",
-        dropShadow: {
-          enabled: false,
-        },
-        toolbar: {
-          show: false,
-        },
-      },
-      tooltip: {
-        enabled: true,
-        x: {
-          show: false,
-        },
-      },
-      fill: {
-        type: "gradient",
-        gradient: {
-          opacityFrom: 0.55,
-          opacityTo: 0,
-          shade: "#1C64F2",
-          gradientToColors: ["#1C64F2"],
-        },
-      },
-      dataLabels: {
-        enabled: false,
-      },
-      stroke: {
-        width: 6,
-      },
-      grid: {
-        show: false,
-        strokeDashArray: 4,
-        padding: {
-          left: 2,
-          right: 2,
-          top: 0,
-        },
-      },
-      series: [
-        {
-          name: "New users",
-          data: [6500, 6418, 6456, 6526, 6356, 6456],
-          color: "#1A56DB",
-        },
-      ],
-      xaxis: {
-        categories: [
-          "01 February",
-          "02 February",
-          "03 February",
-          "04 February",
-          "05 February",
-          "06 February",
-          "07 February",
-        ],
-        labels: {
-          show: false,
-        },
-        axisBorder: {
-          show: false,
-        },
-        axisTicks: {
-          show: false,
-        },
-      },
-      yaxis: {
-        show: false,
-      },
+    // Fetch data dari API
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/api/chart-supplier"); // Ganti URL sesuai endpoint API Anda
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        // Validasi apakah result.data adalah array
+        if (!Array.isArray(result.data)) {
+          throw new Error("Invalid data format: Expected an array");
+        }
+
+        // Format data chart
+        const supplierNames = result.data.map((item) =>
+          item.nama_supplier
+            ? item.nama_supplier.length > 15
+              ? item.nama_supplier.slice(0, 15) + "..."
+              : item.nama_supplier
+            : "Unknown" // Default jika nama_supplier tidak ada
+        );
+
+        const supplierTotals = result.data.map((item) => item.total_barang || 0); // Default total_barang ke 0 jika undefined
+
+        // Simpan data ke state
+        setChartData({
+          labels: supplierNames,
+          datasets: [
+            {
+              label: "Total Barang yang Disuplai",
+              data: supplierTotals,
+              backgroundColor: [
+                "#1d4ed8",
+                "#2563eb",
+                "#3b82f6",
+                "#60a5fa",
+                "#93c5fd",
+              ],
+              borderWidth: 1,
+            },
+          ],
+        });
+
+        setLoading(false); // Loading selesai
+      } catch (err) {
+        console.error("Error fetching supplier data:", err.message);
+        setError(err.message); // Simpan error
+        setLoading(false); // Loading selesai meski ada error
+      }
     };
 
-    if (
-      document.getElementById("area-chart") &&
-      typeof ApexCharts !== "undefined"
-    ) {
-      const chart = new ApexCharts(
-        document.getElementById("area-chart"),
-        options
-      );
-      chart.render();
-
-      return () => {
-        chart.destroy();
-      };
-    }
+    fetchData();
   }, []);
 
+  // Opsi chart
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: false, // Tidak menampilkan legenda
+      },
+      tooltip: {
+        callbacks: {
+          label: function (context) {
+            return `${context.raw} barang`;
+          },
+        },
+      },
+    },
+    scales: {
+      x: {
+        ticks: {
+          color: "#4b5563", // Warna teks pada sumbu X
+        },
+      },
+      y: {
+        ticks: {
+          color: "#4b5563", // Warna teks pada sumbu Y
+        },
+        beginAtZero: true, // Mulai dari 0
+      },
+    },
+  };
+
   return (
-    <div className="w-full h-full bg-white rounded-lg shadow p-6 m-2">
-      <div className="flex justify-between">
-        <div>
-          <h5 className="leading-none text-3xl font-bold text-gray-900 dark:text-white pb-2">
-            Barang Keluar
-          </h5>
-          <p className="text-base font-normal text-gray-500 dark:text-gray-400">
-            Jumlah Stok barang
-          </p>
-        </div>
-        <div className="flex items-center px-2.5 py-0.5 text-base font-semibold text-green-500 dark:text-green-500 text-center">
-          12%
-          <svg
-            className="w-3 h-3 ms-1"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 10 14"
-          >
-            <path
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M5 13V1m0 0L1 5m4-4 4 4"
-            />
-          </svg>
-        </div>
+    <div className="bg-white rounded-lg shadow p-6 m-2 w-full h-full">
+      <div className="flex justify-between mb-3">
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+          Top Supplier
+        </h2>
       </div>
-      <div id="area-chart"></div>
-      <div className="grid grid-cols-1 items-center border-gray-200 border-t dark:border-gray-700 justify-between">
-        <div className="flex justify-between items-center pt-5">
-          {/* <!-- Button --> */}
-          <button
-            id="dropdownDefaultButton"
-            data-dropdown-toggle="lastDaysdropdown"
-            data-dropdown-placement="bottom"
-            className="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 text-center inline-flex items-center dark:hover:text-white"
-            type="button"
-          >
-            Last 7 days
-            <svg
-              className="w-2.5 m-2.5 ms-1.5"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 10 6"
-            >
-              <path
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="m1 1 4 4 4-4"
-              />
-            </svg>
-          </button>
-          {/* <!-- Dropdown menu --> */}
-          <div
-            id="lastDaysdropdown"
-            className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
-          >
-            <ul
-              className="py-2 text-sm text-gray-700 dark:text-gray-200"
-              aria-labelledby="dropdownDefaultButton"
-            >
-              <li>
-                <a
-                  href="#"
-                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                >
-                  Yesterday
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                >
-                  Today
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                >
-                  Last 7 days
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                >
-                  Last 30 days
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                >
-                  Last 90 days
-                </a>
-              </li>
-            </ul>
-          </div>
-          <a
-            href="#"
-            className="uppercase text-sm font-semibold inline-flex items-center rounded-lg text-blue-600 hover:text-blue-700 dark:hover:text-blue-500  hover:bg-gray-100 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 px-3 py-2"
-          >
-            Users Report
-            <svg
-              className="w-2.5 h-2.5 ms-1.5 rtl:rotate-180"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 6 10"
-            >
-              <path
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="m1 9 4-4-4-4"
-              />
-            </svg>
-          </a>
-        </div>
+      <div className="mt-4">
+        {loading ? (
+          <p className="text-center text-gray-500">Loading...</p>
+        ) : error ? (
+          <p className="text-center text-red-500">
+            Error: {error || "Failed to load data"}
+          </p>
+        ) : chartData ? (
+          <Bar data={chartData} options={options} />
+        ) : (
+          <p className="text-center text-red-500">No data available</p>
+        )}
       </div>
     </div>
   );
-}
+};
+
+export default SupplierChart;
