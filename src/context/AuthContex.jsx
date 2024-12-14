@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
   const login = (userData) => {
     setUser(userData);  // Simpan objek user
     localStorage.setItem("user", JSON.stringify(userData)); // Simpan objek user ke localStorage
-    navigate('/dashboard');  // Navigasi setelah login berhasil
+      // Navigasi setelah login berhasil
   };
   
   const logout = () => {

@@ -5,6 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function TableAktifitas() {
+  
   const [aktivitasData, setAktivitasData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -167,12 +168,12 @@ export default function TableAktifitas() {
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-xl font-semibold">Table Aktivitas</h3>
         <div className="flex gap-2">
-          <Link to="/aktifitasBarang/tambah">
+          <Link to="/staff/aktifitasBarang/tambah">
             <button className="text-green-800 bg-green-200 hover:bg-green-500 hover:text-white text-sm rounded-lg px-3 py-2">
               + Barang Masuk
             </button>
           </Link>
-          <Link to="/Aktifitasbarang/keluar">
+          <Link to="/staff/Aktifitasbarang/keluar">
             <button className="text-red-800 bg-red-200 hover:bg-red-500 hover:text-white text-sm rounded-lg px-3 py-2">
               + Barang Keluar
             </button>
@@ -252,7 +253,7 @@ export default function TableAktifitas() {
 
                 <td className="px-6 py-4 text-xs">
                   <div className="flex gap-2">
-                    <Link to={`/AktifitasBarang/${aktivitas.id}/edit`}>
+                    <Link to={`/staff/AktifitasBarang/${aktivitas.id}/edit`}>
                       <button className="bg-blue-200 text-blue-800 px-3 py-1 rounded-lg">
                         Edit
                       </button>
@@ -265,7 +266,7 @@ export default function TableAktifitas() {
                     </button>
                   </div>
                   <div className="flex gap-2 mt-2">
-                    <Link to={`/AktifitasBarang/${aktivitas.id}/show`}>
+                    <Link to={`/staff/AktifitasBarang/${aktivitas.id}/show`}>
                       <button className="bg-green-200 text-green-800 px-3 py-1 rounded-lg ">
                         Show
                       </button>

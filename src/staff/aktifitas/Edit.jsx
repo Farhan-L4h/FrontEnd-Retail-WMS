@@ -114,7 +114,7 @@ function EditBarang() {
         }
       );
       toast.success("Barang berhasil diperbarui!");
-      setTimeout(() => navigate("/AktifitasBarang"), 2000);
+      setTimeout(() => navigate("/staff/aktifitas"), 2000);
     } catch (err) {
       if (err.response && err.response.status === 422) {
         const errors = err.response.data.errors;

@@ -11,16 +11,16 @@ import LinkPath from "../../components/LinkPath";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-function KeluarAktif() {
+function MasukAktif() {
   const [formData, setFormData] = useState({
     id_barang: "",
     jumlah_barang: "",
     id_rak: "",
-    alasan: "",
+    alasan: "diterima",
     tanggal: new Date().toISOString().split("T")[0],
-    status: "keluar",
+    status: "masuk",
     username: "",
-    exp_barang: null,
+    exp_barang: "",
   });
 
   const [barangOptions, setBarangOptions] = useState([]);
@@ -92,7 +92,12 @@ function KeluarAktif() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.id_barang || !formData.jumlah_barang || !formData.id_rak) {
+    if (
+      !formData.id_barang ||
+      !formData.jumlah_barang ||
+      !formData.id_rak ||
+      !formData.exp_barang
+    ) {
       toast.error("Semua field wajib diisi!");
       return;
     }
@@ -103,20 +108,16 @@ function KeluarAktif() {
         id_barang: "",
         jumlah_barang: "",
         id_rak: "",
-        alasan: "",
+        alasan: "diterima",
         tanggal: new Date().toISOString().split("T")[0],
-        status: "keluar",
+        status: "masuk",
         username: "",
-        exp_barang: null,
+        exp_barang: "",
       });
       toast.success("Barang berhasil Disimpan!");
-      setTimeout(() => navigate("/AktifitasBarang"), 1000);
+      setTimeout(() => navigate("/staff/Aktifitas"), 1000);
     } catch (err) {
-      // Tangkap pesan dari API jika tersedia
-      const errorMessage =
-        err.response?.data?.message ||
-        "Gagal menyimpan barang. Silakan coba lagi.";
-      toast.error(errorMessage);
+      toast.error("Gagal menyimpan barang. Silakan coba lagi.");
       console.error("Error submitting data:", err);
     }
   };
@@ -179,16 +180,11 @@ function KeluarAktif() {
                   />
 
                   <InputField
-                    label="Alasan"
-                    type="select"
-                    name="alasan"
-                    value={formData.alasan}
+                    label="Exp Barang"
+                    type="date"
+                    name="exp_barang"
+                    value={formData.exp_barang}
                     onChange={handleChange}
-                    options={[
-                      { id: "return", nama: "Return" },
-                      { id: "dibuang", nama: "Expired" },
-                      { id: "diambil", nama: "Diambil" },
-                    ]}
                     required
                   />
                 </div>
@@ -201,11 +197,11 @@ function KeluarAktif() {
                         id_barang: "",
                         jumlah_barang: "",
                         id_rak: "",
-                        alasan: "",
+                        alasan: "diterima",
                         tanggal: new Date().toISOString().split("T")[0],
-                        status: "keluar",
+                        status: "masuk",
                         username: "",
-                        exp_barang: null,
+                        exp_barang: "",
                       })
                     }
                     className="font-xs border border-black bg-white text-black hover:bg-black hover:text-white px-3 py-1 rounded"
@@ -274,4 +270,4 @@ const InputField = ({
   </div>
 );
 
-export default KeluarAktif;
+export default MasukAktif;

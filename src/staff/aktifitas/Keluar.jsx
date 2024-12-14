@@ -110,7 +110,7 @@ function KeluarAktif() {
         exp_barang: null,
       });
       toast.success("Barang berhasil Disimpan!");
-      setTimeout(() => navigate("/AktifitasBarang"), 1000);
+      setTimeout(() => navigate("/staff/aktifitas"), 1000);
     } catch (err) {
       // Tangkap pesan dari API jika tersedia
       const errorMessage =

@@ -102,7 +102,7 @@ export default function TableBarang() {
 
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-xl font-semibold">Table Barang</h3>
-        <Link to="/Barang/create">
+        <Link to="/staff/Barang/create">
           <button className="text-green-800 bg-green-200 hover:bg-green-500 hover:text-green-200 text-sm rounded-lg px-3 py-2">
             Tambah Barang
           </button>
@@ -147,7 +147,7 @@ export default function TableBarang() {
                   ) || '-'}</td>
                 <td className="px-6 py-4">{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(barang.harga)}</td>
                 <td className="px-6 py-4">
-                  <Link to={`/Barang/${barang.id}/edit`}>
+                  <Link to={`/staff/Barang/${barang.id}/edit`}>
                     <button className="font-medium text-xs bg-blue-200 rounded-xl px-3 py-1 ms-2 text-blue-800 hover:underline">
                       Edit
                     </button>
@@ -158,7 +158,7 @@ export default function TableBarang() {
                   >
                     Delete
                   </button>
-                  <Link to={`/barang/${barang.id}/show`}>
+                  <Link to={`/staff/barang/${barang.id}/show`}>
                     <button className="font-medium p-2 ms-1 text-xs rounded-xl bg-green-200 text-green-800 px-2 py-1 hover:underline">
                       Show
                     </button>
