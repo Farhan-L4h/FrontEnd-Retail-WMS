@@ -118,21 +118,21 @@ export default function TableAktifitas() {
       toast.error("Semua field harus diisi!");
       return;
     }
-  
+
     try {
       await axios.post("http://127.0.0.1:8000/api/pemindahan", formData);
       toast.success("Data berhasil ditambahkan!");
       setIsCreateModalOpen(false);
       // fetchData(); // Uncomment jika ingin memperbarui tabel setelah create
     } catch (err) {
-      const errorMessage = err.response?.data?.message || "Gagal memindahkan data!";
+      const errorMessage =
+        err.response?.data?.message || "Gagal memindahkan data!";
       toast.error(errorMessage);
     }
   };
 
   // console.log("Aktivitas yang dipilih:", aktivitas);
-console.log("FormData setelah diatur:", formData);
-  
+  console.log("FormData setelah diatur:", formData);
 
   const handleMove = (id) => {
     const aktivitas = currentData.find((item) => item.id === id);
@@ -184,42 +184,22 @@ console.log("FormData setelah diatur:", formData);
         <table className="w-full text-sm text-left text-gray-500">
           <thead className="text-xs text-gray-700 uppercase bg-gray-200">
             <tr>
-              <th className="px-6 py-3">Status</th>
+              <th className="px-4 py-3">No</th>
               <th className="px-6 py-3">Barang</th>
               <th className="px-6 py-3">Lokasi Rak</th>
               <th className="px-6 py-3">Exp Barang</th>
               <th className="px-6 py-3">Total</th>
               <th className="px-6 py-3">User</th>
               <th className="px-6 py-3">Tgl Update</th>
+              <th className="px-6 py-3">Status</th>
               <th className="px-6 py-3">Action</th>
             </tr>
           </thead>
           <tbody>
-            {currentData.map((aktivitas) => (
+            {currentData.map((aktivitas, index) => (
               <tr key={aktivitas.id} className="border-b">
-                <td className="px-6 py-4">
-                  {aktivitas.alasan === "diterima" ? (
-                    <span className="bg-green-100 text-green-800 text-sm font-bold me-2 px-2.5 py-1.5 rounded dark:bg-green-900 dark:text-green-300">
-                      Diterima
-                    </span>
-                  ) : aktivitas.alasan === "diambil" ? (
-                    <span className="bg-blue-100 text-blue-800 text-sm font-bold me-2 px-2.5 py-1.5 rounded dark:bg-blue-900 dark:text-blue-300">
-                      Diambil
-                    </span>
-                  ) : aktivitas.alasan === "dibuang" ? (
-                    <span className="bg-gray-100 text-gray-800 text-sm font-bold me-2 px-2.5 py-1.5 rounded dark:bg-gray-700 dark:text-gray-300">
-                      Expired
-                    </span>
-                  ) : aktivitas.alasan === "return" ? (
-                    <span className="bg-yellow-100 text-yellow-800 text-sm font-bold me-2 px-2.5 py-1.5 rounded dark:bg-yellow-900 dark:text-yellow-300">
-                      return
-                    </span>
-                  ) : (
-                    <span className="bg-red-100 text-red-800 text-sm font-bold me-2 px-2.5 py-1.5 rounded dark:bg-red-900 dark:text-red-300">
-                      -
-                    </span>
-                  )}
-                </td>
+                <td className="px-4 py-4">{index + 1}</td>
+
                 <td className="px-6 py-4">
                   {aktivitas.barang?.nama_barang || "Tidak ada data"}{" "}
                   <strong>x {aktivitas.jumlah_barang || 0}</strong>
@@ -229,10 +209,13 @@ console.log("FormData setelah diatur:", formData);
                   <br />
                   {aktivitas.rak?.nama_rak || "Tidak ada data"}
                 </td>
-                <td className="px-6 py-4">{new Date(aktivitas.exp_barang).toLocaleDateString(
-                    "id-ID",
-                    { year: "numeric", month: "short", day: "numeric" }
-                  ) || '-'}</td>
+                <td className="px-6 py-4">
+                  {new Date(aktivitas.exp_barang).toLocaleDateString("id-ID", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  }) || "-"}
+                </td>
                 <td className="px-6 py-4">{aktivitas.total_harga || "-"}</td>
                 <td className="px-6 py-4">{aktivitas.username || 0}</td>
                 <td className="px-6 py-4">
@@ -241,6 +224,32 @@ console.log("FormData setelah diatur:", formData);
                     { year: "numeric", month: "short", day: "numeric" }
                   )}
                 </td>
+
+                {/* status */}
+                <td className="px-6 py-4 font-medium">
+                  {aktivitas.alasan === "diterima" ? (
+                    <span className="bg-green-100 text-green-800 text-sm me-2 px-2.5 py-1.5 rounded dark:bg-green-900 dark:text-green-300">
+                      Diterima
+                    </span>
+                  ) : aktivitas.alasan === "diambil" ? (
+                    <span className="bg-blue-100 text-blue-800 text-sm me-2 px-2.5 py-1.5 rounded dark:bg-blue-900 dark:text-blue-300">
+                      Diambil
+                    </span>
+                  ) : aktivitas.alasan === "dibuang" ? (
+                    <span className="bg-gray-100 text-gray-800 text-sm me-2 px-2.5 py-1.5 rounded dark:bg-gray-700 dark:text-gray-300">
+                      Expired
+                    </span>
+                  ) : aktivitas.alasan === "return" ? (
+                    <span className="bg-yellow-100 text-yellow-800 text-sm me-2 px-2.5 py-1.5 rounded dark:bg-yellow-900 dark:text-yellow-300">
+                      return
+                    </span>
+                  ) : (
+                    <span className="bg-red-100 text-red-800 text-sm me-2 px-2.5 py-1.5 rounded dark:bg-red-900 dark:text-red-300">
+                      -
+                    </span>
+                  )}
+                </td>
+
                 <td className="px-6 py-4 text-xs">
                   <div className="flex gap-2">
                     <Link to={`/AktifitasBarang/${aktivitas.id}/edit`}>
