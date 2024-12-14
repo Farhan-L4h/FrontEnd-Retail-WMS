@@ -14,31 +14,30 @@ const Dashboard = () => {
   const [data, setData] = useState({
     total_masuk: 0,
     total_keluar: 0,
-    stok: 0,
+    total_stok: 0,
   });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/barang");
+        const response = await fetch("http://127.0.0.1:8000/api/aktivitas");
         if (!response.ok) {
           throw new Error("Failed to fetch data");
         }
         const result = await response.json();
         console.log("API Response:", result);
         setData({
-          total_masuk: result.total_masuk || 0,
-          total_keluar: result.total_keluar || 0,
-          stok: result.stok || 0
+          total_masuk: result.total.total_masuk || 0,
+          total_keluar: result.total.total_keluar || 0,
+          total_stok: result.total.total_stok || 0
         });
       } catch (error) {
         console.error("Error fetching data:", error);
       }
-    };    
+    };
 
     fetchData();
   }, []);
-
   return (
     <>
       {/* Informasi Barang */}
@@ -121,7 +120,7 @@ const Dashboard = () => {
               </div>
               <input
                 type="text"
-                value={data.stok || 0}
+                value={data.total_stok || 0}
                 className="bg-gray-100 w-16 text-center text-lg font-semibold text-yellow-500 border-none h-10 rounded-lg"
                 disabled
               />
@@ -170,3 +169,4 @@ const App = () => {
 };
 
 export default App;
+
