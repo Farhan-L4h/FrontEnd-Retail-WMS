@@ -20,7 +20,7 @@ function App() {
         <NavBar2 />
       </div>
 
-      <div className="flex flex-row mt-16">
+      <div className="flex flex-row mt-16 ">
         {/* Sidebar */}
         <div className="w-64 bg-gray-100 mt- fixed top-0 z-30 mt-7">
           <SideBar/>
@@ -29,6 +29,7 @@ function App() {
         {/* Konten utama */}
         <div className="ml-64 p-6 w-full">
           <LinkPath />
+          <div className="flex justify-end text-sm"></div>
           <TableUser />
           <Footer />
         </div>
