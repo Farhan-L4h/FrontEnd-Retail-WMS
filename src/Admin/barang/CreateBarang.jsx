@@ -268,24 +268,14 @@ function FormBarang() {
                 <div className="flex justify-end gap-2">
                   <button
                     type="button"
-                    onClick={() =>
-                      setFormData({
-                        nama_barang: "",
-                        id_kategori: "",
-                        tanggal_expired: "",
-                        harga: "",
-                        deskripsi: "",
-                        id_supplier: "",
-                        image: "",
-                      })
-                    }
-                    className="bg-gray-400 hover:bg-gray-500 text-white p-2 rounded"
+                    onClick={() => navigate("/barang")} // Kembali tanpa simpan
+                    className="bg-white-400 border border-black hover:bg-black hover:text-white px-3 py-1 rounded"
                   >
                     Batal
                   </button>
                   <button
                     type="submit"
-                    className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded"
+                    className="bg-black border text-white border-black hover:bg-white hover:text-black px-3 py-1 rounded"
                   >
                     Simpan
                   </button>

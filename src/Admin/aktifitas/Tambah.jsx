@@ -192,18 +192,7 @@ function MasukAktif() {
                 <div className="flex justify-end gap-2 mt-4">
                   <button
                     type="button"
-                    onClick={() =>
-                      setFormData({
-                        id_barang: "",
-                        jumlah_barang: "",
-                        id_rak: "",
-                        alasan: "diterima",
-                        tanggal: new Date().toISOString().split("T")[0],
-                        status: "masuk",
-                        username: "",
-                        exp_barang: "",
-                      })
-                    }
+                    onClick={() => navigate("/Aktifitasbarang")} // Kembali tanpa simpan
                     className="font-xs border border-black bg-white text-black hover:bg-black hover:text-white px-3 py-1 rounded"
                   >
                     Batal

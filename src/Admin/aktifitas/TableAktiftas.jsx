@@ -330,13 +330,13 @@ export default function TableAktifitas() {
                   setIsCreateModalOpen(false);
                   setIsEditModalOpen(false);
                 }}
-                className="bg-gray-200 px-4 py-2 rounded"
+                className="font-xs border border-black bg-white text-black hover:bg-black hover:text-white px-3 py-1 rounded"
               >
                 Batal
               </button>
               <button
                 onClick={isCreateModalOpen ? handleCreate : handleEdit}
-                className="bg-blue-600 text-white px-4 py-2 rounded"
+                className="font-xs border border-black text-white bg-black hover:bg-white hover:text-black px-3 py-1 rounded"
               >
                 {isCreateModalOpen ? "Simpan" : "Update"}
               </button>

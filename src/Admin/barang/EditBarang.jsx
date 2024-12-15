@@ -268,13 +268,13 @@ function EditBarang() {
                   <button
                     type="button"
                     onClick={() => navigate("/barang")} // Kembali tanpa simpan
-                    className="bg-gray-400 hover:bg-gray-500 text-white p-2 rounded"
+                    className="bg-white-400 border border-black hover:bg-black hover:text-white px-3 py-1 rounded"
                   >
                     Kembali
                   </button>
                   <button
                     type="submit"
-                    className="bg-green-600 hover:bg-green-700 text-white p-2 rounded"
+                    className="bg-black border text-white border-black hover:bg-white hover:text-black px-3 py-1 rounded"
                   >
                     Simpan
                   </button>
