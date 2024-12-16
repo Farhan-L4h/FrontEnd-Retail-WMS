@@ -5,11 +5,12 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function TableAktifitas() {
+  
   const [aktivitasData, setAktivitasData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 15;
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -167,12 +168,12 @@ export default function TableAktifitas() {
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-xl font-semibold">Table Aktivitas</h3>
         <div className="flex gap-2">
-          <Link to="/aktifitasBarang/tambah">
+          <Link to="/staff/aktifitasBarang/tambah">
             <button className="text-green-800 bg-green-200 hover:bg-green-500 hover:text-white text-sm rounded-lg px-3 py-2">
               + Barang Masuk
             </button>
           </Link>
-          <Link to="/Aktifitasbarang/keluar">
+          <Link to="/staff/Aktifitasbarang/keluar">
             <button className="text-red-800 bg-red-200 hover:bg-red-500 hover:text-white text-sm rounded-lg px-3 py-2">
               + Barang Keluar
             </button>
@@ -197,8 +198,8 @@ export default function TableAktifitas() {
           </thead>
           <tbody>
             {currentData.map((aktivitas, index) => (
-              <tr key={aktivitas.id} className="odd:bg-white even:bg-gray-100 border-gray-600">
-                <td className="px-4 py-4">{(currentPage - 1) * itemsPerPage + index + 1}</td>
+              <tr key={aktivitas.id} className="border-b">
+                <td className="px-4 py-4">{index + 1}</td>
 
                 <td className="px-6 py-4">
                   {aktivitas.barang?.nama_barang || "Tidak ada data"}{" "}
@@ -252,7 +253,7 @@ export default function TableAktifitas() {
 
                 <td className="px-6 py-4 text-xs">
                   <div className="flex gap-2">
-                    <Link to={`/AktifitasBarang/${aktivitas.id}/edit`}>
+                    <Link to={`/staff/AktifitasBarang/${aktivitas.id}/edit`}>
                       <button className="bg-blue-200 text-blue-800 px-3 py-1 rounded-lg">
                         Edit
                       </button>
@@ -265,7 +266,7 @@ export default function TableAktifitas() {
                     </button>
                   </div>
                   <div className="flex gap-2 mt-2">
-                    <Link to={`/AktifitasBarang/${aktivitas.id}/show`}>
+                    <Link to={`/staff/AktifitasBarang/${aktivitas.id}/show`}>
                       <button className="bg-green-200 text-green-800 px-3 py-1 rounded-lg ">
                         Show
                       </button>
@@ -283,24 +284,6 @@ export default function TableAktifitas() {
           </tbody>
         </table>
       </div>
-
-      {aktivitasData.length > itemsPerPage && (
-            <div className="flex justify-center mt-4">
-              {Array.from({ length: totalPages }, (_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentPage(index + 1)}
-                  className={`mx-1 px-3 py-1 rounded-md ${
-                    currentPage === index + 1
-                      ? "border border-blue-500 bg-white text-black"
-                      : "bg-gray-100 text-gray-500"
-                  }`}
-                >
-                  {index + 1}
-                </button>
-              ))}
-            </div>
-          )}
 
       {/* Modal Pemindahan Create/Edit */}
       {(isCreateModalOpen || isEditModalOpen) && (
@@ -348,13 +331,13 @@ export default function TableAktifitas() {
                   setIsCreateModalOpen(false);
                   setIsEditModalOpen(false);
                 }}
-                className="font-xs border border-black bg-white text-black hover:bg-black hover:text-white px-3 py-1 rounded"
+                className="bg-gray-200 px-4 py-2 rounded"
               >
                 Batal
               </button>
               <button
                 onClick={isCreateModalOpen ? handleCreate : handleEdit}
-                className="font-xs border border-black text-white bg-black hover:bg-white hover:text-black px-3 py-1 rounded"
+                className="bg-blue-600 text-white px-4 py-2 rounded"
               >
                 {isCreateModalOpen ? "Simpan" : "Update"}
               </button>

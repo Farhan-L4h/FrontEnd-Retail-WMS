@@ -114,7 +114,7 @@ function EditBarang() {
         }
       );
       toast.success("Barang berhasil diperbarui!");
-      setTimeout(() => navigate("/AktifitasBarang"), 2000);
+      setTimeout(() => navigate("/staff/aktifitas"), 2000);
     } catch (err) {
       if (err.response && err.response.status === 422) {
         const errors = err.response.data.errors;
@@ -269,13 +269,13 @@ function EditBarang() {
                   <button
                     type="button"
                     onClick={() => navigate("/AktifitasBarang")} // Kembali tanpa simpan
-                    className="font-xs border border-black bg-white text-black hover:bg-black hover:text-white px-3 py-1 rounded"
+                    className="bg-gray-400 hover:bg-gray-500 text-white p-2 rounded"
                   >
                     Kembali
                   </button>
                   <button
                     type="submit"
-                    className="font-xs border border-black text-white bg-black hover:bg-white hover:text-black px-3 py-1 rounded"
+                    className="bg-green-600 hover:bg-green-700 text-white p-2 rounded"
                   >
                     Simpan
                   </button>

@@ -76,7 +76,7 @@ export default function ShowAktiv() {
               <h3 className="text-xl font-semibold">
                 Detail Aktivitas {aktivitasData?.nama_barang}
               </h3>
-              <Link to="/aktifitasBarang">
+              <Link to="/staff/aktifitas">
                 <button className="bg-black text-white border border-black hover:bg-white hover:text-black rounded-lg px-3 py-1 text-sm">
                   Kembali
                 </button>
@@ -92,13 +92,13 @@ export default function ShowAktiv() {
                   </tr>
                 </thead>
                 <tbody>
-                <tr className="border-b odd:bg-white even:bg-gray-100">
+                <tr className="border-b">
                     <td className="px-6 py-4">Barang</td>
                     <td className="px-6 py-4">
                       <strong>{aktivitasData?.barang.nama_barang || "Tidak tersedia"}</strong>
                     </td>
                   </tr>
-                  <tr className="border-b odd:bg-white even:bg-gray-100">
+                  <tr className="border-b">
                     <td className="px-6 py-4">Status</td>
                     <td className="px-6 py-4">
                       {aktivitasData?.alasan === "diterima" ? (
@@ -125,14 +125,14 @@ export default function ShowAktiv() {
                     </td>
                   </tr>
                   
-                  <tr className="border-b odd:bg-white even:bg-gray-100">
+                  <tr className="border-b">
                     <td className="px-6 py-4">Lokasi Rak</td>
                     <td className="px-6 py-4">
                       <strong>#{aktivitasData?.rak.kode_rak || "Tidak tersedia"}</strong>
                       <br /> {aktivitasData?.rak.nama_rak || "Tidak tersedia"}
                     </td>
                   </tr>
-                  <tr className="border-b odd:bg-white even:bg-gray-100">
+                  <tr className="border-b">
                     <td className="px-6 py-4">EXP Barang</td>
                     <td className="px-6 py-4">
                       {new Date(aktivitasData?.exp_barang).toLocaleDateString(
@@ -141,25 +141,25 @@ export default function ShowAktiv() {
                   ) || "Tidak tersedia"}
                     </td>
                   </tr>
-                  <tr className="border-b odd:bg-white even:bg-gray-100">
+                  <tr className="border-b">
                     <td className="px-6 py-4">Harga Perbarang</td>
                     <td className="px-6 py-4">
                       {aktivitasData?.barang.harga || "Tidak tersedia"}
                     </td>
                   </tr>
-                  <tr className="border-b odd:bg-white even:bg-gray-100">
+                  <tr className="border-b">
                     <td className="px-6 py-4">Total Harga</td>
                     <td className="px-6 py-4">
                       {aktivitasData?.total_harga || "Tidak tersedia"}
                     </td>
                   </tr>
-                  <tr className="border-b odd:bg-white even:bg-gray-100">
+                  <tr className="border-b">
                     <td className="px-6 py-4">Username</td>
                     <td className="px-6 py-4">
                       {aktivitasData?.username || "Tidak tersedia"}
                     </td>
                   </tr>
-                  <tr className="border-b odd:bg-white even:bg-gray-100">
+                  <tr className="border-b">
                     <td className="px-6 py-4">Tanggal Aktivitas</td>
                     <td className="px-6 py-4">
                     {new Date(aktivitasData?.tanggal_update).toLocaleDateString(

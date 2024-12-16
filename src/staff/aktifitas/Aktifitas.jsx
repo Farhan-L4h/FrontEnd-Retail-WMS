@@ -6,9 +6,8 @@ import NavBar2 from "../../components/Navbar2";
 import { Link } from "react-router-dom";
 import Table from "../../components/Table";
 import LinkPath from "../../components/LinkPath";
-// import TableAktifitas from "./TableAktiftas";
+import TableAktifitas from "./TableAktiftas";
 import Footer from "../../components/Footer";
-import TableUser from "./tableUser";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -20,17 +19,16 @@ function App() {
         <NavBar2 />
       </div>
 
-      <div className="flex flex-row mt-16 ">
+      <div className="flex flex-row mt-16">
         {/* Sidebar */}
         <div className="w-64 bg-gray-100 mt- fixed top-0 z-30 mt-7">
           <SideBar/>
         </div>
 
         {/* Konten utama */}
-        <div className="ml-64 p-6 w-full">
+        <div className="ml-64 p-6 w-max">
           <LinkPath />
-          <div className="flex justify-end text-sm"></div>
-          <TableUser />
+          <TableAktifitas />
           <Footer />
         </div>
       </div>

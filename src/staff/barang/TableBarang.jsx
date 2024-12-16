@@ -9,7 +9,7 @@ export default function TableBarang() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 15;
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteData, setDeleteData] = useState({ id: "", nama_barang: "" });
 
@@ -102,7 +102,7 @@ export default function TableBarang() {
 
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-xl font-semibold">Table Barang</h3>
-        <Link to="/Barang/create">
+        <Link to="/staff/Barang/create">
           <button className="text-green-800 bg-green-200 hover:bg-green-500 hover:text-green-200 text-sm rounded-lg px-3 py-2">
             Tambah Barang
           </button>
@@ -126,9 +126,8 @@ export default function TableBarang() {
           </thead>
           <tbody>
             {currentData.map((barang, index) => (
-              // <tr key={barang.id} className="border-b">
-              <tr key={barang.id} className="odd:bg-white even:bg-gray-100 border-gray-600">
-                <td className="px-4 py-4">{(currentPage - 1) * itemsPerPage + index + 1}</td>
+              <tr key={barang.id} className="border-b">
+                <td className="px-4 py-4">{index + 1}</td>
                 <td className="px-6 py-4">{barang.nama_barang}</td>
                 <td className="px-6 py-4">
                   {barang.image && (
@@ -148,7 +147,7 @@ export default function TableBarang() {
                   ) || '-'}</td>
                 <td className="px-6 py-4">{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(barang.harga)}</td>
                 <td className="px-6 py-4">
-                  <Link to={`/Barang/${barang.id}/edit`}>
+                  <Link to={`/staff/Barang/${barang.id}/edit`}>
                     <button className="font-medium text-xs bg-blue-200 rounded-xl px-3 py-1 ms-2 text-blue-800 hover:underline">
                       Edit
                     </button>
@@ -159,7 +158,7 @@ export default function TableBarang() {
                   >
                     Delete
                   </button>
-                  <Link to={`/barang/${barang.id}/show`}>
+                  <Link to={`/staff/barang/${barang.id}/show`}>
                     <button className="font-medium p-2 ms-1 text-xs rounded-xl bg-green-200 text-green-800 px-2 py-1 hover:underline">
                       Show
                     </button>
@@ -170,24 +169,6 @@ export default function TableBarang() {
           </tbody>
         </table>
       </div>
-
-      {barangData.length > itemsPerPage && (
-            <div className="flex justify-center mt-4">
-              {Array.from({ length: totalPages }, (_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentPage(index + 1)}
-                  className={`mx-1 px-3 py-1 rounded-md ${
-                    currentPage === index + 1
-                      ? "border border-blue-500 bg-white text-black"
-                      : "bg-gray-100 text-gray-500"
-                  }`}
-                >
-                  {index + 1}
-                </button>
-              ))}
-            </div>
-          )}
 
       {/* Delete Modal */}
       {isDeleteModalOpen && (

@@ -5,36 +5,19 @@ import SideBar from "../components/SideBar";
 import NavBar from "../components/Navbar2";
 import LinkPath from "../components/LinkPath";
 import Chart from "../components/chart1";
-import Chart2 from "../components/chart2";
+import Footer from "../components/Footer";
 import LowStockTable from "./gudang/TbStokRendah";
 import ExpiringSoonTable from "./gudang/TbExpired";
-import Footer from "../components/Footer";
+import Chart2 from "../components/chart2";
 
 const Dashboard = () => {
-  const [data, setData] = useState({
-    total_masuk: 0,
-    total_keluar: 0,
-    total_stok: 0,
-  });
+  const [data, setData] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const response = await fetch("http://127.0.0.1:8000/api/dashboard-total");
-        if (!response.ok) {
-          throw new Error("Failed to fetch data");
-        }
-        const result = await response.json();
-        console.log("API Response:", result);
-        setData({
-          total_masuk: result.total_barang_masuk || 0,
-          total_keluar: result.total_barang_keluar || 0,
-          total_stok: result.total_stok || 0,
-        });
-        
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
+      const response = await fetch("/api/barang"); // Ganti dengan endpoint yang sesuai
+      const result = await response.json();
+      setData(result.data);
     };
 
     fetchData();
@@ -42,10 +25,24 @@ const Dashboard = () => {
 
   return (
     <>
-      {/* Informasi Barang */}
-      <div className="flex w-full ">
+      {/* NavBar */}
+      <div className="fixed top-0 w-full z-40">
+        <NavBar />
+      </div>
+
+      <div className="flex flex-row mt-16">
+        {/* Sidebar */}
+        <div className="w-64 bg-gray-100 fixed top-0 z-30 mt-7">
+          <SideBar />
+        </div>
+
+        {/* Konten utama */}
+        <div className="ml-64 p-6 w-max">
+          <LinkPath />
+          <div className="flex w-full ">
             {/* Barang Masuk */}
-            <div className="bg-green-400 w-max px-6 py-6 rounded-md m-2 flex gap-6 items-center">
+            {/* Barang Masuk */}
+            <div className="bg-green-400 w-full px-6 py-6 rounded-md m-2 flex gap-6 items-center">
               <div className="flex gap-2 items-center">
                 <svg
                   class="w-6 h-6 text-white"
@@ -75,7 +72,7 @@ const Dashboard = () => {
               />
             </div>
 
-            <div className="bg-blue-400 w-max px-6 py-6 rounded-md m-2 flex gap-6 items-center">
+            <div className="bg-blue-400 w-full px-6 py-6 rounded-md m-2 flex gap-6 items-center">
               <div className="flex gap-2 items-center">
                 <svg
                   class="w-6 h-6 text-white dark:text-white"
@@ -103,7 +100,7 @@ const Dashboard = () => {
               />
             </div>
 
-            <div className="bg-orange-300 w-max px-6 py-6 rounded-md m-2 flex gap-6 items-center">
+            <div className="bg-orange-300 w-full px-6 py-6 rounded-md m-2 flex gap-6 items-center">
               <div className="flex gap-2 items-center">
                 <svg
                   class="w-6 h-6 text-white dark:text-white"
@@ -125,47 +122,22 @@ const Dashboard = () => {
               </div>
               <input
                 type="text"
-                value={data.total_stok || 0}
+                value={data.stok || 0}
                 className="bg-gray-100 w-16 text-center text-lg font-semibold text-yellow-500 border-none h-10 rounded-lg"
                 disabled
               />
             </div>
           </div>
 
-      {/* Grafik */}
-      <div className="flex w-full max-w-full">
-        <Chart />
-        <Chart2 />
-      </div>
+          <div className="flex w-full max-w-full">
+            <Chart />
+            <Chart2 />
+          </div>
 
-      {/* Tabel */}
-      <div className="flex">
-        <LowStockTable />
-        <ExpiringSoonTable />
-      </div>
-    </>
-  );
-};
-
-
-const App = () => {
-  return (
-    <>
-      {/* Navbar */}
-      <div className="fixed top-0 w-full z-40">
-        <NavBar />
-      </div>
-
-      <div className="flex flex-row mt-16">
-        {/* Sidebar */}
-        <div className="w-64 bg-gray-100 fixed top-0 z-30 mt-7">
-          <SideBar />
-        </div>
-
-        {/* Konten Utama */}
-        <div className="ml-64 p-6 w-max">
-          <LinkPath />
-          <Dashboard />
+          <div className="flex">
+            <LowStockTable />
+            <ExpiringSoonTable />
+          </div>
           <Footer />
         </div>
       </div>
@@ -173,4 +145,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default Dashboard;

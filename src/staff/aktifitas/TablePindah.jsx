@@ -92,7 +92,7 @@ export default function TablePindah() {
           </thead>
           <tbody>
             {currentData.map((pindah) => (
-              <tr key={pindah.id} className="odd:bg-white even:bg-gray-100 border-gray-600">
+              <tr key={pindah.id} className="border-b">
                 <td className="px-6 py-4">{pindah.nama_barang || "No data"}</td>
                 <td className="px-6 py-4">{pindah.nama_rak_asal || "No data"}</td>
                 <td className="px-6 py-4">{pindah.nama_rak_tujuan || "No data"}</td>

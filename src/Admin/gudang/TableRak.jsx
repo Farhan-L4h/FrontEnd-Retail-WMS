@@ -156,9 +156,9 @@ export default function TableRak() {
             </tr>
           </thead>
           <tbody>
-            {currentData.map((rak) => (
+            {currentData.map((rak, index) => (
               <tr key={rak.id} className="odd:bg-white even:bg-gray-100 border-gray-600 ">
-                <td className="px-6 py-2">{rak.id}</td>
+                <td className="px-6 py-2">{(currentPage - 1) * itemsPerPage + index + 1}</td>
                 <td className="px-6 py-2">{rak.kode_rak}</td>
                 <td className="px-6 py-2">{rak.nama_rak}</td>
                 <td className="px-6 py-2">{rak.lokasi_rak}</td>
@@ -310,13 +310,13 @@ export default function TableRak() {
                 <button
                   type="button"
                   onClick={toggleEditModal}
-                  className="px-4 py-2 text-white bg-red-600 rounded-md"
+                  className="border border-black bg-white text-black hover:bg-black hover:text-white px-4 py-2 rounded"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-white bg-blue-600 rounded-md"
+                  className="px-4 py-2 border border-black text-white bg-black hover:bg-white hover:text-black rounded"
                 >
                   {isEdit ? "save" : "Tambah Rak"}
                 </button>

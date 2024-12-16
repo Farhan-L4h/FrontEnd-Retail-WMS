@@ -48,7 +48,7 @@ function TbStokRendah() {
           <thead className="text-xs font-medium text-gray-700 uppercase bg-gray-200">
             <tr>
               <th scope="col" className="px-6 py-3">
-                ID
+                NO
               </th>
               <th scope="col" className="px-6 py-3">
                 Nama Barang
@@ -62,9 +62,9 @@ function TbStokRendah() {
             </tr>
           </thead>
           <tbody>
-            {lowStockItems.map((item) => (
+            {lowStockItems.map((item, index) => (
               <tr key={item.id} className="odd:bg-white even:bg-gray-100 border-gray-600">
-                <td className="px-6 py-4">{item.id}</td>
+                <td className="px-6 py-4">{index + 1 }</td>
                 <td className="px-6 py-4">{item.nama_barang}</td>
                 <td className="px-6 py-4">{item.stok}</td>
                 <td className="px-6 py-4">{getStatusBadge(getStatus(item.stok))}</td>

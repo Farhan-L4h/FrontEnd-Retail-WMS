@@ -185,8 +185,8 @@ function KeluarAktif() {
                     value={formData.alasan}
                     onChange={handleChange}
                     options={[
-                      { id: "return", nama: "Expired" },
-                      { id: "dibuang", nama: "Dibuang" },
+                      { id: "return", nama: "Return" },
+                      { id: "dibuang", nama: "Expired" },
                       { id: "diambil", nama: "Diambil" },
                     ]}
                     required
@@ -196,18 +196,7 @@ function KeluarAktif() {
                 <div className="flex justify-end gap-2 mt-4">
                   <button
                     type="button"
-                    onClick={() =>
-                      setFormData({
-                        id_barang: "",
-                        jumlah_barang: "",
-                        id_rak: "",
-                        alasan: "",
-                        tanggal: new Date().toISOString().split("T")[0],
-                        status: "keluar",
-                        username: "",
-                        exp_barang: null,
-                      })
-                    }
+                    onClick={() => navigate("/Aktifitasbarang")} // Kembali tanpa simpan
                     className="font-xs border border-black bg-white text-black hover:bg-black hover:text-white px-3 py-1 rounded"
                   >
                     Batal

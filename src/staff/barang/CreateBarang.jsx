@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../../App.css";
 import "../../index.css";
@@ -9,10 +9,10 @@ import LinkPath from "../../components/LinkPath";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-function EditBarang() {
-  const { id } = useParams(); // Get ID from URL params
+
+function FormBarang() {
   const [formData, setFormData] = useState({
-    image: null, // Image file
+    image: "", // Gambar sebagai string Base64
     id_kategori: "",
     id_supplier: "",
     nama_barang: "",
@@ -27,26 +27,19 @@ function EditBarang() {
 
   const navigate = useNavigate();
 
-  // Fetch data for category, supplier, and product details
+  // Memuat data kategori dan supplier
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const [kategoriResponse, supplierResponse, barangResponse] = await Promise.all([
+        const [kategoriResponse, supplierResponse] = await Promise.all([
           axios.get("http://127.0.0.1:8000/api/kategori"),
           axios.get("http://127.0.0.1:8000/api/supplier"),
-          axios.get(`http://127.0.0.1:8000/api/barang/${id}/show`), // Use id param for API request
         ]);
         setKategoriOptions(kategoriResponse.data.data);
         setSupplierOptions(supplierResponse.data.data);
-
-        // Set existing product data to form
-        setFormData({
-          ...barangResponse.data.data,
-          image: null, // Do not set image file, only reference
-        });
       } catch (err) {
-        setError("Failed to load data.");
+        setError("Gagal memuat data");
         console.error("Error fetching data:", err);
       } finally {
         setLoading(false);
@@ -54,59 +47,67 @@ function EditBarang() {
     };
 
     fetchData();
-  }, [id]); // Depend on id, so data refreshes when the id changes in URL
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "file" ? files[0] : value,
-    }));
+    if (type === "file") {
+      // Simpan file gambar ke state
+      setFormData((prev) => ({
+        ...prev,
+        [name]: files[0], // Simpan gambar sebagai file
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
-  const handleSubmit = async (e) => {
+  // Submit form
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Input validation
-    if (!formData.nama_barang || !formData.harga || !formData.id_supplier || !formData.id_kategori) {
-      toast.error("Nama barang, harga, kategori, dan supplier wajib diisi!");
+  
+    // Validasi
+    if (!formData.nama_barang || !formData.harga || !formData.id_supplier) {
+      toast.error("Nama barang, harga, dan supplier wajib diisi!");
       return;
     }
-
-    // Prepare FormData for sending
+  
     const formPayload = new FormData();
-    formPayload.append("nama_barang", formData.nama_barang);
-    formPayload.append("deskripsi", formData.deskripsi);
-    formPayload.append("harga", formData.harga.toString()); 
-    formPayload.append("id_kategori", formData.id_kategori.toString()); 
-    formPayload.append("id_supplier", formData.id_supplier.toString()); 
-    if (formData.image) formPayload.append("image", formData.image);
-
-    try {
-      const formDataJson = JSON.stringify(Object.fromEntries(formPayload.entries()));
-      await axios.put(`http://127.0.0.1:8000/api/barang/${id}/update`, formDataJson, {
-        headers: { "Content-Type": "application/json" },
-      });
-      alert('Barang berhasil diperbarui!')
-      navigate("/barang");
-      // setTimeout(() => {
-        //   toast.success("Barang berhasil diperbarui!");
-        //   navigate("/barang");
-      // }, 1000); // Add a 3-second delay before showing toast and navigating
-    } catch (err) {
-      if (err.response && err.response.status === 422) {
-        const errors = err.response.data.errors;
-        Object.keys(errors).forEach((field) => {
-          toast.error(errors[field][0]); // Show specific error message
-        });
+    Object.keys(formData).forEach((key) => {
+      if (key === "image" && formData[key]) {
+        formPayload.append(key, formData[key], formData[key].name);
       } else {
-        toast.error("Gagal memperbarui barang. Silakan coba lagi.");
+        formPayload.append(key, formData[key]);
       }
-      console.error("Error updating data:", err.response?.data);
-    }
+    });
+  
+    axios
+      .post("http://127.0.0.1:8000/api/barang", formPayload, {
+        headers: { "Content-Type": "multipart/form-data" },
+      })
+      .then((response) => {
+        setFormData({
+          nama_barang: "",
+          id_kategori: "",
+          tanggal_expired: "",
+          harga: "",
+          deskripsi: "",
+          id_supplier: "",
+          image: null,
+        });
+        toast.success("Barang berhasil disimpan!");
+        setTimeout(() => navigate("/staff/barang"), 1000);
+      })
+      .catch((err) => {
+        toast.error("Gagal menyimpan barang. Silakan coba lagi.");
+        console.error("Gagal menyimpan data:", err);
+      });
   };
-
-
+  
+  
 
   return (
     <>
@@ -119,14 +120,16 @@ function EditBarang() {
         </div>
         <div className="ml-64 p-6 w-full">
           <LinkPath />
-          <ToastContainer position="top-right" autoClose={3000} />
           <div className="w-full">
             {loading ? (
               <p>Loading data...</p>
             ) : error ? (
               <p className="text-red-500">{error}</p>
             ) : (
-              <form onSubmit={handleSubmit} className="bg-white p-5 rounded-md text-start">
+              <form
+                onSubmit={handleSubmit}
+                className="bg-white p-5 rounded-md text-start"
+              >
                 <div className="flex gap-4">
                   <div className="w-1/2">
                     {/* Input Nama Barang */}
@@ -179,7 +182,6 @@ function EditBarang() {
                         )}
                       </select>
                     </div>
-
                     {/* Input Harga */}
                     <div className="mb-5">
                       <label
@@ -218,7 +220,6 @@ function EditBarang() {
                         className="border rounded-lg w-full"
                       />
                     </div>
-
                     {/* Select Supplier */}
                     <div className="mt-5">
                       <label htmlFor="id_supplier">Pilih Supplier</label>
@@ -267,20 +268,34 @@ function EditBarang() {
                 <div className="flex justify-end gap-2">
                   <button
                     type="button"
-                    onClick={() => navigate("/barang")} // Kembali tanpa simpan
-                    className="bg-white-400 border border-black hover:bg-black hover:text-white px-3 py-1 rounded"
+                    onClick={() =>
+                      setFormData({
+                        nama_barang: "",
+                        id_kategori: "",
+                        tanggal_expired: "",
+                        harga: "",
+                        deskripsi: "",
+                        id_supplier: "",
+                        image: "",
+                      })
+                    }
+                    className="bg-gray-400 hover:bg-gray-500 text-white p-2 rounded"
                   >
-                    Kembali
+                    Batal
                   </button>
                   <button
                     type="submit"
-                    className="bg-black border text-white border-black hover:bg-white hover:text-black px-3 py-1 rounded"
+                    className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded"
                   >
                     Simpan
                   </button>
                 </div>
               </form>
             )}
+
+            {/* toast */}
+            <ToastContainer position="top-right" autoClose={3000} />
+
           </div>
         </div>
       </div>
@@ -288,4 +303,4 @@ function EditBarang() {
   );
 }
 
-export default EditBarang;
+export default FormBarang;

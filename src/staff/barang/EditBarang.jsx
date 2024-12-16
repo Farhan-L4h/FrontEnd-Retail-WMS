@@ -88,7 +88,7 @@ function EditBarang() {
         headers: { "Content-Type": "application/json" },
       });
       alert('Barang berhasil diperbarui!')
-      navigate("/barang");
+      navigate("/staff/barang");
       // setTimeout(() => {
         //   toast.success("Barang berhasil diperbarui!");
         //   navigate("/barang");
@@ -268,13 +268,13 @@ function EditBarang() {
                   <button
                     type="button"
                     onClick={() => navigate("/barang")} // Kembali tanpa simpan
-                    className="bg-white-400 border border-black hover:bg-black hover:text-white px-3 py-1 rounded"
+                    className="bg-gray-400 hover:bg-gray-500 text-white p-2 rounded"
                   >
                     Kembali
                   </button>
                   <button
                     type="submit"
-                    className="bg-black border text-white border-black hover:bg-white hover:text-black px-3 py-1 rounded"
+                    className="bg-green-600 hover:bg-green-700 text-white p-2 rounded"
                   >
                     Simpan
                   </button>

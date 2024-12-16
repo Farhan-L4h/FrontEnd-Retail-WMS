@@ -115,7 +115,7 @@ function MasukAktif() {
         exp_barang: "",
       });
       toast.success("Barang berhasil Disimpan!");
-      setTimeout(() => navigate("/AktifitasBarang"), 1000);
+      setTimeout(() => navigate("/staff/Aktifitas"), 1000);
     } catch (err) {
       toast.error("Gagal menyimpan barang. Silakan coba lagi.");
       console.error("Error submitting data:", err);
@@ -192,7 +192,18 @@ function MasukAktif() {
                 <div className="flex justify-end gap-2 mt-4">
                   <button
                     type="button"
-                    onClick={() => navigate("/Aktifitasbarang")} // Kembali tanpa simpan
+                    onClick={() =>
+                      setFormData({
+                        id_barang: "",
+                        jumlah_barang: "",
+                        id_rak: "",
+                        alasan: "diterima",
+                        tanggal: new Date().toISOString().split("T")[0],
+                        status: "masuk",
+                        username: "",
+                        exp_barang: "",
+                      })
+                    }
                     className="font-xs border border-black bg-white text-black hover:bg-black hover:text-white px-3 py-1 rounded"
                   >
                     Batal
