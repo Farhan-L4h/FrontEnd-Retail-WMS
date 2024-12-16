@@ -1,19 +1,18 @@
-import React, { useEffect, useState } from "react"; // Tambahkan useState
+import React, { useEffect, useState } from "react";
 import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from "chart.js";
 import { Bar } from "react-chartjs-2";
 
-ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend); // Daftarkan elemen ChartJS
+ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 const SupplierChart = () => {
-  const [chartData, setChartData] = useState(null); // State untuk menyimpan data chart
-  const [loading, setLoading] = useState(true); // State untuk loading
-  const [error, setError] = useState(null); // State untuk menyimpan error
+  const [chartData, setChartData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Fetch data dari API
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:8000/api/chart-supplier"); // Ganti URL sesuai endpoint API Anda
+        const response = await fetch("http://localhost:8000/api/chart-supplier");
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -21,23 +20,20 @@ const SupplierChart = () => {
 
         const result = await response.json();
 
-        // Validasi apakah result.data adalah array
         if (!Array.isArray(result.data)) {
           throw new Error("Invalid data format: Expected an array");
         }
 
-        // Format data chart
         const supplierNames = result.data.map((item) =>
           item.nama_supplier
             ? item.nama_supplier.length > 15
               ? item.nama_supplier.slice(0, 15) + "..."
               : item.nama_supplier
-            : "Unknown" // Default jika nama_supplier tidak ada
+            : "Unknown"
         );
 
-        const supplierTotals = result.data.map((item) => item.total_barang || 0); // Default total_barang ke 0 jika undefined
+        const supplierTotals = result.data.map((item) => item.total_barang || 0);
 
-        // Simpan data ke state
         setChartData({
           labels: supplierNames,
           datasets: [
@@ -45,22 +41,19 @@ const SupplierChart = () => {
               label: "Total Barang yang Disuplai",
               data: supplierTotals,
               backgroundColor: [
-                "#1d4ed8",
-                "#2563eb",
-                "#3b82f6",
-                "#60a5fa",
-                "#93c5fd",
+                "#1d4ed8", "#2563eb", "#3b82f6", "#60a5fa", "#93c5fd",
               ],
               borderWidth: 1,
+              barThickness: 20,
             },
           ],
         });
 
-        setLoading(false); // Loading selesai
+        setLoading(false);
       } catch (err) {
         console.error("Error fetching supplier data:", err.message);
-        setError(err.message); // Simpan error
-        setLoading(false); // Loading selesai meski ada error
+        setError(err.message);
+        setLoading(false);
       }
     };
 
@@ -70,9 +63,13 @@ const SupplierChart = () => {
   // Opsi chart
   const options = {
     responsive: true,
+    maintainAspectRatio: false, // Grafik mengikuti tinggi container
+    layout: {
+      padding: 10, // Tambahkan padding internal di grafik
+    },
     plugins: {
       legend: {
-        display: false, // Tidak menampilkan legenda
+        display: false,
       },
       tooltip: {
         callbacks: {
@@ -85,26 +82,27 @@ const SupplierChart = () => {
     scales: {
       x: {
         ticks: {
-          color: "#4b5563", // Warna teks pada sumbu X
+          color: "#4b5563",
         },
       },
       y: {
         ticks: {
-          color: "#4b5563", // Warna teks pada sumbu Y
+          color: "#4b5563",
         },
-        beginAtZero: true, // Mulai dari 0
+        beginAtZero: true,
       },
     },
   };
 
   return (
-    <div className="bg-white rounded-lg shadow p-6 m-2 w-full h-full">
+    <div className="bg-white rounded-lg shadow p-6 m-2 w-full h-[450px]">
+      {/* Judul */}
       <div className="flex justify-between mb-3">
         <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
           Top Supplier
         </h2>
       </div>
-      <div className="mt-4">
+      <div className="h-full p-4"> 
         {loading ? (
           <p className="text-center text-gray-500">Loading...</p>
         ) : error ? (
