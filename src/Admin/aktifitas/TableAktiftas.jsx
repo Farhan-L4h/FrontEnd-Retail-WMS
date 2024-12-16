@@ -9,7 +9,7 @@ export default function TableAktifitas() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 15;
+  const itemsPerPage = 5;
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -197,8 +197,8 @@ export default function TableAktifitas() {
           </thead>
           <tbody>
             {currentData.map((aktivitas, index) => (
-              <tr key={aktivitas.id} className="border-b">
-                <td className="px-4 py-4">{index + 1}</td>
+              <tr key={aktivitas.id} className="odd:bg-white even:bg-gray-100 border-gray-600">
+                <td className="px-4 py-4">{(currentPage - 1) * itemsPerPage + index + 1}</td>
 
                 <td className="px-6 py-4">
                   {aktivitas.barang?.nama_barang || "Tidak ada data"}{" "}
@@ -283,6 +283,24 @@ export default function TableAktifitas() {
           </tbody>
         </table>
       </div>
+
+      {aktivitasData.length > itemsPerPage && (
+            <div className="flex justify-center mt-4">
+              {Array.from({ length: totalPages }, (_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentPage(index + 1)}
+                  className={`mx-1 px-3 py-1 rounded-md ${
+                    currentPage === index + 1
+                      ? "border border-blue-500 bg-white text-black"
+                      : "bg-gray-100 text-gray-500"
+                  }`}
+                >
+                  {index + 1}
+                </button>
+              ))}
+            </div>
+          )}
 
       {/* Modal Pemindahan Create/Edit */}
       {(isCreateModalOpen || isEditModalOpen) && (

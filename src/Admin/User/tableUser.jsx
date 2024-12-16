@@ -157,7 +157,8 @@ const User = () => {
             </thead>
             <tbody>
               {currentData.map((user, index) => (
-                <tr key={user.id} className="bg-white border-b">
+                // <tr key={user.id} className="bg-white border-b">
+                <tr key={user.id} className="odd:bg-white even:bg-gray-100 border-gray-600">
                   <td className="px-4 py-2">{(currentPage - 1) * itemsPerPage + index + 1}</td>
                   <td className="px-4 py-2">{user.username}</td>
                   <td className="px-4 py-2">{user.email}</td>

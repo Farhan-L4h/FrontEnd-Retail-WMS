@@ -61,9 +61,7 @@ export default function TableBarang() {
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-semibold">Table show {barangData?.nama_barang}</h3>
               <Link to="/Barang">
-                <button className="bg-black text-white border border-black hover:bg-white hover:text-black rounded-lg px-3 py-1 text-sm">
-                  Kembali
-                </button>
+                <button className="bg-black text-white border border-black hover:bg-white hover:text-black rounded-lg px-3 py-1 text-sm">Kembali</button>
               </Link>
             </div>
 
@@ -76,45 +74,39 @@ export default function TableBarang() {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr className="border-b">
+                  <tr className="border-b odd:bg-white even:bg-gray-100">
                     <td className="px-6 py-4">Nama Barang</td>
-                    <td className="px-6 py-4">{barangData?.nama_barang || "Tidak tersedia" }</td>
+                    <td className="px-6 py-4">{barangData?.nama_barang || "Tidak tersedia"}</td>
                   </tr>
-                  <tr className="border-b">
+                  <tr className="border-b odd:bg-white even:bg-gray-100">
                     <td className="px-6 py-4">Image</td>
-                    <td className="px-6 py-4">
-                      {barangData?.image ? (
-                        <img src={barangData?.image || "Tidak tersedia" } alt="Barang" className="w-10 h-10 object-contain" />
-                      ) : (
-                        <p>No Image Available</p>
-                      )}
-                    </td>
+                    <td className="px-6 py-4">{barangData?.image ? <img src={barangData?.image || "Tidak tersedia"} alt="Barang" className="w-10 h-10 object-contain" /> : <p>No Image Available</p>}</td>
                   </tr>
-                  <tr className="border-b">
+                  <tr className="border-b odd:bg-white even:bg-gray-100">
                     <td className="px-6 py-4 w-max">Kategori</td>
                     <td className="px-6 py-4">{barangData?.kategori?.nama_kategori || "Tidak tersedia"}</td>
                   </tr>
-                  <tr className="border-b">
+                  <tr className="border-b odd:bg-white even:bg-gray-100">
                     <td className="px-6 py-4 w-max">Harga Barang</td>
                     <td className="px-6 py-4">{barangData?.harga || "Tidak tersedia"}</td>
                   </tr>
-                  <tr className="border-b">
+                  <tr className="border-b odd:bg-white even:bg-gray-100">
                     <td className="px-6 py-4 w-max">Stok</td>
                     <td className="px-6 py-4">{barangData.stok || "Tidak tersedia"}</td>
                   </tr>
-                  <tr className="border-b">
+                  <tr className="border-b odd:bg-white even:bg-gray-100">
                     <td className="px-6 py-4 w-max">Lokasi</td>
                     <td className="px-6 py-4">{barangData?.rak || "Tidak tersedia"}</td>
                   </tr>
-                  <tr className="border-b">
+                  <tr className="border-b odd:bg-white even:bg-gray-100">
                     <td className="px-6 py-4 w-max">EXP Date</td>
                     <td className="px-6 py-4">{barangData?.exp_barang || "Tidak tersedia"}</td>
-                    </tr>
-                  <tr className="border-b">
+                  </tr>
+                  <tr className="border-b odd:bg-white even:bg-gray-100">
                     <td className="px-6 py-4 w-max">Supplier</td>
                     <td className="px-6 py-4">{barangData?.supplier?.nama_supplier || "Tidak tersedia"}</td>
                   </tr>
-                  <tr className="border-b">
+                  <tr className="border-b odd:bg-white even:bg-gray-100">
                     <td className="px-6 py-4 w-max">Deskripsi</td>
                     <td className="px-6 py-4">{barangData?.deskripsi || "Tidak tersedia"}</td>
                   </tr>

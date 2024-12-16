@@ -156,9 +156,9 @@ export default function TableRak() {
             </tr>
           </thead>
           <tbody>
-            {currentData.map((rak) => (
+            {currentData.map((rak, index) => (
               <tr key={rak.id} className="odd:bg-white even:bg-gray-100 border-gray-600 ">
-                <td className="px-6 py-2">{rak.id}</td>
+                <td className="px-6 py-2">{(currentPage - 1) * itemsPerPage + index + 1}</td>
                 <td className="px-6 py-2">{rak.kode_rak}</td>
                 <td className="px-6 py-2">{rak.nama_rak}</td>
                 <td className="px-6 py-2">{rak.lokasi_rak}</td>

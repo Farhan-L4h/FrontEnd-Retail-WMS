@@ -166,12 +166,12 @@ export default function TableSupplier() {
             </tr>
           </thead>
           <tbody>
-            {currentData.map((supplier) => (
+            {currentData.map((supplier, index) => (
               <tr
                 key={supplier.id}
                 className="odd:bg-white even:bg-gray-100 border-gray-600"
               >
-                <td className="px-6 py-4">{supplier.id}</td>
+                <td className="px-6 py-4">{(currentPage - 1) * itemsPerPage + index + 1}</td>
                 <td className="px-6 py-4">{supplier.nama_supplier}</td>
                 <td className="px-6 py-4">{supplier.kontak}</td>
                 <td className="px-6 py-4">{supplier.alamat}</td>
@@ -195,25 +195,23 @@ export default function TableSupplier() {
         </table>
       </div>
 
-{/* Pagination */}
-{supplierData.length > itemsPerPage && (
-  <div className="flex justify-center mt-4">
-    {Array.from({ length: totalPages }, (_, index) => (
-      <button
-        key={index}
-        onClick={() => setCurrentPage(index + 1)}
-        className={`mx-1 px-3 py-1 rounded-md ${
-          currentPage === index + 1 
-            ? "border border-blue-500 bg-white text-black hover:bg-blue-500 hover:text-white" 
-            : "bg-gray-100 text-gray-500 hover:bg-gray-200"
-        }`}
-      >
-        {index + 1}
-      </button>
-    ))}
-  </div>
-)}
-{supplierData.length <= itemsPerPage && currentPage !== 1 && setCurrentPage(1)}
+      {supplierData.length > itemsPerPage && (
+            <div className="flex justify-center mt-4">
+              {Array.from({ length: totalPages }, (_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentPage(index + 1)}
+                  className={`mx-1 px-3 py-1 rounded-md ${
+                    currentPage === index + 1
+                      ? "border border-blue-500 bg-white text-black"
+                      : "bg-gray-100 text-gray-500"
+                  }`}
+                >
+                  {index + 1}
+                </button>
+              ))}
+            </div>
+          )}
 
 {/* ModalCreate */}
       {isAddModalOpen && (
