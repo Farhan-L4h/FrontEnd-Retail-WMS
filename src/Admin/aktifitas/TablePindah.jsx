@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function TablePindah() {
@@ -10,8 +10,6 @@ export default function TablePindah() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteData, setDeleteData] = useState(null);
   const [editData, setEditData] = useState(null);
@@ -22,7 +20,7 @@ export default function TablePindah() {
     jumlah_pindah: "",
   });
 
-  const itemsPerPage = 15;
+  const itemsPerPage = 7;
   const totalPages = Math.ceil(pindahData.length / itemsPerPage);
   const currentData = pindahData.slice(
     (currentPage - 1) * itemsPerPage,
@@ -58,31 +56,34 @@ export default function TablePindah() {
       await axios.delete(
         `http://127.0.0.1:8000/api/pemindahan/${deleteData.id}/destroy`
       );
-      toast.success(`Data Pemindahan ${deleteData.nama_barang} berhasil dihapus!  `);
+      toast.success(`Data Pemindahan ${deleteData.nama_barang} berhasil dihapus!`);
+      alert(`Data Pemindahan ${deleteData.nama_barang} berhasil dihapus!`)
       setIsDeleteModalOpen(false);
       setDeleteData(null);
-      fetchData();
+      fetchData(); // Refresh data
     } catch (err) {
-      toast.error("Gagal menghapus data pindah!");
-      setIsDeleteModalOpen(false);  // Close the modal even if deletion fails
+      console.error("Error deleting data:", err); // Debugging
+      const errorMessage =
+        err.response?.data?.message || "Gagal menghapus data pindah!";
+      toast.error(errorMessage); // Tampilkan toast error
     }
   };
+  
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
   return (
     <div className="m-2 bg-white p-4 rounded-md w-full">
-      <ToastContainer position="top-right" autoClose={3000} />
-
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-xl font-semibold">Table Pindah</h3>
       </div>
 
-      <div className="relative overflow-x-auto sm:rounded-lg w-max">
+      <div className="relative overflow-x-auto sm:rounded-lg w-full">
         <table className="w-full text-sm text-left text-gray-500">
           <thead className="text-xs text-gray-700 uppercase bg-gray-200">
             <tr>
+              <th className="px-6 py-3">No</th>
               <th className="px-6 py-3">Barang</th>
               <th className="px-6 py-3">Lokasi Awal</th>
               <th className="px-6 py-3">Lokasi Baru</th>
@@ -91,31 +92,55 @@ export default function TablePindah() {
             </tr>
           </thead>
           <tbody>
-            {currentData.map((pindah) => (
-              <tr key={pindah.id} className="odd:bg-white even:bg-gray-100 border-gray-600">
-                <td className="px-6 py-4">{pindah.nama_barang || "No data"}</td>
-                <td className="px-6 py-4">{pindah.nama_rak_asal || "No data"}</td>
-                <td className="px-6 py-4">{pindah.nama_rak_tujuan || "No data"}</td>
-                <td className="px-6 py-4">
-                  {new Date(pindah.tanggal_update).toLocaleDateString("id-ID", {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                  })}
-                </td>
-                <td className="px-6 py-4">
-                  <button
-                    onClick={() => {
-                      setDeleteData(pindah);
-                      setIsDeleteModalOpen(true);
-                    }}
-                    className="font-medium bg-red-200 rounded-lg px-2 py-1 text-xs text-red-800 hover:underline"
-                  >
-                    Delete
-                  </button>
+            {currentData.length > 0 ? (
+              currentData.map((pindah, index) => (
+                <tr
+                  key={pindah.id}
+                  className="odd:bg-white even:bg-gray-100 border-gray-600"
+                >
+                  <td className="px-6 py-4">{index + 1}</td>
+                  <td className="px-6 py-4">
+                    {pindah.nama_barang || "No data"}
+                  </td>
+                  <td className="px-6 py-4">
+                    {pindah.nama_rak_asal || "No data"}
+                  </td>
+                  <td className="px-6 py-4">
+                    {pindah.nama_rak_tujuan || "No data"}
+                  </td>
+                  <td className="px-6 py-4">
+                    {new Date(pindah.tanggal_update).toLocaleDateString(
+                      "id-ID",
+                      {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      }
+                    )}
+                  </td>
+                  <td className="px-6 py-4">
+                    <button
+                      onClick={() => {
+                        setDeleteData(pindah);
+                        setIsDeleteModalOpen(true);
+                      }}
+                      className="font-medium bg-red-200 rounded-lg px-2 py-1 text-xs text-red-800 hover:underline"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan="6"
+                  className="text-center px-6 py-4 bg-gray-100 text-gray-500"
+                >
+                  Data masih kosong
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
@@ -125,7 +150,10 @@ export default function TablePindah() {
         <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-50 z-40">
           <div className="bg-white p-6 rounded-md shadow-md w-96">
             <h2 className="text-lg font-semibold mb-4">Konfirmasi Hapus</h2>
-            <p>Apakah Anda yakin ingin menghapus data Pemindahan {deleteData?.nama_barang}?</p>
+            <p>
+              Apakah Anda yakin ingin menghapus data Pemindahan{" "}
+              {deleteData?.nama_barang}?
+            </p>
             <div className="flex justify-center gap-2 mt-4">
               <button
                 onClick={() => setIsDeleteModalOpen(false)}
@@ -143,6 +171,7 @@ export default function TablePindah() {
           </div>
         </div>
       )}
+      <ToastContainer/>
     </div>
   );
 }
