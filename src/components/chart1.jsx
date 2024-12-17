@@ -1,10 +1,20 @@
 import React, { useEffect, useState } from "react";
 import ApexCharts from "apexcharts";
 
+// Definisikan warna primary soft
+const primarySoftColors = [
+  "#4F88D4", // Soft Blue
+  "#F28C8C", // Soft Red
+  "#7EC8A7", // Soft Green
+  "#F9D86D", // Soft Yellow
+  "#9D7CC3", // Soft Purple
+  "#F5A623", // Soft Orange
+];
 
-const getChartOptions = (series, labels) => ({
+// Fungsi untuk konfigurasi chart
+const getChartOptions = (series, labels, colors) => ({
   series,
-  colors: ["#1C64F2", "#16BDCA", "#FDBA8C", "#E74694"],
+  colors, // Warna soft primary
   chart: {
     height: 320,
     width: "100%",
@@ -57,21 +67,28 @@ const getChartOptions = (series, labels) => ({
 });
 
 const DonutChart = () => {
-  const [chartData, setChartData] = useState({ series: [], labels: [] });
+  const [chartData, setChartData] = useState({ series: [], labels: [], colors: [] });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // Fetch data dari API
         const response = await fetch("http://localhost:8000/api/kategori-dengan-barang-terbanyak");
         if (!response.ok) {
           throw new Error("Failed to fetch data");
         }
+
         const result = await response.json();
 
         if (result?.data) {
+          // Ambil data series (jumlah barang) dan labels (nama kategori)
           const series = result.data.map(item => item.total_barang);
           const labels = result.data.map(item => item.nama_kategori);
-          setChartData({ series, labels });
+
+          // Pilih warna soft primary sesuai jumlah kategori
+          const colors = primarySoftColors.slice(0, labels.length);
+
+          setChartData({ series, labels, colors });
         } else {
           console.error("Invalid API response");
         }
@@ -85,8 +102,12 @@ const DonutChart = () => {
 
   useEffect(() => {
     const chartElement = document.getElementById("donut-chart");
+
     if (chartElement && chartData.series.length > 0 && chartData.labels.length > 0) {
-      const chart = new ApexCharts(chartElement, getChartOptions(chartData.series, chartData.labels));
+      const chart = new ApexCharts(
+        chartElement,
+        getChartOptions(chartData.series, chartData.labels, chartData.colors)
+      );
       chart.render();
 
       return () => {

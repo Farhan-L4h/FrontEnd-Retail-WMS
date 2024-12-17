@@ -20,17 +20,18 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/aktivitas");
+        const response = await fetch("http://127.0.0.1:8000/api/dashboard-total");
         if (!response.ok) {
           throw new Error("Failed to fetch data");
         }
         const result = await response.json();
         console.log("API Response:", result);
         setData({
-          total_masuk: result.total.total_masuk || 0,
-          total_keluar: result.total.total_keluar || 0,
-          total_stok: result.total.total_stok || 0
+          total_masuk: result.total_barang_masuk || 0,
+          total_keluar: result.total_barang_keluar || 0,
+          total_stok: result.total_stok || 0,
         });
+        
       } catch (error) {
         console.error("Error fetching data:", error);
       }
