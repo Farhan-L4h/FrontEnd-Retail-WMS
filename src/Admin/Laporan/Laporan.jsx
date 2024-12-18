@@ -53,6 +53,7 @@ function App() {
           {/* Area yang akan dicetak */}
           <div ref={printRef}>
             <div className="m-2 bg-white p-8 rounded-md w-max">
+<h1 className="text-center text-4xl font-semibold underline">Laporan Gudang WMS Retail</h1>
               <TableLaporan />
               <div className="flex gap-4">
                 <LaporanAktifitas />
