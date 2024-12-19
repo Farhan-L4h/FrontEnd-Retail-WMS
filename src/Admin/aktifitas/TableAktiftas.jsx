@@ -205,20 +205,20 @@ export default function TableAktifitas() {
                   key={aktivitas.id}
                   className="odd:bg-white even:bg-gray-100 border-gray-600"
                 >
-                  <td className="px-4 py-4">
+                  <td className="px-4 py-2">
                     {(currentPage - 1) * itemsPerPage + index + 1}
                   </td>
 
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-2">
                     {aktivitas.barang?.nama_barang || "Tidak ada data"}{" "}
                     <strong>x {aktivitas.jumlah_barang || 0}</strong>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-2">
                     <strong>#{aktivitas.rak.kode_rak}</strong>
                     <br />
                     {aktivitas.rak?.nama_rak || "Tidak ada data"}
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-2">
                     {new Date(aktivitas.exp_barang).toLocaleDateString(
                       "id-ID",
                       {
@@ -228,9 +228,9 @@ export default function TableAktifitas() {
                       }
                     ) || "-"}
                   </td>
-                  <td className="px-6 py-4">{aktivitas.total_harga || "-"}</td>
-                  <td className="px-6 py-4">{aktivitas.username || 0}</td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-2">{aktivitas.total_harga || "-"}</td>
+                  <td className="px-6 py-2">{aktivitas.username || 0}</td>
+                  <td className="px-6 py-2">
                     {new Date(aktivitas.tanggal_update).toLocaleDateString(
                       "id-ID",
                       {
@@ -241,7 +241,7 @@ export default function TableAktifitas() {
                     )}
                   </td>
 
-                  <td className="px-6 py-4 font-medium flex items-center">
+                  <td className="px-6 py-6 font-medium flex items-center">
                     {/* Label Status */}
                     {aktivitas.status === "masuk" ? (
                       <span className="flex w-3 h-3 me-3 bg-green-500 rounded-full"></span>
@@ -253,30 +253,30 @@ export default function TableAktifitas() {
 
                     {/* Status */}
                     {aktivitas.alasan === "diterima" ? (
-                      <span className="bg-green-100 text-green-800 text-sm me-2 px-2.5 py-1.5 rounded dark:bg-green-900 dark:text-green-300">
+                      <span className="bg-green-100 text-green-800 text-xs me-2 px-2 py-1 rounded dark:bg-green-900 dark:text-green-300">
                         Diterima
                       </span>
                     ) : aktivitas.alasan === "diambil" ? (
-                      <span className="bg-blue-100 text-blue-800 text-sm me-2 px-2.5 py-1.5 rounded dark:bg-blue-900 dark:text-blue-300">
+                      <span className="bg-blue-100 text-blue-800 text-xs me-2 px-2 py-1 rounded dark:bg-blue-900 dark:text-blue-300">
                         Diambil
                       </span>
                     ) : aktivitas.alasan === "dibuang" ? (
-                      <span className="bg-gray-100 text-gray-800 text-sm me-2 px-2.5 py-1.5 rounded dark:bg-gray-700 dark:text-gray-300">
+                      <span className="bg-gray-100 text-gray-800 text-xs me-2 px-2 py-1 rounded dark:bg-gray-700 dark:text-gray-300">
                         Expired
                       </span>
                     ) : aktivitas.alasan === "return" ? (
-                      <span className="bg-yellow-100 text-yellow-800 text-sm me-2 px-2.5 py-1.5 rounded dark:bg-yellow-900 dark:text-yellow-300">
+                      <span className="bg-yellow-100 text-yellow-800 text-xs me-2 px-2 py-1 rounded dark:bg-yellow-900 dark:text-yellow-300">
                         Return
                       </span>
                     ) : (
-                      <span className="bg-red-100 text-red-800 text-sm me-2 px-2.5 py-1.5 rounded dark:bg-red-900 dark:text-red-300">
+                      <span className="bg-red-100 text-red-800 text-xs me-2 px-2 py-1 rounded dark:bg-red-900 dark:text-red-300">
                         -
                       </span>
                     )}
                   </td>
 
                   {/* Action */}
-                  <td className="px-6 py-4 text-xs">
+                  <td className="px-6 py-2 text-xs">
                     <div className="flex gap-2">
                       <Link to={`/AktifitasBarang/${aktivitas.id}/edit`}>
                         <button className="bg-blue-200 text-blue-800 px-3 py-1 rounded-lg">
