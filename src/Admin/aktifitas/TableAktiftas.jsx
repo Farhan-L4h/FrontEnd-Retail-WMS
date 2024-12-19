@@ -241,8 +241,17 @@ export default function TableAktifitas() {
                     )}
                   </td>
 
-                  {/* Status */}
-                  <td className="px-6 py-4 font-medium">
+                  <td className="px-6 py-4 font-medium flex items-center">
+                    {/* Label Status */}
+                    {aktivitas.status === "masuk" ? (
+                      <span className="flex w-3 h-3 me-3 bg-green-500 rounded-full"></span>
+                    ) : aktivitas.status === "keluar" ? (
+                      <span className="flex w-3 h-3 me-3 bg-red-500 rounded-full"></span>
+                    ) : (
+                      <span className="flex w-3 h-3 me-3 bg-gray-500 rounded-full"></span>
+                    )}
+
+                    {/* Status */}
                     {aktivitas.alasan === "diterima" ? (
                       <span className="bg-green-100 text-green-800 text-sm me-2 px-2.5 py-1.5 rounded dark:bg-green-900 dark:text-green-300">
                         Diterima
