@@ -23,11 +23,19 @@ export default function TableAktifitas() {
   const [barangOptions, setBarangOptions] = useState([]);
   const [rakOptions, setRakOptions] = useState([]);
 
-  const totalPages = Math.ceil(aktivitasData.length / itemsPerPage);
-  const currentData = aktivitasData.slice(
+  const [filteredData, setFilteredData] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const dataToDisplay = searchQuery ? filteredData : aktivitasData;
+
+  // Menyaring data sesuai dengan halaman aktif
+  const currentData = dataToDisplay.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
+
+  // Menghitung jumlah halaman berdasarkan total data dan items per page
+  const totalPages = Math.ceil(dataToDisplay.length / itemsPerPage);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -160,6 +168,32 @@ export default function TableAktifitas() {
     });
   };
 
+  // search
+  const handleSearch = (e) => {
+    const query = e.target.value.toLowerCase().trim(); // Clean up query
+    setSearchQuery(query);
+
+    const filtered = aktivitasData.filter((item) => {
+      const namaBarang = (item.barang?.nama_barang || "").toLowerCase();
+      const kategori = (
+        item.barang?.kategori?.nama_kategori || ""
+      ).toLowerCase();
+      const harga =
+        item.barang?.harga !== undefined && item.barang?.harga !== null
+          ? item.barang?.harga.toString()
+          : "";
+
+      return (
+        namaBarang.includes(query) ||
+        kategori.includes(query) ||
+        harga.includes(query)
+      );
+    });
+
+    setFilteredData(filtered);
+    setCurrentPage(1); // Reset page to 1 on search
+  };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
@@ -181,6 +215,17 @@ export default function TableAktifitas() {
             </button>
           </Link>
         </div>
+      </div>
+
+      {/* Input Search */}
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Cari nama barang atau kategori..."
+          value={searchQuery}
+          onChange={handleSearch}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200"
+        />
       </div>
 
       <div className="relative overflow-x-auto sm:rounded-lg w-max">
@@ -319,6 +364,24 @@ export default function TableAktifitas() {
           </tbody>
         </table>
       </div>
+
+      {filteredData.length > itemsPerPage && (
+        <div className="flex justify-center mt-4">
+          {Array.from({ length: totalPages }, (_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentPage(index + 1)}
+              className={`mx-1 px-3 py-1 rounded-md ${
+                currentPage === index + 1
+                  ? "border border-blue-500 bg-white text-black"
+                  : "bg-gray-100 text-gray-500"
+              }`}
+            >
+              {index + 1}
+            </button>
+          ))}
+        </div>
+      )}
 
       {aktivitasData.length > itemsPerPage && (
         <div className="flex justify-center mt-4">
