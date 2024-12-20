@@ -267,7 +267,7 @@ function EditBarang() {
                 <div className="flex justify-end gap-2">
                   <button
                     type="button"
-                    onClick={() => navigate("/barang")} // Kembali tanpa simpan
+                    onClick={() => navigate("/staff/barang")} // Kembali tanpa simpan
                     className="bg-gray-400 hover:bg-gray-500 text-white p-2 rounded"
                   >
                     Kembali
