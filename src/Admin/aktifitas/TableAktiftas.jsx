@@ -16,17 +16,26 @@ export default function TableAktifitas() {
   const [deleteData, setDeleteData] = useState({});
   const [formData, setFormData] = useState({
     id_aktivitas: "",
+    id_barang: "",
     id_rak_asal: "",
     id_rak_tujuan: "",
   });
   const [barangOptions, setBarangOptions] = useState([]);
   const [rakOptions, setRakOptions] = useState([]);
 
-  const totalPages = Math.ceil(aktivitasData.length / itemsPerPage);
-  const currentData = aktivitasData.slice(
+  const [filteredData, setFilteredData] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const dataToDisplay = searchQuery ? filteredData : aktivitasData;
+
+  // Menyaring data sesuai dengan halaman aktif
+  const currentData = dataToDisplay.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
+
+  // Menghitung jumlah halaman berdasarkan total data dan items per page
+  const totalPages = Math.ceil(dataToDisplay.length / itemsPerPage);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -143,6 +152,7 @@ export default function TableAktifitas() {
 
     setFormData({
       id_aktivitas: aktivitas.id || "",
+      id_barang: aktivitas.id_barang || "",
       id_rak_asal: aktivitas.rak.id || "",
       id_rak_tujuan: aktivitas.rak.id, // Awalnya kosong, nanti bisa dipilih
     });
@@ -152,9 +162,36 @@ export default function TableAktifitas() {
     // Cetak data yang dimasukkan ke formData (tidak langsung dari state karena asynchrony)
     console.log({
       id_aktivitas: aktivitas.barang.id,
+      id_barang: aktivitas.id_barang,
       id_rak_asal: aktivitas.rak.id,
       id_rak_tujuan: aktivitas.rak.id, // Tetap kosong
     });
+  };
+
+  // search
+  const handleSearch = (e) => {
+    const query = e.target.value.toLowerCase().trim(); // Clean up query
+    setSearchQuery(query);
+
+    const filtered = aktivitasData.filter((item) => {
+      const namaBarang = (item.barang?.nama_barang || "").toLowerCase();
+      const kategori = (
+        item.barang?.kategori?.nama_kategori || ""
+      ).toLowerCase();
+      const harga =
+        item.barang?.harga !== undefined && item.barang?.harga !== null
+          ? item.barang?.harga.toString()
+          : "";
+
+      return (
+        namaBarang.includes(query) ||
+        kategori.includes(query) ||
+        harga.includes(query)
+      );
+    });
+
+    setFilteredData(filtered);
+    setCurrentPage(1); // Reset page to 1 on search
   };
 
   if (loading) return <p>Loading...</p>;
@@ -180,6 +217,17 @@ export default function TableAktifitas() {
         </div>
       </div>
 
+      {/* Input Search */}
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Cari nama barang atau kategori..."
+          value={searchQuery}
+          onChange={handleSearch}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200"
+        />
+      </div>
+
       <div className="relative overflow-x-auto sm:rounded-lg w-max">
         <table className="w-full text-sm text-left text-gray-500">
           <thead className="text-xs text-gray-700 uppercase bg-gray-200">
@@ -196,111 +244,162 @@ export default function TableAktifitas() {
             </tr>
           </thead>
           <tbody>
-            {currentData.map((aktivitas, index) => (
-              <tr key={aktivitas.id} className="odd:bg-white even:bg-gray-100 border-gray-600">
-                <td className="px-4 py-4">{(currentPage - 1) * itemsPerPage + index + 1}</td>
+            {currentData.length > 0 ? (
+              currentData.map((aktivitas, index) => (
+                <tr
+                  key={aktivitas.id}
+                  className="odd:bg-white even:bg-gray-100 border-gray-600"
+                >
+                  <td className="px-4 py-2">
+                    {(currentPage - 1) * itemsPerPage + index + 1}
+                  </td>
 
-                <td className="px-6 py-4">
-                  {aktivitas.barang?.nama_barang || "Tidak ada data"}{" "}
-                  <strong>x {aktivitas.jumlah_barang || 0}</strong>
-                </td>
-                <td className="px-6 py-4">
-                  <strong>#{aktivitas.rak.kode_rak}</strong>
-                  <br />
-                  {aktivitas.rak?.nama_rak || "Tidak ada data"}
-                </td>
-                <td className="px-6 py-4">
-                  {new Date(aktivitas.exp_barang).toLocaleDateString("id-ID", {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                  }) || "-"}
-                </td>
-                <td className="px-6 py-4">{aktivitas.total_harga || "-"}</td>
-                <td className="px-6 py-4">{aktivitas.username || 0}</td>
-                <td className="px-6 py-4">
-                  {new Date(aktivitas.tanggal_update).toLocaleDateString(
-                    "id-ID",
-                    { year: "numeric", month: "short", day: "numeric" }
-                  )}
-                </td>
+                  <td className="px-6 py-2">
+                    {aktivitas.barang?.nama_barang || "Tidak ada data"}{" "}
+                    <strong>x {aktivitas.jumlah_barang || 0}</strong>
+                  </td>
+                  <td className="px-6 py-2">
+                    <strong>#{aktivitas.rak.kode_rak}</strong>
+                    <br />
+                    {aktivitas.rak?.nama_rak || "Tidak ada data"}
+                  </td>
+                  <td className="px-6 py-2">
+                    {new Date(aktivitas.exp_barang).toLocaleDateString(
+                      "id-ID",
+                      {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      }
+                    ) || "-"}
+                  </td>
+                  <td className="px-6 py-2">{aktivitas.total_harga || "-"}</td>
+                  <td className="px-6 py-2">{aktivitas.username || 0}</td>
+                  <td className="px-6 py-2">
+                    {new Date(aktivitas.tanggal_update).toLocaleDateString(
+                      "id-ID",
+                      {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      }
+                    )}
+                  </td>
 
-                {/* status */}
-                <td className="px-6 py-4 font-medium">
-                  {aktivitas.alasan === "diterima" ? (
-                    <span className="bg-green-100 text-green-800 text-sm me-2 px-2.5 py-1.5 rounded dark:bg-green-900 dark:text-green-300">
-                      Diterima
-                    </span>
-                  ) : aktivitas.alasan === "diambil" ? (
-                    <span className="bg-blue-100 text-blue-800 text-sm me-2 px-2.5 py-1.5 rounded dark:bg-blue-900 dark:text-blue-300">
-                      Diambil
-                    </span>
-                  ) : aktivitas.alasan === "dibuang" ? (
-                    <span className="bg-gray-100 text-gray-800 text-sm me-2 px-2.5 py-1.5 rounded dark:bg-gray-700 dark:text-gray-300">
-                      Expired
-                    </span>
-                  ) : aktivitas.alasan === "return" ? (
-                    <span className="bg-yellow-100 text-yellow-800 text-sm me-2 px-2.5 py-1.5 rounded dark:bg-yellow-900 dark:text-yellow-300">
-                      return
-                    </span>
-                  ) : (
-                    <span className="bg-red-100 text-red-800 text-sm me-2 px-2.5 py-1.5 rounded dark:bg-red-900 dark:text-red-300">
-                      -
-                    </span>
-                  )}
-                </td>
+                  <td className="px-6 py-6 font-medium flex items-center">
+                    {/* Label Status */}
+                    {aktivitas.status === "masuk" ? (
+                      <span className="flex w-3 h-3 me-3 bg-green-500 rounded-full"></span>
+                    ) : aktivitas.status === "keluar" ? (
+                      <span className="flex w-3 h-3 me-3 bg-red-500 rounded-full"></span>
+                    ) : (
+                      <span className="flex w-3 h-3 me-3 bg-gray-500 rounded-full"></span>
+                    )}
 
-                <td className="px-6 py-4 text-xs">
-                  <div className="flex gap-2">
-                    <Link to={`/AktifitasBarang/${aktivitas.id}/edit`}>
-                      <button className="bg-blue-200 text-blue-800 px-3 py-1 rounded-lg">
-                        Edit
+                    {/* Status */}
+                    {aktivitas.alasan === "diterima" ? (
+                      <span className="bg-green-100 text-green-800 text-xs me-2 px-2 py-1 rounded dark:bg-green-900 dark:text-green-300">
+                        Diterima
+                      </span>
+                    ) : aktivitas.alasan === "diambil" ? (
+                      <span className="bg-blue-100 text-blue-800 text-xs me-2 px-2 py-1 rounded dark:bg-blue-900 dark:text-blue-300">
+                        Diambil
+                      </span>
+                    ) : aktivitas.alasan === "dibuang" ? (
+                      <span className="bg-gray-100 text-gray-800 text-xs me-2 px-2 py-1 rounded dark:bg-gray-700 dark:text-gray-300">
+                        Expired
+                      </span>
+                    ) : aktivitas.alasan === "return" ? (
+                      <span className="bg-yellow-100 text-yellow-800 text-xs me-2 px-2 py-1 rounded dark:bg-yellow-900 dark:text-yellow-300">
+                        Return
+                      </span>
+                    ) : (
+                      <span className="bg-red-100 text-red-800 text-xs me-2 px-2 py-1 rounded dark:bg-red-900 dark:text-red-300">
+                        -
+                      </span>
+                    )}
+                  </td>
+
+                  {/* Action */}
+                  <td className="px-6 py-2 text-xs">
+                    <div className="flex gap-2">
+                      <Link to={`/AktifitasBarang/${aktivitas.id}/edit`}>
+                        <button className="bg-blue-200 text-blue-800 px-3 py-1 rounded-lg">
+                          Edit
+                        </button>
+                      </Link>
+                      <button
+                        onClick={() => confirmDelete(aktivitas)}
+                        className="bg-red-200 text-red-800 px-3 py-1 rounded-lg"
+                      >
+                        Delete
                       </button>
-                    </Link>
-                    <button
-                      onClick={() => confirmDelete(aktivitas)}
-                      className="bg-red-200 text-red-800 px-3 py-1 rounded-lg"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                  <div className="flex gap-2 mt-2">
-                    <Link to={`/AktifitasBarang/${aktivitas.id}/show`}>
-                      <button className="bg-green-200 text-green-800 px-3 py-1 rounded-lg ">
-                        Show
+                    </div>
+                    <div className="flex gap-2 mt-2">
+                      <Link to={`/AktifitasBarang/${aktivitas.id}/show`}>
+                        <button className="bg-green-200 text-green-800 px-3 py-1 rounded-lg ">
+                          Show
+                        </button>
+                      </Link>
+                      <button
+                        onClick={() => handleMove(aktivitas.id)}
+                        className="bg-yellow-200 text-yellow-800 py-1 px-3 rounded-lg "
+                      >
+                        Move
                       </button>
-                    </Link>
-                    <button
-                      onClick={() => handleMove(aktivitas.id)}
-                      className="bg-yellow-200 text-yellow-800 py-1 px-3 rounded-lg "
-                    >
-                      Move
-                    </button>
-                  </div>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan="9"
+                  className="text-center px-6 py-4 bg-gray-100 text-gray-500"
+                >
+                  Data masih kosong
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
 
+      {filteredData.length > itemsPerPage && (
+        <div className="flex justify-center mt-4">
+          {Array.from({ length: totalPages }, (_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentPage(index + 1)}
+              className={`mx-1 px-3 py-1 rounded-md ${
+                currentPage === index + 1
+                  ? "border border-blue-500 bg-white text-black"
+                  : "bg-gray-100 text-gray-500"
+              }`}
+            >
+              {index + 1}
+            </button>
+          ))}
+        </div>
+      )}
+
       {aktivitasData.length > itemsPerPage && (
-            <div className="flex justify-center mt-4">
-              {Array.from({ length: totalPages }, (_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentPage(index + 1)}
-                  className={`mx-1 px-3 py-1 rounded-md ${
-                    currentPage === index + 1
-                      ? "border border-blue-500 bg-white text-black"
-                      : "bg-gray-100 text-gray-500"
-                  }`}
-                >
-                  {index + 1}
-                </button>
-              ))}
-            </div>
-          )}
+        <div className="flex justify-center mt-4">
+          {Array.from({ length: totalPages }, (_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentPage(index + 1)}
+              className={`mx-1 px-3 py-1 rounded-md ${
+                currentPage === index + 1
+                  ? "border border-blue-500 bg-white text-black"
+                  : "bg-gray-100 text-gray-500"
+              }`}
+            >
+              {index + 1}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Modal Pemindahan Create/Edit */}
       {(isCreateModalOpen || isEditModalOpen) && (
@@ -313,7 +412,7 @@ export default function TableAktifitas() {
               <select
                 disabled
                 name="id_aktivitas"
-                value={formData.id_aktivitas}
+                value={formData.id_barang}
                 onChange={handleInputChange}
                 className="border rounded p-2"
               >

@@ -12,12 +12,18 @@ export default function TableBarang() {
   const itemsPerPage = 5;
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteData, setDeleteData] = useState({ id: "", nama_barang: "" });
+  const [filteredData, setFilteredData] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const totalPages = Math.ceil(barangData.length / itemsPerPage);
-  const currentData = barangData.slice(
+  const dataToDisplay = searchQuery ? filteredData : barangData;
+  const currentData = dataToDisplay.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
+  const totalPages = Math.ceil(dataToDisplay.length / itemsPerPage);
+  
+
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -93,6 +99,30 @@ export default function TableBarang() {
     setIsDeleteModalOpen(!isDeleteModalOpen);
   };
 
+  const handleSearch = (e) => {
+    const query = e.target.value.toLowerCase().trim(); // Bersihkan spasi di awal/akhir query
+    setSearchQuery(query);
+  
+    const filtered = barangData.filter((item) => {
+      const namaBarang = (item.nama_barang || "").toLowerCase();
+      const kategori = (item.kategori?.nama_kategori || "").toLowerCase();
+      const harga = item.harga !== undefined && item.harga !== null ? item.harga.toString() : "";
+  
+      // Pencarian pada nama barang, kategori, dan harga
+      return (
+        namaBarang.includes(query) ||
+        kategori.includes(query) ||
+        harga.includes(query)
+      );
+    });
+  
+    setFilteredData(filtered);
+    setCurrentPage(1); // Reset halaman ke 1 saat melakukan pencarian
+  };
+  
+
+  
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
@@ -107,6 +137,17 @@ export default function TableBarang() {
             Tambah Barang
           </button>
         </Link>
+      </div>
+
+      {/* Input Search */}
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Cari nama barang atau kategori..."
+          value={searchQuery}
+          onChange={handleSearch}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200"
+        />
       </div>
 
       <div className="relative overflow-x-auto sm:rounded-lg w-max">
@@ -170,6 +211,24 @@ export default function TableBarang() {
           </tbody>
         </table>
       </div>
+
+      {filteredData.length > itemsPerPage && (
+        <div className="flex justify-center mt-4">
+          {Array.from({ length: totalPages }, (_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentPage(index + 1)}
+              className={`mx-1 px-3 py-1 rounded-md ${
+                currentPage === index + 1
+                  ? "border border-blue-500 bg-white text-black"
+                  : "bg-gray-100 text-gray-500"
+              }`}
+            >
+              {index + 1}
+            </button>
+          ))}
+        </div>
+      )}
 
       {barangData.length > itemsPerPage && (
             <div className="flex justify-center mt-4">

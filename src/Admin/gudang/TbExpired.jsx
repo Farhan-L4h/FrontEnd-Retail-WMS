@@ -34,6 +34,7 @@ const TbExpired = () => {
 
   useEffect(() => {
     fetchExpiredItems();
+    console.log("Expired Items:", expiredItems); // Debugging
   }, []);
 
   const handleAddActivity = async () => {
@@ -102,7 +103,7 @@ const TbExpired = () => {
   return (
     <div className="m-2 bg-white p-4 rounded-md w-full">
       <h3 className="text-lg font-semibold mb-4">Tabel Expired</h3>
-      <div className="relative overflow-x-auto sm:rounded-lg w-full">
+      <div className="relative overflow-x-auto sm:rounded-lg w-max">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500">
           <thead className="text-xs font-medium text-gray-700 uppercase bg-gray-200">
             <tr>
@@ -120,11 +121,7 @@ const TbExpired = () => {
                   <td className="px-6 py-4">{item.nama_barang}</td>
                   <td className="px-6 py-4">{formatDate(item.exp_barang)}</td>
                   <td className="px-6 py-4">
-                    <button
-                      className="px-3 py-1 text-white bg-red-500 rounded hover:bg-red-600"
-                      onClick={() => handleOpenModal(item.id_aktivitas)}
-                      title="Buang barang ini"
-                    >
+                    <button className="px-3 py-1 text-white bg-red-500 rounded hover:bg-red-600" onClick={() => handleOpenModal(item.id_aktivitas)} title="Buang barang ini">
                       Buang
                     </button>
                   </td>
@@ -164,11 +161,7 @@ const TbExpired = () => {
 
             <div className="mb-4">
               <label className="block mb-2 text-sm font-medium text-left">Alasan:</label>
-              <select
-                className="w-full p-2 border border-gray-300 rounded"
-                value={alasan}
-                onChange={(e) => setAlasan(e.target.value)}
-              >
+              <select className="w-full p-2 border border-gray-300 rounded" value={alasan} onChange={(e) => setAlasan(e.target.value)}>
                 <option value="dibuang">Dibuang</option>
                 <option value="return">Return</option>
               </select>
@@ -186,6 +179,7 @@ const TbExpired = () => {
                 disabled={isSaving}
               >
                 {isSaving ? "Menyimpan..." : "Simpan"}
+
               </button>
             </div>
           </div>
