@@ -1,26 +1,32 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useAuth } from "../../context/AuthContext"; // Pastikan path sesuai
+import { useAuth } from "../../context/AuthContex"; // Pastikan path sesuai
 
 const TbExpired = () => {
   const [expiredItems, setExpiredItems] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [alasan, setAlasan] = useState("dibuang");
+  const [status] = useState("keluar");
   const [loading, setLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState(null);
   const { user } = useAuth(); // Mengambil user dari context
 
-  // Fetch expired items (barang yang hampir kadaluarsa)
   const fetchExpiredItems = async () => {
     setLoading(true);
     setError(null);
     try {
       const response = await axios.get("http://127.0.0.1:8000/api/expired-barang-terdekat");
-      setExpiredItems(response.data.data); // Asumsi struktur data di API
+      const items = response.data?.barang_akan_kadaluarsa;
+      if (Array.isArray(items)) {
+        setExpiredItems(items);
+      } else {
+        throw new Error("Data tidak valid");
+      }
     } catch (err) {
       console.error("Error fetching data:", err);
-      setError(err.message);
+      setError("Gagal memuat data barang expired.");
     } finally {
       setLoading(false);
     }
@@ -30,15 +36,15 @@ const TbExpired = () => {
     fetchExpiredItems();
   }, []);
 
-  // Menangani aksi untuk membuang atau mengembalikan barang
   const handleAddActivity = async () => {
     if (!selectedItem || !user) {
       alert("User tidak ditemukan atau barang tidak dipilih.");
       return;
     }
 
+    setIsSaving(true);
     try {
-      const response = await axios.put(
+      const response = await axios.post(
         `http://127.0.0.1:8000/api/buang-barang/${selectedItem.id_aktivitas}`,
         {
           id_barang: selectedItem.id_barang,
@@ -46,8 +52,13 @@ const TbExpired = () => {
           id_rak: selectedItem.id_rak,
           status: "keluar",
           alasan,
-          jumlah_barang: selectedItem.stok, // Menggunakan stok dari item terpilih
+          jumlah_barang: selectedItem.stok,
           exp_barang: null,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
         }
       );
 
@@ -55,20 +66,36 @@ const TbExpired = () => {
         alert(response.data.message);
         setModalOpen(false);
         fetchExpiredItems(); // Refresh data setelah status diperbarui
+      } else {
+        alert("Gagal memperbarui data.");
       }
     } catch (error) {
       console.error("Error saat menambahkan aktivitas:", error);
       alert("Terjadi kesalahan saat menambah aktivitas.");
+    } finally {
+      setIsSaving(false);
     }
   };
 
-  // Buka modal untuk memilih tindakan pada barang
   const handleOpenModal = (itemId) => {
     const item = expiredItems.find((i) => i.id_aktivitas === itemId);
+    if (!item) {
+      alert("Barang tidak ditemukan.");
+      return;
+    }
     setSelectedItem(item);
     setModalOpen(true);
   };
 
+  const formatDate = (date) => {
+    return new Date(date).toLocaleDateString("id-ID", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    });
+  };
+
+  
   if (loading) return <p className="text-center">Loading...</p>;
   if (error) return <p className="text-center text-red-500">Error: {error}</p>;
 
@@ -86,12 +113,12 @@ const TbExpired = () => {
             </tr>
           </thead>
           <tbody>
-            {expiredItems.length > 0 ? (
+            {Array.isArray(expiredItems) && expiredItems.length > 0 ? (
               expiredItems.map((item, index) => (
                 <tr key={item.id_aktivitas} className="hover:bg-gray-100">
                   <td className="px-6 py-4">{index + 1}</td>
                   <td className="px-6 py-4">{item.nama_barang}</td>
-                  <td className="px-6 py-4">{item.exp_barang}</td>
+                  <td className="px-6 py-4">{formatDate(item.exp_barang)}</td>
                   <td className="px-6 py-4">
                     <button
                       className="px-3 py-1 text-white bg-red-500 rounded hover:bg-red-600"
@@ -117,18 +144,21 @@ const TbExpired = () => {
       {modalOpen && selectedItem && (
         <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center z-40 bg-gray-800 bg-opacity-50">
           <div className="relative p-4 w-full max-w-md bg-white rounded-lg shadow">
-            <h3 className="text-lg font-semibold mb-4">Tindakan Barang Expired</h3>
-            <p className="mb-4">
+            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2 justify-center text-center">
+              <i className="fas fa-exclamation-circle text-red-500"></i>
+              Tindakan Barang Expired
+            </h3>
+            <hr className="border-t-4 border-gray-400 w-1/2 mx-auto mt-1 mb-2" />
+            <p className="mb-4 text-left">
               Nama Barang: <strong>{selectedItem.nama_barang}</strong>
             </p>
-            <p className="mb-4">Tanggal Kedaluwarsa: {selectedItem.exp_barang}</p>
+            <p className="mb-4 text-left">Tanggal Kedaluwarsa: {formatDate(selectedItem.exp_barang)}</p>
             <div className="mb-4">
               <label className="block mb-2 text-sm font-medium text-left">Status:</label>
               <input
                 className="w-full p-2 border border-gray-300 rounded bg-gray-200 text-gray-600 cursor-not-allowed"
-                value="keluar"
+                value={status}
                 disabled
-                readOnly
               />
             </div>
 
@@ -145,16 +175,17 @@ const TbExpired = () => {
             </div>
             <div className="flex justify-end gap-2">
               <button
-                className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
+               className="border border-black bg-white text-black hover:bg-black hover:text-white px-4 py-2 rounded"
                 onClick={() => setModalOpen(false)}
               >
                 Batal
               </button>
               <button
-                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                className="px-4 py-2 border border-black text-white bg-black hover:bg-white hover:text-black rounded"
                 onClick={handleAddActivity}
+                disabled={isSaving}
               >
-                Simpan
+                {isSaving ? "Menyimpan..." : "Simpan"}
               </button>
             </div>
           </div>
