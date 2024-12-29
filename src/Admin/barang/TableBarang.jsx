@@ -181,7 +181,7 @@ export default function TableBarang() {
                   )}
                 </td>
                 <td className="px-2 py-4 text-wrap">{barang.kategori.nama_kategori}</td>
-                <td className="px-6 py-4">{barang.stok}</td>
+                <td className="px-6 py-4">{barang.exp_barang === null ? "0" : barang.stok}</td>
                 <td className="px-6 py-4">{barang.rak || '-'}</td>
                 <td className="px-6 py-4">{new Date(barang.exp_barang).toLocaleDateString(
                     "id-ID",

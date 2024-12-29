@@ -53,7 +53,7 @@ const TbExpired = () => {
           id_rak: selectedItem.id_rak,
           status: "keluar",
           alasan,
-          jumlah_barang: selectedItem.stok,
+          jumlah_barang: parseInt(selectedItem.stok, 10),
           exp_barang: null,
         },
         {
